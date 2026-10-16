@@ -1,10 +1,12 @@
 package controlador;
 
+import dao.EmpleadoDAO;
+import dao.SucursalDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import modelo.Empleado;
-import servicio.EmpleadoService; // Asumiendo que este servicio será creado luego
+import servicio.EmpleadoService;
 
 public class EmpleadoController {
 
@@ -23,8 +25,15 @@ public class EmpleadoController {
     private EmpleadoService empleadoService;
 
     public EmpleadoController() {
-        // En una arquitectura Java estándar, la inyección se hace manualmente o instanciando.
-        // this.empleadoService = new EmpleadoService(...);
+        this.empleadoService = new EmpleadoService(new EmpleadoDAO(), new SucursalDAO());
+    }
+
+    public EmpleadoController(EmpleadoService empleadoService) {
+        this.empleadoService = empleadoService;
+    }
+
+    public void setEmpleadoService(EmpleadoService empleadoService) {
+        this.empleadoService = empleadoService;
     }
 
     /**
@@ -34,21 +43,26 @@ public class EmpleadoController {
     public void guardarEmpleado() {
         try {
             // 1. Recolección de datos y conversión de tipos
-            Integer id = Integer.parseInt(txtId.getText());
-            Integer dni = Integer.parseInt(txtDni.getText());
-            String nom = txtNom.getText();
-            String apl = txtApl.getText();
-            String dir = txtDir.getText();
-            Long tel = Long.parseLong(txtTel.getText());
-            String correo = txtCorreo.getText();
-            String fIng = txtFIng.getText();
-            Integer codTrabaja = Integer.parseInt(txtCodTrabaja.getText());
+            Integer id = Integer.parseInt(txtId.getText().trim());
+            Integer dni = Integer.parseInt(txtDni.getText().trim());
+            String nom = txtNom.getText().trim();
+            String apl = txtApl.getText().trim();
+            String dir = txtDir.getText().trim();
+            Long tel = Long.parseLong(txtTel.getText().trim());
+            String correo = txtCorreo.getText().trim();
+            String fIng = txtFIng.getText().trim();
+            Integer codTrabaja = Integer.parseInt(txtCodTrabaja.getText().trim());
+
+            if (nom.isEmpty() || apl.isEmpty() || dir.isEmpty() || correo.isEmpty() || fIng.isEmpty()) {
+                mostrarMensaje("Error de Validación", "Todos los campos son obligatorios.", Alert.AlertType.WARNING);
+                return;
+            }
 
             // 2. Armado del objeto Empleado
             Empleado empleado = new Empleado(id, dni, nom, apl, dir, tel, correo, fIng, codTrabaja);
 
-            // 3. Llamada al servicio de alta (comentado para evitar error de compilación hasta que exista el servicio real)
-            // empleadoService.altaEmpleado(empleado);
+            // 3. Llamada al servicio de alta
+            empleadoService.altaEmpleado(empleado);
 
             mostrarMensaje("Éxito", "El empleado ha sido guardado correctamente.", Alert.AlertType.INFORMATION);
             limpiarCampos();
@@ -57,7 +71,7 @@ public class EmpleadoController {
             // Manejo de errores si el usuario ingresa texto en un campo numérico
             mostrarMensaje("Error de Validación", "Por favor, verifique que ID, DNI, Teléfono y Cod. de Sucursal sean números válidos.", Alert.AlertType.WARNING);
         } catch (Exception e) {
-            // Manejo de errores desde la capa de servicio (ej: DNI duplicado)
+            // Manejo de errores desde la capa de servicio (ej: DNI duplicado o Sucursal inexistente)
             mostrarMensaje("Error", "Ocurrió un error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
