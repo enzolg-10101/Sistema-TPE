@@ -88,9 +88,10 @@ public class EmpleadoController {
     }
 
     /**
-     * Método auxiliar para limpiar el formulario tras un guardado exitoso.
+     * Método vinculado al botón 'Limpiar' y utilizado tras un guardado exitoso.
      */
-    private void limpiarCampos() {
+    @FXML
+    public void limpiarCampos() {
         txtId.clear();
         txtDni.clear();
         txtNom.clear();

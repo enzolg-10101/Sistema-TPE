@@ -4,37 +4,63 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import modelo.Empleado;
 import util.DatabaseConnection;
 
 public class EmpleadoDAO {
 
     public void insertar(Empleado empleado) {
-        String sql = "INSERT INTO Empleados (E_id, E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, empleado.getId());
-            stmt.setInt(2, empleado.getDni());
-            stmt.setString(3, empleado.getNom());
-            stmt.setString(4, empleado.getApl());
-            stmt.setString(5, empleado.getDir());
-            stmt.setLong(6, empleado.getTel());
-            stmt.setString(7, empleado.getCorreo());
-            stmt.setString(8, empleado.getfIng());
-            stmt.setInt(9, empleado.getCodTrabaja());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al insertar el empleado: " + e.getMessage(), e);
+        if (empleado.getId() != null) {
+            String sql = "INSERT INTO Empleados (E_id, E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, empleado.getId());
+                stmt.setInt(2, empleado.getDni());
+                stmt.setString(3, empleado.getNom());
+                stmt.setString(4, empleado.getApl());
+                stmt.setString(5, empleado.getDir());
+                stmt.setLong(6, empleado.getTel());
+                stmt.setString(7, empleado.getCorreo());
+                stmt.setString(8, empleado.getfIng());
+                stmt.setInt(9, empleado.getCodTrabaja());
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException("Error al insertar el empleado: " + e.getMessage(), e);
+            }
+        } else {
+            String sql = "INSERT INTO Empleados (E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setInt(1, empleado.getDni());
+                stmt.setString(2, empleado.getNom());
+                stmt.setString(3, empleado.getApl());
+                stmt.setString(4, empleado.getDir());
+                stmt.setLong(5, empleado.getTel());
+                stmt.setString(6, empleado.getCorreo());
+                stmt.setString(7, empleado.getfIng());
+                stmt.setInt(8, empleado.getCodTrabaja());
+                stmt.executeUpdate();
+                try (ResultSet keys = stmt.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        empleado.setId(keys.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error al insertar el empleado: " + e.getMessage(), e);
+            }
         }
     }
 
     public Empleado buscarPorId(int id) {
         String sql = "SELECT E_id, E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja "
-                   + "FROM Empleados WHERE E_dni = ?";
+                   + "FROM Empleados WHERE E_dni = ? OR E_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
+            stmt.setInt(2, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Empleado(
@@ -51,7 +77,7 @@ public class EmpleadoDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar el empleado por E_dni: " + e.getMessage(), e);
+            throw new RuntimeException("Error al buscar el empleado: " + e.getMessage(), e);
         }
         return null;
     }

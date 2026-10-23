@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="640.0" prefWidth="980.0"
+            style="-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controlador.EmpleadoController">
+
+    <!-- Barra lateral izquierda sobria (indicador de módulo activo sin botones sin uso) -->
+    <left>
+        <VBox alignment="TOP_CENTER" prefWidth="76.0" spacing="18.0"
+              style="-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-width: 0 1 0 0;">
+            <padding>
+                <Insets bottom="24.0" left="12.0" right="12.0" top="24.0"/>
+            </padding>
+
+            <!--Insignia / Logo sobrio estilo Motive -->
+            <VBox alignment="CENTER" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0"
+                  style="-fx-background-color: #F59E0B; -fx-background-radius: 12;">
+                <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 16px; -fx-font-weight: bold;" text="TPE"/>
+            </VBox>
+
+            <Label style="-fx-text-fill: #9CA3AF; -fx-font-size: 11px; -fx-font-weight: 600;" text="Menú"/>
+
+            <!-- Indicador visual de la sección actual: Empleados -->
+            <VBox alignment="CENTER" maxWidth="52.0" spacing="4.0"
+                  style="-fx-background-color: #FEF3C7; -fx-background-radius: 10; -fx-padding: 10 6 10 6;">
+                <Label style="-fx-text-fill: #D97706; -fx-font-size: 11px; -fx-font-weight: bold;" text="EMP"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Contenido principal -->
+    <center>
+        <VBox spacing="20.0">
+            <padding>
+                <Insets bottom="24.0" left="28.0" right="28.0" top="22.0"/>
+            </padding>
+
+            <!-- Encabezado superior sobrio -->
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                       text="Sistema de Alquiler de Vehículos"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox alignment="CENTER"
+                      style="-fx-background-color: #F59E0B; -fx-background-radius: 20; -fx-padding: 6 16 6 16;">
+                    <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 12px; -fx-font-weight: bold;"
+                           text="Módulo Empleados"/>
+                </HBox>
+            </HBox>
+
+            <!-- Tarjeta Superior (inspirada en el banner superior de la imagen: Título a la izquierda + Grilla 2x2 a la derecha) -->
+            <HBox alignment="CENTER_LEFT" spacing="32.0"
+                  style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 24 28 24 28;">
+
+                <!-- Columna izquierda descriptiva del módulo -->
+                <VBox alignment="CENTER_LEFT" prefWidth="280.0" spacing="8.0">
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                           text="Alta de Empleados" wrapText="true"/>
+                    <Label style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"
+                           text="Registre los datos identificatorios, de contacto y la sucursal asignada al empleado."
+                           wrapText="true"/>
+                    <Separator style="-fx-padding: 8 0 4 0;"/>
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #9CA3AF;"
+                           text="Todos los atributos son obligatorios según el modelo relacional."/>
+                </VBox>
+
+                <!-- Grilla 2x2 derecha: Datos de Legajo, DNI, Sucursal y Fecha de Ingreso -->
+                <GridPane hgap="18.0" vgap="14.0" HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                    </columnConstraints>
+
+                    <!-- ID / Legajo (E_id) -->
+                    <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="ID / Legajo (E_id)"/>
+                        <TextField fx:id="txtId" promptText="Ej. 101"
+                                   style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                    </VBox>
+
+                    <!-- DNI (E_dni) -->
+                    <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="DNI (E_dni)"/>
+                        <TextField fx:id="txtDni" promptText="Ej. 40123456"
+                                   style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                    </VBox>
+
+                    <!-- Fecha de Ingreso (E_fIng) -->
+                    <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Fecha de Ingreso (E_fIng)"/>
+                        <TextField fx:id="txtFIng" promptText="AAAA-MM-DD (Ej. 2026-10-22)"
+                                   style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                    </VBox>
+
+                    <!-- Código de Sucursal donde trabaja (cod_Trabaja) -->
+                    <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Código de Sucursal (cod_Trabaja)"/>
+                        <TextField fx:id="txtCodTrabaja" promptText="Código S_cod de la sucursal"
+                                   style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                    </VBox>
+                </GridPane>
+            </HBox>
+
+            <!-- Sección Inferior Dividida en 2 Tarjetas (imitando la proporción izquierda/derecha de la imagen) -->
+            <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+
+                <!-- Tarjeta Izquierda: Datos Personales y Acción de Limpieza ("Reset") -->
+                <VBox prefWidth="340.0" spacing="16.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 24;">
+
+                    <HBox alignment="CENTER_LEFT">
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Datos Personales"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button onAction="#limpiarCampos"
+                                style="-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 4 8 4 8;"
+                                text="Limpiar"/>
+                    </HBox>
+
+                    <!-- Nombre (E_nom) -->
+                    <VBox spacing="6.0">
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                               text="Nombre (E_nom)"/>
+                        <TextField fx:id="txtNom" promptText="Ingrese el nombre"
+                                   style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                    </VBox>
+
+                    <!-- Apellido (E_apl) -->
+                    <VBox spacing="6.0">
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                               text="Apellido (E_apl)"/>
+                        <TextField fx:id="txtApl" promptText="Ingrese el apellido"
+                                   style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Resumen de relación FK -->
+                    <VBox spacing="4.0"
+                          style="-fx-background-color: #F9FAFB; -fx-background-radius: 10; -fx-border-color: #E5E7EB; -fx-border-radius: 10; -fx-padding: 12;">
+                        <Label style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"
+                               text="Relación Trabaja (N:1)"/>
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="FK(cod_Trabaja) → Sucursales(S_cod)"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Tarjeta Derecha: Datos de Contacto y Botón Principal Oscuro ("Guardar Empleado") -->
+                <VBox spacing="18.0" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 24;">
+
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                           text="Información de Contacto y Domicilio"/>
+
+                    <GridPane hgap="18.0" vgap="16.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                        </columnConstraints>
+
+                        <!-- Teléfono (E_tel) -->
+                        <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                   text="Teléfono (E_tel)"/>
+                            <TextField fx:id="txtTel" promptText="Ej. 2664422334"
+                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                        </VBox>
+
+                        <!-- Correo Electrónico (E_correo) -->
+                        <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                   text="Correo Electrónico (E_correo)"/>
+                            <TextField fx:id="txtCorreo" promptText="empleado@empresa.com"
+                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                        </VBox>
+
+                        <!-- Dirección (E_dir) ocupando ambas columnas -->
+                        <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                   text="Dirección (E_dir)"/>
+                            <TextField fx:id="txtDir" promptText="Calle, número y localidad (Ej. Av. Illia 123)"
+                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Botón de acción principal (imitando el botón oscuro ancho de las tarjetas de la imagen) -->
+                    <Button maxWidth="Infinity" onAction="#guardarEmpleado" prefHeight="44.0"
+                            style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"
+                            text="Guardar Empleado"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
