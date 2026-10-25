@@ -87,11 +87,6 @@ public class Sucursal {
 
     @Override
     public String toString() {
-        return "Sucursal{" +
-                "cod=" + cod +
-                ", nom='" + nom + '\'' +
-                ", dir='" + dir + '\'' +
-                ", tel=" + tel +
-                '}';
+        return cod + " - " + nom;
     }
 }

@@ -2,6 +2,7 @@ package servicio;
 
 import dao.SucursalDAO;
 import dao.VehiculoDAO;
+import java.util.List;
 import modelo.Sucursal;
 import modelo.Vehiculo;
 
@@ -48,6 +49,10 @@ public class VehiculoService {
             throw new RuntimeException("Error en la transacción de Alta de Vehículo: " + e.getMessage(), e);
         }
         // Fin-ts
+    }
+
+    public List<Vehiculo> listarTodos() {
+        return vehiculoDAO.listarTodos();
     }
 
     // --- 1 Generar la nupla correspondiente en Pertenece ---

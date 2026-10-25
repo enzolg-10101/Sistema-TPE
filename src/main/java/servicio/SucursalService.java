@@ -1,6 +1,7 @@
 package servicio;
 
 import dao.SucursalDAO;
+import java.util.List;
 import modelo.Sucursal;
 
 public class SucursalService {
@@ -31,5 +32,9 @@ public class SucursalService {
             throw new RuntimeException("Error en la transacción de Alta de Sucursal: " + e.getMessage(), e);
         }
         // Fin-ts
+    }
+
+    public List<Sucursal> listarTodas() {
+        return sucursalDAO.listarTodas();
     }
 }

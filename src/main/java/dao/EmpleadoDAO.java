@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.Empleado;
 import util.DatabaseConnection;
 
@@ -63,22 +65,70 @@ public class EmpleadoDAO {
             stmt.setInt(2, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Empleado(
-                        rs.getInt("E_id"),
-                        rs.getInt("E_dni"),
-                        rs.getString("E_nom"),
-                        rs.getString("E_apl"),
-                        rs.getString("E_dir"),
-                        rs.getLong("E_tel"),
-                        rs.getString("E_correo"),
-                        rs.getString("E_fIng"),
-                        rs.getInt("cod_Trabaja")
-                    );
+                    return mapearEmpleado(rs);
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al buscar el empleado: " + e.getMessage(), e);
         }
         return null;
+    }
+
+    public List<Empleado> listarTodos() {
+        List<Empleado> lista = new ArrayList<>();
+        String sql = "SELECT E_id, E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja "
+                   + "FROM Empleados ORDER BY E_id ASC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                lista.add(mapearEmpleado(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar empleados: " + e.getMessage(), e);
+        }
+        return lista;
+    }
+
+    public List<Empleado> buscarPorTexto(String criterio) {
+        List<Empleado> lista = new ArrayList<>();
+        String sql = "SELECT E_id, E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja "
+                   + "FROM Empleados "
+                   + "WHERE CAST(E_id AS CHAR) LIKE ? "
+                   + "OR CAST(E_dni AS CHAR) LIKE ? "
+                   + "OR LOWER(E_nom) LIKE ? "
+                   + "OR LOWER(E_apl) LIKE ? "
+                   + "OR LOWER(E_correo) LIKE ? "
+                   + "OR CAST(cod_Trabaja AS CHAR) LIKE ? "
+                   + "ORDER BY E_id ASC";
+        String patron = "%" + (criterio != null ? criterio.trim().toLowerCase() : "") + "%";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (int i = 1; i <= 6; i++) {
+                stmt.setString(i, patron);
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapearEmpleado(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar empleados: " + e.getMessage(), e);
+        }
+        return lista;
+    }
+
+    private Empleado mapearEmpleado(ResultSet rs) throws SQLException {
+        return new Empleado(
+            rs.getInt("E_id"),
+            rs.getInt("E_dni"),
+            rs.getString("E_nom"),
+            rs.getString("E_apl"),
+            rs.getString("E_dir"),
+            rs.getLong("E_tel"),
+            rs.getString("E_correo"),
+            rs.getString("E_fIng"),
+            rs.getInt("cod_Trabaja")
+        );
     }
 }

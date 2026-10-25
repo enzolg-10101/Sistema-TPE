@@ -2,6 +2,7 @@ package servicio;
 
 import dao.EmpleadoDAO;
 import dao.SucursalDAO;
+import java.util.List;
 import modelo.Empleado;
 import modelo.Sucursal;
 
@@ -48,6 +49,17 @@ public class EmpleadoService {
             throw new RuntimeException("Error en la transacción de Alta de Empleado: " + e.getMessage(), e);
         }
         // Fin-ts
+    }
+
+    public List<Empleado> listarTodos() {
+        return empleadoDAO.listarTodos();
+    }
+
+    public List<Empleado> buscarEmpleados(String criterio) {
+        if (criterio == null || criterio.trim().isEmpty()) {
+            return empleadoDAO.listarTodos();
+        }
+        return empleadoDAO.buscarPorTexto(criterio);
     }
 
     // --- 1 Generar la nupla correspondiente en Trabaja ---

@@ -18,18 +18,18 @@ public class PruebaGUI {
         public void start(Stage stage) throws Exception {
             Application.setUserAgentStylesheet(new atlantafx.base.theme.PrimerLight().getUserAgentStylesheet());
 
-            URL fxmlUrl = getClass().getResource("/EmpleadoView.fxml");
+            URL fxmlUrl = getClass().getResource("/HomeView.fxml");
             if (fxmlUrl == null) {
-                fxmlUrl = getClass().getResource("/vista/EmpleadoView.fxml");
+                fxmlUrl = getClass().getResource("/vista/HomeView.fxml");
             }
             if (fxmlUrl == null) {
-                fxmlUrl = new File("src/main/resources/EmpleadoView.fxml").toURI().toURL();
+                fxmlUrl = new File("src/main/resources/HomeView.fxml").toURI().toURL();
             }
 
             Parent root = FXMLLoader.load(fxmlUrl);
             Scene scene = new Scene(root);
 
-            stage.setTitle("Prueba Visual - Alta Empleados");
+            stage.setTitle("Sistema de Alquiler de Vehículos - Home");
             stage.setScene(scene);
             stage.show();
         }

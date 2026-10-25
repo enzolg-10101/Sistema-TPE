@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.Vehiculo;
 import util.DatabaseConnection;
 
@@ -113,6 +115,23 @@ public class VehiculoDAO {
             throw new RuntimeException("Error al buscar el vehículo por V_id: " + e.getMessage(), e);
         }
         return null;
+    }
+
+    public List<Vehiculo> listarTodos() {
+        List<Vehiculo> lista = new ArrayList<>();
+        String sql = "SELECT V_id, V_pat, V_marca, V_mod, V_aFabr, V_fAdq, V_kmj, V_est, "
+                   + "V_preAdq, V_fBaja, V_tiComb, T_carga, T_pax, T_tarBase, T_cat, cod_Pertenece "
+                   + "FROM Vehiculos ORDER BY V_id ASC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                lista.add(mapearVehiculo(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar vehículos: " + e.getMessage(), e);
+        }
+        return lista;
     }
 
     private Vehiculo mapearVehiculo(ResultSet rs) throws SQLException {

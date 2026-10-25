@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.Sucursal;
 import util.DatabaseConnection;
 
@@ -61,5 +63,25 @@ public class SucursalDAO {
             throw new RuntimeException("Error al buscar la sucursal por S_cod: " + e.getMessage(), e);
         }
         return null;
+    }
+
+    public List<Sucursal> listarTodas() {
+        List<Sucursal> lista = new ArrayList<>();
+        String sql = "SELECT S_cod, S_nom, S_dir, S_tel FROM Sucursales ORDER BY S_cod ASC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                lista.add(new Sucursal(
+                    rs.getInt("S_cod"),
+                    rs.getString("S_nom"),
+                    rs.getString("S_dir"),
+                    rs.getLong("S_tel")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al listar las sucursales: " + e.getMessage(), e);
+        }
+        return lista;
     }
 }
