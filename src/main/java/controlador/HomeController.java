@@ -23,8 +23,18 @@ public class HomeController {
             + "-fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; "
             + "-fx-background-radius: 10; -fx-cursor: hand;";
 
+    private static final String ESTILO_NUEVO_INACTIVO =
+            "-fx-background-color: #111827; -fx-background-radius: 12; -fx-padding: 10 14 10 12; "
+            + "-fx-cursor: hand; -fx-alignment: CENTER_LEFT;";
+
+    private static final String ESTILO_NUEVO_ACTIVO =
+            "-fx-background-color: #1F2937; -fx-border-color: #F59E0B; -fx-border-width: 1.5; "
+            + "-fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 10 14 10 12; "
+            + "-fx-cursor: hand; -fx-alignment: CENTER_LEFT;";
+
     @FXML private StackPane panelCentral;
 
+    @FXML private Button btnNuevo;
     @FXML private Button btnEmpleados;
     @FXML private Button btnVehiculos;
     @FXML private Button btnSucursales;
@@ -33,8 +43,14 @@ public class HomeController {
 
     @FXML
     public void initialize() {
-        activarBoton(btnEmpleados);
-        cargarVista("/EmpleadoView.fxml");
+        // El sistema inicia con el HomeScreen vacío (sin obligar a estar en una pantalla)
+        activarBoton(null);
+    }
+
+    @FXML
+    public void abrirPantallaNuevoContrato(ActionEvent event) {
+        activarBoton(btnNuevo);
+        cargarVista("/NuevoContratoView.fxml");
     }
 
     @FXML
@@ -117,6 +133,9 @@ public class HomeController {
      * Resalta visualmente el botón de la sección activa en el menú lateral.
      */
     private void activarBoton(Button botonActivo) {
+        if (btnNuevo != null) {
+            btnNuevo.setStyle(botonActivo == btnNuevo ? ESTILO_NUEVO_ACTIVO : ESTILO_NUEVO_INACTIVO);
+        }
         Button[] botones = {btnEmpleados, btnVehiculos, btnSucursales, btnClientes, btnContratos};
         for (Button btn : botones) {
             if (btn != null) {

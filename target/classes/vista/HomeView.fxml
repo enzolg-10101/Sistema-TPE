@@ -4,11 +4,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 
 <BorderPane prefHeight="660.0" prefWidth="1120.0"
             style="-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;"
@@ -18,7 +20,7 @@
 
     <!-- Región LEFT: Menú lateral estilizado siguiendo la estética sobria -->
     <left>
-        <VBox alignment="TOP_LEFT" prefWidth="220.0" spacing="8.0"
+        <VBox alignment="TOP_LEFT" prefWidth="225.0" spacing="8.0"
               style="-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-width: 0 1 0 0;">
             <padding>
                 <Insets bottom="24.0" left="18.0" right="18.0" top="24.0"/>
@@ -36,14 +38,40 @@
                 </VBox>
             </HBox>
 
-            <Separator style="-fx-padding: 12 0 8 0;"/>
+            <Separator style="-fx-padding: 12 0 10 0;"/>
 
-            <Label style="-fx-text-fill: #9CA3AF; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 0 0 4 8;"
+            <!-- Botón destacado al inicio de todas las opciones: + NUEVO (Genera Nuevo Contrato) -->
+            <Button fx:id="btnNuevo" maxWidth="Infinity" onAction="#abrirPantallaNuevoContrato"
+                    style="-fx-background-color: #111827; -fx-background-radius: 12; -fx-padding: 10 14 10 12; -fx-cursor: hand; -fx-alignment: CENTER_LEFT;">
+                <VBox.margin>
+                    <Insets bottom="8.0"/>
+                </VBox.margin>
+                <effect>
+                    <DropShadow color="#11182733" offsetY="3.0" radius="8.0"/>
+                </effect>
+                <graphic>
+                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                        <StackPane maxHeight="28.0" maxWidth="28.0" minHeight="28.0" minWidth="28.0"
+                                   style="-fx-background-color: #F59E0B; -fx-background-radius: 8;">
+                            <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 0 0 2 0;"
+                                   text="+"/>
+                        </StackPane>
+                        <VBox alignment="CENTER_LEFT" spacing="0.0">
+                            <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-font-weight: bold; -fx-letter-spacing: 0.5px;"
+                                   text="NUEVO"/>
+                            <Label style="-fx-text-fill: #9CA3AF; -fx-font-size: 10px;"
+                                   text="Generar contrato"/>
+                        </VBox>
+                    </HBox>
+                </graphic>
+            </Button>
+
+            <Label style="-fx-text-fill: #9CA3AF; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 0 4 8;"
                    text="MENÚ PRINCIPAL"/>
 
             <!-- Botón: Empleados -->
             <Button fx:id="btnEmpleados" maxWidth="Infinity" onAction="#abrirPantallaEmpleados"
-                    style="-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 14px; -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
+                    style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
                     text="Empleados"/>
 
             <!-- Botón: Vehículos -->
@@ -77,7 +105,7 @@
         </VBox>
     </left>
 
-    <!-- Región CENTER: Contenedor dinámico para las pantallas de cada módulo -->
+    <!-- Región CENTER: HomeScreen inicialmente vacío hasta que el usuario seleccione una opción -->
     <center>
         <StackPane fx:id="panelCentral" style="-fx-background-color: #F3F4F6;"/>
     </center>

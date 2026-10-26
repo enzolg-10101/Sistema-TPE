@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="640.0" prefWidth="900.0"
+            style="-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controlador.NuevoContratoController">
+
+    <center>
+        <StackPane>
+
+            <!-- ========================================================================= -->
+            <!-- PASO 1: SELECCIÓN DE CATEGORÍA (3 BOTONES GRANDES CON ANIMACIÓN HOVER)    -->
+            <!-- ========================================================================= -->
+            <VBox fx:id="vistaCategorias" alignment="TOP_CENTER" spacing="28.0">
+                <padding>
+                    <Insets bottom="28.0" left="32.0" right="32.0" top="26.0"/>
+                </padding>
+
+                <!-- Encabezado superior -->
+                <HBox alignment="CENTER_LEFT" spacing="14.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 20 26 20 26;">
+                    <VBox spacing="4.0">
+                        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Nuevo Contrato de Alquiler"/>
+                        <Label style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"
+                               text="Seleccione el tipo de vehículo a alquilar para explorar las unidades disponibles"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label style="-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 6 14 6 14; -fx-background-radius: 20;"
+                           text="Paso 1 de 3 · Tipo de Vehículo"/>
+                </HBox>
+
+                <!-- Contenedor central con los 3 botones grandes principales -->
+                <HBox alignment="CENTER" spacing="24.0" VBox.vgrow="ALWAYS">
+
+                    <!-- BOTÓN GRANDE 1: AUTO -->
+                    <Button fx:id="btnCategoriaAuto" contentDisplay="GRAPHIC_ONLY"
+                            onAction="#seleccionarCategoriaAuto"
+                            prefHeight="380.0" prefWidth="265.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 18; -fx-border-color: #E5E7EB; -fx-border-radius: 18; -fx-border-width: 1.5; -fx-padding: 22; -fx-cursor: hand;">
+                        <graphic>
+                            <VBox alignment="TOP_CENTER" prefHeight="336.0" prefWidth="220.0" spacing="14.0">
+                                <HBox alignment="CENTER_LEFT">
+                                    <Label style="-fx-background-color: #F3F4F6; -fx-text-fill: #4B5563; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 10 4 10; -fx-background-radius: 8;"
+                                           text="CATEGORÍA 01"/>
+                                </HBox>
+
+                                <StackPane fx:id="contenedorImgAuto" prefHeight="165.0" prefWidth="220.0"
+                                           style="-fx-background-color: #F9FAFB; -fx-background-radius: 14;">
+                                    <ImageView fx:id="imgAuto" fitHeight="135.0" fitWidth="195.0" preserveRatio="true"/>
+                                </StackPane>
+
+                                <VBox alignment="CENTER_LEFT" spacing="4.0">
+                                    <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                                           text="Auto"/>
+                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #6B7280;" wrapText="true"
+                                           text="Sedanes y compactos ideales para traslados urbanos y viajes en ruta."/>
+                                </VBox>
+
+                                <Region VBox.vgrow="ALWAYS"/>
+
+                                <HBox alignment="CENTER" maxWidth="Infinity"
+                                      style="-fx-background-color: #111827; -fx-background-radius: 10; -fx-padding: 10 14 10 14;">
+                                    <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold;"
+                                           text="Elegir Auto →"/>
+                                </HBox>
+                            </VBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- BOTÓN GRANDE 2: COMBI -->
+                    <Button fx:id="btnCategoriaCombi" contentDisplay="GRAPHIC_ONLY"
+                            onAction="#seleccionarCategoriaCombi"
+                            prefHeight="380.0" prefWidth="265.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 18; -fx-border-color: #E5E7EB; -fx-border-radius: 18; -fx-border-width: 1.5; -fx-padding: 22; -fx-cursor: hand;">
+                        <graphic>
+                            <VBox alignment="TOP_CENTER" prefHeight="336.0" prefWidth="220.0" spacing="14.0">
+                                <HBox alignment="CENTER_LEFT">
+                                    <Label style="-fx-background-color: #F3F4F6; -fx-text-fill: #4B5563; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 10 4 10; -fx-background-radius: 8;"
+                                           text="CATEGORÍA 02"/>
+                                </HBox>
+
+                                <StackPane fx:id="contenedorImgCombi" prefHeight="165.0" prefWidth="220.0"
+                                           style="-fx-background-color: #F9FAFB; -fx-background-radius: 14;">
+                                    <ImageView fx:id="imgCombi" fitHeight="135.0" fitWidth="195.0" preserveRatio="true"/>
+                                </StackPane>
+
+                                <VBox alignment="CENTER_LEFT" spacing="4.0">
+                                    <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                                           text="Combi"/>
+                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #6B7280;" wrapText="true"
+                                           text="Amplia capacidad de pasajeros para grupos, turismo y traslados ejecutivos."/>
+                                </VBox>
+
+                                <Region VBox.vgrow="ALWAYS"/>
+
+                                <HBox alignment="CENTER" maxWidth="Infinity"
+                                      style="-fx-background-color: #111827; -fx-background-radius: 10; -fx-padding: 10 14 10 14;">
+                                    <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold;"
+                                           text="Elegir Combi →"/>
+                                </HBox>
+                            </VBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- BOTÓN GRANDE 3: FURGONETA -->
+                    <Button fx:id="btnCategoriaFurgoneta" contentDisplay="GRAPHIC_ONLY"
+                            onAction="#seleccionarCategoriaFurgoneta"
+                            prefHeight="380.0" prefWidth="265.0"
+                            style="-fx-background-color: #FFFFFF; -fx-background-radius: 18; -fx-border-color: #E5E7EB; -fx-border-radius: 18; -fx-border-width: 1.5; -fx-padding: 22; -fx-cursor: hand;">
+                        <graphic>
+                            <VBox alignment="TOP_CENTER" prefHeight="336.0" prefWidth="220.0" spacing="14.0">
+                                <HBox alignment="CENTER_LEFT">
+                                    <Label style="-fx-background-color: #F3F4F6; -fx-text-fill: #4B5563; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 10 4 10; -fx-background-radius: 8;"
+                                           text="CATEGORÍA 03"/>
+                                </HBox>
+
+                                <StackPane fx:id="contenedorImgFurgoneta" prefHeight="165.0" prefWidth="220.0"
+                                           style="-fx-background-color: #F9FAFB; -fx-background-radius: 14;">
+                                    <ImageView fx:id="imgFurgoneta" fitHeight="135.0" fitWidth="195.0" preserveRatio="true"/>
+                                </StackPane>
+
+                                <VBox alignment="CENTER_LEFT" spacing="4.0">
+                                    <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                                           text="Furgoneta"/>
+                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #6B7280;" wrapText="true"
+                                           text="Vehículos utilitarios de gran volumen para transporte de carga y logística."/>
+                                </VBox>
+
+                                <Region VBox.vgrow="ALWAYS"/>
+
+                                <HBox alignment="CENTER" maxWidth="Infinity"
+                                      style="-fx-background-color: #111827; -fx-background-radius: 10; -fx-padding: 10 14 10 14;">
+                                    <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold;"
+                                           text="Elegir Furgoneta →"/>
+                                </HBox>
+                            </VBox>
+                        </graphic>
+                    </Button>
+
+                </HBox>
+            </VBox>
+
+            <!-- ========================================================================= -->
+            <!-- PASO 2: GALERÍA DE VEHÍCULOS DE LA CATEGORÍA ELEGIDA (REUTILIZA GRILLA)   -->
+            <!-- ========================================================================= -->
+            <VBox fx:id="vistaSeleccionVehiculo" managed="false" spacing="20.0" visible="false">
+                <padding>
+                    <Insets bottom="24.0" left="28.0" right="28.0" top="22.0"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="14.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 18 24 18 24;">
+                    <Button onAction="#volverACategorias" prefHeight="38.0"
+                            style="-fx-background-color: #F3F4F6; -fx-text-fill: #111827; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 14 0 14; -fx-cursor: hand;"
+                            text="← Tipos de Vehículo"/>
+
+                    <VBox spacing="2.0">
+                        <Label fx:id="lblTituloCategoria"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Seleccione un Vehículo"/>
+                        <Label fx:id="lblCantidadCategoria"
+                               style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"
+                               text="0 vehículos disponibles"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="txtBuscarVehiculo" prefWidth="260.0"
+                               promptText="Filtrar por marca, modelo o patente..."
+                               style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 14 10 14; -fx-font-size: 13px;"/>
+
+                    <Label style="-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 6 14 6 14; -fx-background-radius: 20;"
+                           text="Paso 2 de 3 · Unidad"/>
+                </HBox>
+
+                <!-- Reutiliza el ScrollPane + TilePane de la galería de vehículos -->
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
+                            style="-fx-background: #F3F4F6; -fx-background-color: transparent; -fx-border-color: transparent;">
+                    <content>
+                        <TilePane fx:id="contenedorVehiculos" hgap="20.0" prefColumns="3" vgap="20.0"
+                                  style="-fx-background-color: #F3F4F6; -fx-padding: 4;">
+                        </TilePane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <!-- ========================================================================= -->
+            <!-- PASO 3: DATOS DEL CONTRATO CON EL VEHÍCULO SELECCIONADO                   -->
+            <!-- ========================================================================= -->
+            <VBox fx:id="vistaFormularioContrato" managed="false" spacing="18.0" visible="false">
+                <padding>
+                    <Insets bottom="24.0" left="28.0" right="28.0" top="22.0"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="14.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 16 24 16 24;">
+                    <Button onAction="#volverAGaleriaCategoria" prefHeight="36.0"
+                            style="-fx-background-color: #F3F4F6; -fx-text-fill: #111827; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 14 0 14; -fx-cursor: hand;"
+                            text="← Cambiar Vehículo"/>
+                    <VBox spacing="2.0">
+                        <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Formalización del Nuevo Contrato"/>
+                        <Label fx:id="lblResumenVehiculoElegido"
+                               style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"
+                               text="Complete los datos del contrato, cliente y estado de salida"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label style="-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 6 14 6 14; -fx-background-radius: 20;"
+                           text="Paso 3 de 3 · Contrato"/>
+                </HBox>
+
+                <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+
+                    <!-- Tarjeta lateral izquierda: Resumen visual del vehículo elegido -->
+                    <VBox alignment="TOP_LEFT" prefWidth="255.0" spacing="12.0"
+                          style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 20;">
+                        <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #9CA3AF;"
+                               text="VEHÍCULO ASIGNADO"/>
+
+                        <StackPane prefHeight="135.0"
+                                   style="-fx-background-color: #F9FAFB; -fx-background-radius: 12; -fx-padding: 8;">
+                            <ImageView fx:id="imgVehiculoSeleccionado" fitHeight="115.0" fitWidth="200.0" preserveRatio="true"/>
+                        </StackPane>
+
+                        <Label fx:id="lblCardMarcaModelo"
+                               style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Marca Modelo"/>
+                        <Label fx:id="lblCardPatente"
+                               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151; -fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 4 10 4 10;"
+                               text="Patente: -"/>
+                        <Label fx:id="lblCardCategoria"
+                               style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"
+                               text="Categoría: -"/>
+                        <Label fx:id="lblCardTarifa"
+                               style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #D97706;"
+                               text="Tarifa: $0.00 / día"/>
+                    </VBox>
+
+                    <!-- Formulario derecho: Datos del Contrato, Cliente y CheckInOut -->
+                    <VBox spacing="14.0" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 22;">
+
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="1. Datos del Contrato y Fechas"/>
+                        <GridPane hgap="14.0" vgap="10.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                            </columnConstraints>
+
+                            <VBox spacing="4.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Nro. Contrato"/>
+                                <TextField fx:id="txtNroContrato" promptText="Ej. 101" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Entrega"/>
+                                <DatePicker fx:id="dpFechaEntrega" editable="false" maxWidth="Infinity" promptText="Calendario" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Devolución"/>
+                                <DatePicker fx:id="dpFechaDevolucion" editable="false" maxWidth="Infinity" promptText="Calendario" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Importe Alquiler"/>
+                                <TextField fx:id="txtImpAlq" promptText="Ej. 85000" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                        </GridPane>
+
+                        <Separator/>
+
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="2. Datos del Cliente (Firma)"/>
+                        <GridPane hgap="14.0" vgap="10.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                            </columnConstraints>
+
+                            <VBox spacing="4.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="ID Cliente"/>
+                                <TextField fx:id="txtIdCliente" promptText="Ej. 1" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="DNI"/>
+                                <TextField fx:id="txtDniCliente" promptText="Ej. 38123456" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Nombre"/>
+                                <TextField fx:id="txtNomCliente" promptText="Nombre" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Apellido"/>
+                                <TextField fx:id="txtAplCliente" promptText="Apellido" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                        </GridPane>
+
+                        <Separator/>
+
+                        <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="3. Check-Out Inicial (Corresponde)"/>
+                        <GridPane hgap="14.0" vgap="10.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                            </columnConstraints>
+
+                            <VBox spacing="4.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="ID CheckInOut"/>
+                                <TextField fx:id="txtIdCheck" promptText="Ej. 1" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Km Salida"/>
+                                <TextField fx:id="txtKmSalida" promptText="Ej. 15000" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Combustible (%)"/>
+                                <TextField fx:id="txtCombSalida" promptText="100" text="100" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                            <VBox spacing="4.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Daños Existentes"/>
+                                <TextField fx:id="txtDaniosSalida" promptText="Ninguno" text="Ninguno" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                            </VBox>
+                        </GridPane>
+
+                        <Region VBox.vgrow="ALWAYS"/>
+
+                        <Button maxWidth="Infinity" onAction="#confirmarNuevoContrato" prefHeight="42.0"
+                                style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"
+                                text="Confirmar y Generar Contrato"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+        </StackPane>
+    </center>
+</BorderPane>
