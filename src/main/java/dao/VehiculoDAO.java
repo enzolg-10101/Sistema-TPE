@@ -14,70 +14,39 @@ import util.DatabaseConnection;
 public class VehiculoDAO {
 
     public void insertar(Vehiculo vehiculo) {
-        if (vehiculo.getId() != null) {
-            String sql = "INSERT INTO Vehiculos (V_id, V_pat, V_marca, V_mod, V_aFabr, V_fAdq, V_kmj, V_est, "
-                       + "V_preAdq, V_fBaja, V_tiComb, T_carga, T_pax, T_tarBase, T_cat, cod_Pertenece) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, vehiculo.getId());
-                stmt.setString(2, vehiculo.getPat());
-                stmt.setString(3, vehiculo.getMarca());
-                stmt.setString(4, vehiculo.getMod());
-                stmt.setInt(5, vehiculo.getaFabr());
-                stmt.setString(6, vehiculo.getfAdq());
-                stmt.setInt(7, vehiculo.getKmj());
-                stmt.setString(8, vehiculo.getEst());
-                stmt.setDouble(9, vehiculo.getPreAdq());
-                if (vehiculo.getfBaja() != null) {
-                    stmt.setString(10, vehiculo.getfBaja());
-                } else {
-                    stmt.setNull(10, Types.VARCHAR);
-                }
-                stmt.setString(11, vehiculo.getTiComb());
-                stmt.setDouble(12, vehiculo.getCarga());
-                stmt.setInt(13, vehiculo.getPax());
-                stmt.setDouble(14, vehiculo.getTarBase());
-                stmt.setString(15, vehiculo.getCat());
-                stmt.setInt(16, vehiculo.getCodPertenece());
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException("Error al insertar el vehículo: " + e.getMessage(), e);
+        String sql = "INSERT INTO Vehiculos (V_pat, V_marca, V_mod, V_aFabr, V_fAdq, V_kmj, V_est, "
+                   + "V_preAdq, V_fBaja, V_tiComb, T_carga, T_pax, T_tarBase, T_cat, cod_Pertenece) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, vehiculo.getPat());
+            stmt.setString(2, vehiculo.getMarca());
+            stmt.setString(3, vehiculo.getMod());
+            stmt.setInt(4, vehiculo.getaFabr());
+            stmt.setString(5, vehiculo.getfAdq());
+            stmt.setInt(6, vehiculo.getKmj());
+            stmt.setString(7, vehiculo.getEst());
+            stmt.setDouble(8, vehiculo.getPreAdq());
+            if (vehiculo.getfBaja() != null) {
+                stmt.setString(9, vehiculo.getfBaja());
+            } else {
+                stmt.setNull(9, Types.VARCHAR);
             }
-        } else {
-            String sql = "INSERT INTO Vehiculos (V_pat, V_marca, V_mod, V_aFabr, V_fAdq, V_kmj, V_est, "
-                       + "V_preAdq, V_fBaja, V_tiComb, T_carga, T_pax, T_tarBase, T_cat, cod_Pertenece) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, vehiculo.getPat());
-                stmt.setString(2, vehiculo.getMarca());
-                stmt.setString(3, vehiculo.getMod());
-                stmt.setInt(4, vehiculo.getaFabr());
-                stmt.setString(5, vehiculo.getfAdq());
-                stmt.setInt(6, vehiculo.getKmj());
-                stmt.setString(7, vehiculo.getEst());
-                stmt.setDouble(8, vehiculo.getPreAdq());
-                if (vehiculo.getfBaja() != null) {
-                    stmt.setString(9, vehiculo.getfBaja());
-                } else {
-                    stmt.setNull(9, Types.VARCHAR);
+            stmt.setString(10, vehiculo.getTiComb());
+            stmt.setDouble(11, vehiculo.getCarga());
+            stmt.setInt(12, vehiculo.getPax());
+            stmt.setDouble(13, vehiculo.getTarBase());
+            stmt.setString(14, vehiculo.getCat());
+            stmt.setInt(15, vehiculo.getCodPertenece());
+            stmt.executeUpdate();
+
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    vehiculo.setId(keys.getInt(1));
                 }
-                stmt.setString(10, vehiculo.getTiComb());
-                stmt.setDouble(11, vehiculo.getCarga());
-                stmt.setInt(12, vehiculo.getPax());
-                stmt.setDouble(13, vehiculo.getTarBase());
-                stmt.setString(14, vehiculo.getCat());
-                stmt.setInt(15, vehiculo.getCodPertenece());
-                stmt.executeUpdate();
-                try (ResultSet keys = stmt.getGeneratedKeys()) {
-                    if (keys.next()) {
-                        vehiculo.setId(keys.getInt(1));
-                    }
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException("Error al insertar el vehículo: " + e.getMessage(), e);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al insertar el vehículo: " + e.getMessage(), e);
         }
     }
 

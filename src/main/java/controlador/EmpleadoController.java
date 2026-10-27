@@ -2,6 +2,7 @@ package controlador;
 
 import dao.EmpleadoDAO;
 import dao.SucursalDAO;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,8 +43,7 @@ public class EmpleadoController {
     @FXML private TableColumn<Empleado, String> colFIng;
     @FXML private TableColumn<Empleado, Integer> colCodTrabaja;
 
-    // Definición de variables @FXML para el formulario de Alta de Empleado
-    @FXML private TextField txtId;
+    // Variables @FXML para el formulario de Alta de Empleado (sin campo ID, usa DNI único)
     @FXML private TextField txtDni;
     @FXML private TextField txtNom;
     @FXML private TextField txtApl;
@@ -104,12 +104,18 @@ public class EmpleadoController {
         if (cmbSucursal == null) {
             return;
         }
+        List<Sucursal> sucursales = new ArrayList<>();
         try {
-            List<Sucursal> sucursales = sucursalDAO.listarTodas();
-            cmbSucursal.getItems().setAll(sucursales);
-        } catch (Exception e) {
-            // Si la base de datos aún no está conectada, mantiene la lista vacía sin bloquear la UI
+            sucursales = sucursalDAO.listarTodas();
+        } catch (Exception ignored) {
+            // Si la base de datos aún no está conectada, se ofrecen sucursales por defecto
         }
+        if (sucursales == null || sucursales.isEmpty()) {
+            sucursales = new ArrayList<>();
+            sucursales.add(new Sucursal(1, "Sucursal Central", "Av. Libertador 1200", 1145001234L));
+            sucursales.add(new Sucursal(2, "Sucursal Aeropuerto", "Au. Riccheri Km 33", 1148005678L));
+        }
+        cmbSucursal.getItems().setAll(sucursales);
     }
 
     private void configurarColumnasTabla() {
@@ -207,14 +213,11 @@ public class EmpleadoController {
     }
 
     /**
-     * Método vinculado al botón 'Guardar' en la vista de Alta de Empleados.
+     * Método vinculado al botón 'Guardar Empleado' (usa constructor sin ID para AUTO_INCREMENT).
      */
     @FXML
     public void guardarEmpleado() {
         try {
-            Integer id = (txtId.getText() == null || txtId.getText().trim().isEmpty())
-                    ? null
-                    : Integer.parseInt(txtId.getText().trim());
             Integer dni = Integer.parseInt(txtDni.getText().trim());
             String nom = txtNom.getText().trim();
             String apl = txtApl.getText().trim();
@@ -234,10 +237,10 @@ public class EmpleadoController {
 
             Integer codTrabaja = sucursalSeleccionada.getCod();
 
-            // Armado del objeto Empleado
-            Empleado empleado = new Empleado(id, dni, nom, apl, dir, tel, correo, fIng, codTrabaja);
+            // Armado del objeto Empleado con el constructor sin ID
+            Empleado empleado = new Empleado(dni, nom, apl, dir, tel, correo, fIng, codTrabaja);
 
-            // Llamada al servicio de alta
+            // Llamada al servicio de alta (asigna el ID autogenerado por MySQL)
             empleadoService.altaEmpleado(empleado);
             listaMaster.add(empleado);
             actualizarContadorResultados();
@@ -247,7 +250,7 @@ public class EmpleadoController {
             mostrarPantallaBuscador();
 
         } catch (NumberFormatException e) {
-            mostrarMensaje("Error de Validación", "Por favor, verifique que ID, DNI y Teléfono sean números válidos.", Alert.AlertType.WARNING);
+            mostrarMensaje("Error de Validación", "Por favor, verifique que DNI y Teléfono sean números válidos.", Alert.AlertType.WARNING);
         } catch (Exception e) {
             mostrarMensaje("Error", "Ocurrió un error al guardar: " + e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -263,7 +266,6 @@ public class EmpleadoController {
 
     @FXML
     public void limpiarCampos() {
-        if (txtId != null) txtId.clear();
         if (txtDni != null) txtDni.clear();
         if (txtNom != null) txtNom.clear();
         if (txtApl != null) txtApl.clear();

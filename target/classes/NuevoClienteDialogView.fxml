@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefWidth="520.0" spacing="12.0"
+      style="-fx-background-color: #FFFFFF; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controlador.NuevoClienteDialogController">
+
+    <padding>
+        <Insets bottom="22.0" left="26.0" right="26.0" top="20.0"/>
+    </padding>
+
+    <!-- Encabezado de la ventana flotante auxiliar -->
+    <HBox alignment="CENTER_LEFT" spacing="12.0">
+        <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                   text="Alta de Nuevo Cliente"/>
+            <Label style="-fx-font-size: 12px; -fx-text-fill: #6B7280;"
+                   text="Complete los datos del cliente (el ID se genera automáticamente)"/>
+        </VBox>
+        <Label minWidth="-Infinity"
+               style="-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 12 4 12; -fx-background-radius: 12;"
+               text="Nuevo Registro"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Campos del Nuevo Cliente (sin ID manual, C_dni es UNIQUE) -->
+    <GridPane hgap="14.0" vgap="10.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+        </columnConstraints>
+
+        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="DNI (C_dni · Único)"/>
+            <TextField fx:id="txtDni" promptText="Ej. 38450123"
+                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Estado"/>
+            <ComboBox fx:id="cmbEstado" maxWidth="Infinity"
+                      style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Nombre (C_nom)"/>
+            <TextField fx:id="txtNom" promptText="Ingrese el nombre"
+                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Apellido (C_apl)"/>
+            <TextField fx:id="txtApl" promptText="Ingrese el apellido"
+                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Teléfono (C_tel)"/>
+            <TextField fx:id="txtTel" promptText="Ej. 1145678901"
+                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Fecha de Alta (C_fAlta)"/>
+            <DatePicker fx:id="dpFechaAlta" editable="false" maxWidth="Infinity"
+                        promptText="Seleccione en calendario"
+                        style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Correo Electrónico (C_correo)"/>
+            <TextField fx:id="txtCorreo" promptText="cliente@correo.com"
+                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+        </VBox>
+
+        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                   text="Dirección (C_dir)"/>
+            <TextField fx:id="txtDir" promptText="Calle y número (Ej. Av. Libertador 1200)"
+                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+        </VBox>
+    </GridPane>
+
+    <Separator/>
+
+    <!-- Botones de acción de la ventana flotante -->
+    <HBox alignment="CENTER_RIGHT" minHeight="44.0" spacing="12.0">
+        <Button minHeight="40.0" onAction="#cancelar" prefHeight="40.0"
+                style="-fx-background-color: #F3F4F6; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 18 0 18; -fx-cursor: hand;"
+                text="Cancelar"/>
+
+        <Button minHeight="40.0" onAction="#guardarNuevoCliente" prefHeight="40.0"
+                style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 22 0 22; -fx-cursor: hand;"
+                text="Guardar Cliente"/>
+    </HBox>
+
+</VBox>

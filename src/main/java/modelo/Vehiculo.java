@@ -26,6 +26,32 @@ public class Vehiculo {
         this.id = id;
     }
 
+    /**
+     * Constructor sin ID para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Vehiculo(String pat, String marca, String mod, Integer aFabr, String fAdq,
+                    Integer kmj, String est, Double preAdq, String fBaja, String tiComb,
+                    Double carga, Integer pax, Double tarBase, String cat, Integer codPertenece) {
+        this.pat = pat;
+        this.marca = marca;
+        this.mod = mod;
+        this.aFabr = aFabr;
+        this.fAdq = fAdq;
+        this.kmj = kmj;
+        this.est = est;
+        this.preAdq = preAdq;
+        this.fBaja = fBaja;
+        this.tiComb = tiComb;
+        this.carga = carga;
+        this.pax = pax;
+        this.tarBase = tarBase;
+        this.cat = cat;
+        this.codPertenece = codPertenece;
+    }
+
+    /**
+     * Constructor completo para consultas de lectura desde la base de datos.
+     */
     public Vehiculo(Integer id, String pat, String marca, String mod, Integer aFabr, String fAdq, 
                     Integer kmj, String est, Double preAdq, String fBaja, String tiComb, 
                     Double carga, Integer pax, Double tarBase, String cat, Integer codPertenece) {

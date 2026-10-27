@@ -7,6 +7,8 @@ import dao.ContratoDAO;
 import dao.CorrespondeDAO;
 import dao.FirmaDAO;
 import dao.VehiculoDAO;
+import java.sql.Connection;
+import java.sql.SQLException;
 import modelo.Asigna;
 import modelo.CheckInOut;
 import modelo.Cliente;
@@ -14,6 +16,7 @@ import modelo.Contrato;
 import modelo.Corresponde;
 import modelo.Firma;
 import modelo.Vehiculo;
+import util.DatabaseConnection;
 
 public class ContratoService {
 
@@ -45,125 +48,127 @@ public class ContratoService {
     }
 
     /**
-     * Método principal de alta de Contrato.
+     * Transacción estricta en JDBC para registrar un contrato que incluye dar de alta a un cliente nuevo.
+     * Si falla la inserción del contrato, hace rollback de la conexión para cancelar la creación del cliente.
+     */
+    public void registrarAlquilerNuevoCliente(Cliente cliente, Contrato contrato) {
+        Connection conexion = null;
+        try {
+            conexion = DatabaseConnection.getConnection();
+            conexion.setAutoCommit(false);
+
+            // 1. Insertar el nuevo cliente usando la conexión transaccional y recuperar su ID autogenerado
+            clienteDAO.insertar(cliente, conexion);
+            contrato.setIdCliente(cliente.getId());
+
+            // 2. Insertar el contrato usando la misma conexión transaccional
+            contratoDAO.insertar(contrato, conexion);
+
+            // 3. Si ambas operaciones fueron exitosas, confirmar la transacción
+            conexion.commit();
+
+        } catch (Exception e) {
+            if (conexion != null) {
+                try {
+                    conexion.rollback();
+                } catch (SQLException exRollback) {
+                    e.addSuppressed(exRollback);
+                }
+            }
+            throw new RuntimeException("Error en la transacción de alquiler con nuevo cliente (se aplicó rollback): " + e.getMessage(), e);
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.setAutoCommit(true);
+                } catch (SQLException ignored) {
+                }
+                try {
+                    conexion.close();
+                } catch (SQLException ignored) {
+                }
+            }
+        }
+    }
+
+    /**
+     * Método principal de alta de Contrato (con soporte para claves primarias AUTO_INCREMENT).
      */
     public void altaContrato(Contrato contrato, Cliente cliente, Vehiculo vehiculo, CheckInOut checkInOut) throws Exception {
         // Inicio-ts
         try {
-            // Ingresar los valores para los atributos de Contratos (ya vienen en el objeto 'contrato')
-            
-            // Grabar nupla en Contratos
+            // Resolver primero Cliente (por ID o DNI único) y Vehículo (por Patente única)
+            // para asegurar que id_Firma e id_Asigna tengan su ID autogenerado antes de insertar el Contrato
+            Cliente c = seleccionarClienteFirma(cliente);
+            Vehiculo v = seleccionarVehiculoAsigna(vehiculo);
+
+            contrato.setIdFirma(c.getId());
+            contrato.setIdAsigna(v.getId());
+
+            // Grabar nupla en Contratos (asigna Co_nro autogenerado via getGeneratedKeys)
             contratoDAO.insertar(contrato);
-            
-            // Por cada relación saliente total:
+
             // Generar la nupla correspondiente en Firma1
-            generarNuplaFirma(contrato, cliente);
-            
+            Firma firma = new Firma(contrato.getId(), c.getId());
+            firmaDAO.insertar(firma);
+
             // Generar la nupla correspondiente en Asigna2
-            generarNuplaAsigna(contrato, vehiculo);
-            
+            Asigna asigna = new Asigna(contrato.getId(), v.getId());
+            asignaDAO.insertar(asigna);
+
             // Por cada relación entrante sobreyectiva:
             // Generar la nupla correspondiente en Corresponde3
+            checkInOut.setNroCorresponde(contrato.getNro());
             generarNuplaCorresponde(contrato, checkInOut);
-            
+
         } catch (Exception e) {
-            // Rollback en caso de error (Manejo de transacción estándar)
             throw new Exception("Error en la transacción de Alta de Contrato: " + e.getMessage(), e);
         }
         // Fin-ts
     }
 
-    // --- 1 Generar la nupla correspondiente en Firma ---
-    private void generarNuplaFirma(Contrato contrato, Cliente cliente) {
-        // Inicio-ts
-        // 1.1 Seleccionar el elemento c en la entidad Clientes según Firma saliente
-        Cliente c = seleccionarClienteFirma(cliente);
-        
-        // Grabar la nupla generada en Firma
-        Firma firma = new Firma(contrato.getId(), c.getId()); // Asumiendo que el modelo Firma une los IDs
-        firmaDAO.insertar(firma);
-        // Fin-ts
-    }
-
     // --- 1.1 Seleccionar el elemento c en la entidad Clientes ---
     private Cliente seleccionarClienteFirma(Cliente cliente) {
-        // Inicio-ts
-        // Buscar (c) en Clientes
-        Cliente c = clienteDAO.buscarPorId(cliente.getId());
-        
+        Integer criterio = cliente.getId() != null ? cliente.getId() : cliente.getDni();
+        Cliente c = (criterio != null) ? clienteDAO.buscarPorId(criterio) : null;
+
         if (c == null) {
-            // Si (c) no existe -> Alta en la entidad Clientes (proceso recursivo/delegado)
             c = clienteService.altaCliente(cliente);
         }
-        // Sino -> Ok
-        
-        // Retornar (c)
-        // Fin-ts
         return c;
-    }
-
-    // --- 2 Generar la nupla correspondiente en Asigna ---
-    private void generarNuplaAsigna(Contrato contrato, Vehiculo vehiculo) {
-        // Inicio-ts
-        // 2.1 Seleccionar el elemento (v) en la entidad Vehículos según Asigna saliente
-        Vehiculo v = seleccionarVehiculoAsigna(vehiculo);
-        
-        // Grabar la nupla generada en Asigna
-        Asigna asigna = new Asigna(contrato.getId(), v.getId());
-        asignaDAO.insertar(asigna);
-        // Fin-ts
     }
 
     // --- 2.1 Seleccionar el elemento (v) en la entidad Vehículos ---
     private Vehiculo seleccionarVehiculoAsigna(Vehiculo vehiculo) {
-        // Inicio-ts
-        // Buscar (v) en Vehículos
         Vehiculo v = vehiculoDAO.buscarPorId(vehiculo.getPat());
-        
+
         if (v == null) {
-            // Si (v) no existe -> Error
             throw new RuntimeException("Error: El Vehículo especificado no existe.");
         }
-        // Sino -> Ok
-        
-        // Retornar (v)
-        // Fin-ts
         return v;
     }
 
     // --- 3 Generar la nupla correspondiente en Corresponde ---
     private void generarNuplaCorresponde(Contrato contrato, CheckInOut checkInOut) {
-        // Inicio-ts
-        // 3.1 Seleccionar el elemento ch en la entidad Check_inout según Corresponde entrante
         CheckInOut ch = seleccionarCheckInOutCorresponde(checkInOut);
-        
-        // Grabar la nupla generada en Corresponde
+
         Corresponde corresponde = new Corresponde(contrato.getId(), ch.getId());
         correspondeDAO.insertar(corresponde);
-        // Fin-ts
     }
 
     // --- 3.1 Seleccionar el elemento (ch) en la entidad Check_inout ---
     private CheckInOut seleccionarCheckInOutCorresponde(CheckInOut checkInOut) {
-        // Inicio-ts
-        // Buscar (ch) en Check_inout
-        CheckInOut ch = checkInOutDAO.buscarPorId(checkInOut.getId());
-        
+        CheckInOut ch = (checkInOut.getId() != null)
+                ? checkInOutDAO.buscarPorId(checkInOut.getId())
+                : null;
+
         if (ch == null) {
-            // Si (ch) no existe -> Alta en la entidad Check_inout
             ch = checkInOutService.altaCheckInOut(checkInOut);
         } else {
-            // Sino -> Verificar que (ch) no está vinculado a ningún elemento de Contratos
             boolean estaVinculado = correspondeDAO.existeVinculo(ch.getId());
             if (estaVinculado) {
-                // Si está -> Error
                 throw new RuntimeException("Error: El Check_inout ya está vinculado a un contrato existente.");
             }
-            // Sino -> Ok
         }
-        
-        // Retornar (ch)
-        // Fin-ts
         return ch;
     }
 }

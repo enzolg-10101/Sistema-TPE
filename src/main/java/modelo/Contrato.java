@@ -20,6 +20,25 @@ public class Contrato {
         this.nro = nro;
     }
 
+    /**
+     * Constructor sin ID (nro) para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Contrato(String feHrEnt, String feHrDev, String condUso, String est,
+                    Double impFianza, Double impAlq, Double cargos, Integer idAsigna, Integer idFirma) {
+        this.feHrEnt = feHrEnt;
+        this.feHrDev = feHrDev;
+        this.condUso = condUso;
+        this.est = est;
+        this.impFianza = impFianza;
+        this.impAlq = impAlq;
+        this.cargos = cargos;
+        this.idAsigna = idAsigna;
+        this.idFirma = idFirma;
+    }
+
+    /**
+     * Constructor completo para consultas de lectura desde la base de datos.
+     */
     public Contrato(Integer nro, String feHrEnt, String feHrDev, String condUso, String est, 
                     Double impFianza, Double impAlq, Double cargos, Integer idAsigna, Integer idFirma) {
         this.nro = nro;
@@ -121,5 +140,14 @@ public class Contrato {
 
     public void setIdFirma(Integer idFirma) {
         this.idFirma = idFirma;
+    }
+
+    // Alias semántico para el ID del cliente firmante (id_Firma)
+    public Integer getIdCliente() {
+        return idFirma;
+    }
+
+    public void setIdCliente(Integer idCliente) {
+        this.idFirma = idCliente;
     }
 }

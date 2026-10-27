@@ -65,7 +65,7 @@
                     </HBox>
 
                     <TextField fx:id="txtBuscar"
-                               promptText="Escriba DNI, nombre, apellido, legajo, correo o código de sucursal para buscar dinámicamente..."
+                               promptText="Escriba DNI, nombre, apellido, correo o código de sucursal para buscar dinámicamente..."
                                style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 12 14 12 14; -fx-font-size: 13px;"/>
                 </VBox>
 
@@ -100,7 +100,7 @@
             </VBox>
 
             <!-- ========================================================================= -->
-            <!-- VISTA 2: ALTA DE EMPLEADOS (Se abre al pulsar '+ Alta de Empleado')        -->
+            <!-- VISTA 2: ALTA DE EMPLEADOS (Sin campo ID, usa DNI único + AUTO_INCREMENT)  -->
             <!-- ========================================================================= -->
             <VBox fx:id="vistaAlta" managed="false" spacing="20.0" visible="false">
                 <padding>
@@ -122,7 +122,7 @@
                     </HBox>
                 </HBox>
 
-                <!-- Tarjeta Superior: Título a la izquierda + Grilla 2x2 a la derecha -->
+                <!-- Tarjeta Superior: Título a la izquierda + Grilla de DNI, Fecha y Sucursal a la derecha -->
                 <HBox alignment="CENTER_LEFT" spacing="32.0"
                       style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 24 28 24 28;">
 
@@ -130,11 +130,11 @@
                         <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;"
                                text="Alta de Empleados" wrapText="true"/>
                         <Label style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"
-                               text="Registre los datos identificatorios, de contacto y la sucursal asignada al empleado."
+                               text="Registre el DNI único, los datos de contacto y la sucursal asignada al empleado."
                                wrapText="true"/>
                         <Separator style="-fx-padding: 8 0 4 0;"/>
                         <Label style="-fx-font-size: 12px; -fx-text-fill: #9CA3AF;"
-                               text="Todos los atributos son obligatorios según el modelo relacional."/>
+                               text="El ID (E_id) se genera automáticamente en la base de datos."/>
                     </VBox>
 
                     <GridPane hgap="18.0" vgap="14.0" HBox.hgrow="ALWAYS">
@@ -143,16 +143,9 @@
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
                         </columnConstraints>
 
-                        <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
                             <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
-                                   text="ID / Legajo (E_id)"/>
-                            <TextField fx:id="txtId" promptText="Ej. 101"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
-                        </VBox>
-
-                        <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
-                                   text="DNI (E_dni)"/>
+                                   text="DNI (E_dni · Único)"/>
                             <TextField fx:id="txtDni" promptText="Ej. 40123456"
                                        style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 12 10 12; -fx-font-size: 13px;"/>
                         </VBox>

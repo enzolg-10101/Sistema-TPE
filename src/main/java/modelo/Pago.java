@@ -11,6 +11,23 @@ public class Pago {
     public Pago() {
     }
 
+    /**
+     * Constructores sin ID para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Pago(String fec, Double imp, MedioPago medio, Integer nroRegistra) {
+        this.fec = fec;
+        this.imp = imp;
+        this.medio = medio;
+        this.nroRegistra = nroRegistra;
+    }
+
+    public Pago(String fec, Double imp, String medio, Integer nroRegistra) {
+        this(fec, imp, MedioPago.fromString(medio), nroRegistra);
+    }
+
+    /**
+     * Constructores completos para consultas de lectura desde la base de datos.
+     */
     public Pago(Integer id, String fec, Double imp, MedioPago medio, Integer nroRegistra) {
         this.id = id;
         this.fec = fec;

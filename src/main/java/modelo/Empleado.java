@@ -9,12 +9,29 @@ public class Empleado {
     private String dir;
     private Long tel;
     private String correo;
-    private String fIng; // Mapeado a String según el dominio AlfaNum*
+    private String fIng;
     private Integer codTrabaja; // FK a Sucursal(cod)
 
     public Empleado() {
     }
 
+    /**
+     * Constructor sin ID para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Empleado(Integer dni, String nom, String apl, String dir, Long tel, String correo, String fIng, Integer codTrabaja) {
+        this.dni = dni;
+        this.nom = nom;
+        this.apl = apl;
+        this.dir = dir;
+        this.tel = tel;
+        this.correo = correo;
+        this.fIng = fIng;
+        this.codTrabaja = codTrabaja;
+    }
+
+    /**
+     * Constructor completo para consultas de lectura desde la base de datos.
+     */
     public Empleado(Integer id, Integer dni, String nom, String apl, String dir, Long tel, String correo, String fIng, Integer codTrabaja) {
         this.id = id;
         this.dni = dni;

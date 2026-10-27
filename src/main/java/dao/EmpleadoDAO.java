@@ -13,46 +13,27 @@ import util.DatabaseConnection;
 public class EmpleadoDAO {
 
     public void insertar(Empleado empleado) {
-        if (empleado.getId() != null) {
-            String sql = "INSERT INTO Empleados (E_id, E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setInt(1, empleado.getId());
-                stmt.setInt(2, empleado.getDni());
-                stmt.setString(3, empleado.getNom());
-                stmt.setString(4, empleado.getApl());
-                stmt.setString(5, empleado.getDir());
-                stmt.setLong(6, empleado.getTel());
-                stmt.setString(7, empleado.getCorreo());
-                stmt.setString(8, empleado.getfIng());
-                stmt.setInt(9, empleado.getCodTrabaja());
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException("Error al insertar el empleado: " + e.getMessage(), e);
-            }
-        } else {
-            String sql = "INSERT INTO Empleados (E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setInt(1, empleado.getDni());
-                stmt.setString(2, empleado.getNom());
-                stmt.setString(3, empleado.getApl());
-                stmt.setString(4, empleado.getDir());
-                stmt.setLong(5, empleado.getTel());
-                stmt.setString(6, empleado.getCorreo());
-                stmt.setString(7, empleado.getfIng());
-                stmt.setInt(8, empleado.getCodTrabaja());
-                stmt.executeUpdate();
-                try (ResultSet keys = stmt.getGeneratedKeys()) {
-                    if (keys.next()) {
-                        empleado.setId(keys.getInt(1));
-                    }
+        String sql = "INSERT INTO Empleados (E_dni, E_nom, E_apl, E_dir, E_tel, E_correo, E_fIng, cod_Trabaja) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, empleado.getDni());
+            stmt.setString(2, empleado.getNom());
+            stmt.setString(3, empleado.getApl());
+            stmt.setString(4, empleado.getDir());
+            stmt.setLong(5, empleado.getTel());
+            stmt.setString(6, empleado.getCorreo());
+            stmt.setString(7, empleado.getfIng());
+            stmt.setInt(8, empleado.getCodTrabaja());
+            stmt.executeUpdate();
+
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    empleado.setId(keys.getInt(1));
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException("Error al insertar el empleado: " + e.getMessage(), e);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al insertar el empleado: " + e.getMessage(), e);
         }
     }
 

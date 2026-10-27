@@ -7,14 +7,37 @@ public class Sucursal {
     private String dir;
     private Long tel;
 
+    // Atributo transitorio solo para lectura/visualización en la interfaz
+    private transient int cantidadVehiculos;
+
     public Sucursal() {
     }
 
+    /**
+     * Constructor sin ID (cod) para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Sucursal(String nom, String dir, Long tel) {
+        this.nom = nom;
+        this.dir = dir;
+        this.tel = tel;
+    }
+
+    /**
+     * Constructor completo para consultas de lectura desde la base de datos.
+     */
     public Sucursal(Integer cod, String nom, String dir, Long tel) {
         this.cod = cod;
         this.nom = nom;
         this.dir = dir;
         this.tel = tel;
+    }
+
+    public Sucursal(Integer cod, String nom, String dir, Long tel, int cantidadVehiculos) {
+        this.cod = cod;
+        this.nom = nom;
+        this.dir = dir;
+        this.tel = tel;
+        this.cantidadVehiculos = cantidadVehiculos;
     }
 
     public Integer getCod() {
@@ -83,6 +106,14 @@ public class Sucursal {
 
     public void setS_tel(Long s_tel) {
         this.tel = s_tel;
+    }
+
+    public int getCantidadVehiculos() {
+        return cantidadVehiculos;
+    }
+
+    public void setCantidadVehiculos(int cantidadVehiculos) {
+        this.cantidadVehiculos = cantidadVehiculos;
     }
 
     @Override

@@ -14,6 +14,28 @@ public class Mantenimiento {
     public Mantenimiento() {
     }
 
+    /**
+     * Constructores sin ID para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Mantenimiento(String fec, TipoMantenimiento tipo, Integer kmj,
+                         Double costo, String obs, Integer idRealiza, Integer idRealizado) {
+        this.fec = fec;
+        this.tipo = tipo;
+        this.kmj = kmj;
+        this.costo = costo;
+        this.obs = obs;
+        this.idRealiza = idRealiza;
+        this.idRealizado = idRealizado;
+    }
+
+    public Mantenimiento(String fec, String tipo, Integer kmj,
+                         Double costo, String obs, Integer idRealiza, Integer idRealizado) {
+        this(fec, TipoMantenimiento.fromString(tipo), kmj, costo, obs, idRealiza, idRealizado);
+    }
+
+    /**
+     * Constructores completos para consultas de lectura desde la base de datos.
+     */
     public Mantenimiento(Integer id, String fec, TipoMantenimiento tipo, Integer kmj,
                          Double costo, String obs, Integer idRealiza, Integer idRealizado) {
         this.id = id;

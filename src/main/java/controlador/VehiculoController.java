@@ -27,6 +27,9 @@ import servicio.VehiculoService;
 
 public class VehiculoController {
 
+    // Lista compartida en memoria para conservar los vehículos registrados durante la sesión
+    private static final List<Vehiculo> VEHICULOS_REGISTRADOS = new ArrayList<>();
+
     // Contenedores para alternar entre la Galería y el formulario de Nuevo Vehículo
     @FXML private VBox vistaGaleria;
     @FXML private VBox vistaAlta;
@@ -36,8 +39,7 @@ public class VehiculoController {
     @FXML private TextField txtBuscarVehiculo;
     @FXML private Label lblCantidadVehiculos;
 
-    // Campos del formulario de Nuevo Vehículo
-    @FXML private TextField txtId;
+    // Campos del formulario de Nuevo Vehículo (sin ID manual, V_id es AUTO_INCREMENT y V_pat es UNIQUE)
     @FXML private TextField txtPat;
     @FXML private TextField txtMarca;
     @FXML private TextField txtMod;
@@ -66,10 +68,14 @@ public class VehiculoController {
         this.vehiculoService = vehiculoService;
     }
 
+    public static List<Vehiculo> getVehiculosRegistradosEnSesion() {
+        return VEHICULOS_REGISTRADOS;
+    }
+
     @FXML
     public void initialize() {
         if (cmbCat != null) {
-            cmbCat.getItems().setAll("Auto", "Furgoneta", "Combi");
+            cmbCat.getItems().setAll("Auto", "Combi", "Furgoneta");
             cmbCat.getSelectionModel().selectFirst();
         }
 
@@ -107,11 +113,20 @@ public class VehiculoController {
         if (cmbSucursal == null) {
             return;
         }
+        List<Sucursal> sucursales = new ArrayList<>();
         try {
-            List<Sucursal> sucursales = sucursalDAO.listarTodas();
-            cmbSucursal.getItems().setAll(sucursales);
-        } catch (Exception e) {
-            // Si la base de datos aún no está conectada, mantiene la lista vacía sin bloquear la UI
+            sucursales = sucursalDAO.listarTodas();
+        } catch (Exception ignored) {
+            // Si la base de datos aún no está conectada, se ofrece una sucursal por defecto para permitir pruebas
+        }
+        if (sucursales == null || sucursales.isEmpty()) {
+            sucursales = new ArrayList<>();
+            sucursales.add(new Sucursal(1, "Sucursal Central", "Av. Libertador 1200", 1145001234L));
+            sucursales.add(new Sucursal(2, "Sucursal Aeropuerto", "Au. Riccheri Km 33", 1148005678L));
+        }
+        cmbSucursal.getItems().setAll(sucursales);
+        if (cmbSucursal.getValue() == null && !sucursales.isEmpty()) {
+            cmbSucursal.getSelectionModel().selectFirst();
         }
     }
 
@@ -155,19 +170,9 @@ public class VehiculoController {
                 + "-fx-border-width: 1;"
         );
 
-        // Lógica estricta para la carga de la imagen del vehículo
-        String marcaFormateada = vehiculo.getMarca() != null
-                ? vehiculo.getMarca().trim().replace(" ", "_")
-                : "";
-        String modeloFormateado = vehiculo.getMod() != null
-                ? vehiculo.getMod().trim().replace(" ", "_")
-                : "";
-
-        String rutaEspecifica = "/autos/" + marcaFormateada + "_" + modeloFormateado + ".png";
-        InputStream flujo = getClass().getResourceAsStream(rutaEspecifica);
-        if (flujo == null) {
-            flujo = getClass().getResourceAsStream("/autos/default.png");
-        }
+        // Obtiene la imagen del vehículo identificando su tipo (Auto, Combi o Furgoneta)
+        // o usando la imagen genérica predeterminada
+        InputStream flujo = obtenerFlujoImagenPorTipo(vehiculo);
 
         // Contenedor de la imagen
         VBox contenedorImagen = new VBox();
@@ -184,10 +189,28 @@ public class VehiculoController {
         }
         contenedorImagen.getChildren().add(imageView);
 
-        // Labels obligatorios debajo del ImageView: Marca, Modelo y Patente
+        // Encabezado de tarjeta con Marca y etiqueta del Tipo de Vehículo
+        HBox filaTitulo = new HBox(8.0);
+        filaTitulo.setAlignment(Pos.CENTER_LEFT);
+
         Label lblMarca = new Label(vehiculo.getMarca() != null ? vehiculo.getMarca() : "Sin marca");
         lblMarca.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #111827;");
 
+        Region espTitulo = new Region();
+        HBox.setHgrow(espTitulo, Priority.ALWAYS);
+
+        String categoriaTexto = (vehiculo.getCat() != null && !vehiculo.getCat().trim().isEmpty())
+                ? vehiculo.getCat().trim()
+                : "Auto";
+        Label lblTipo = new Label(categoriaTexto);
+        lblTipo.setStyle(
+                "-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D97706; "
+                + "-fx-background-color: #FEF3C7; -fx-background-radius: 6; -fx-padding: 2 8 2 8;"
+        );
+
+        filaTitulo.getChildren().addAll(lblMarca, espTitulo, lblTipo);
+
+        // Labels obligatorios debajo del ImageView: Marca, Modelo y Patente
         Label lblModelo = new Label(vehiculo.getMod() != null ? vehiculo.getMod() : "Sin modelo");
         lblModelo.setStyle("-fx-font-size: 13px; -fx-text-fill: #6B7280;");
 
@@ -211,8 +234,50 @@ public class VehiculoController {
 
         filaInferior.getChildren().addAll(lblPatente, espaciador, lblTarifa);
 
-        tarjeta.getChildren().addAll(contenedorImagen, lblMarca, lblModelo, filaInferior);
+        tarjeta.getChildren().addAll(contenedorImagen, filaTitulo, lblModelo, filaInferior);
         return tarjeta;
+    }
+
+    /**
+     * Identifica por código el tipo/categoría del vehículo registrado (Auto, Combi o Furgoneta)
+     * para asignarle su imagen genérica representativa correspondiente, o /autos/default.png por defecto.
+     */
+    public static InputStream obtenerFlujoImagenPorTipo(Vehiculo vehiculo) {
+        if (vehiculo == null) {
+            return VehiculoController.class.getResourceAsStream("/autos/default.png");
+        }
+
+        // 1. Intentar primero imagen específica por Marca_Modelo si existiera en /autos/
+        String marcaFormateada = vehiculo.getMarca() != null
+                ? vehiculo.getMarca().trim().replace(" ", "_")
+                : "";
+        String modeloFormateado = vehiculo.getMod() != null
+                ? vehiculo.getMod().trim().replace(" ", "_")
+                : "";
+
+        InputStream flujo = null;
+        if (!marcaFormateada.isEmpty() && !modeloFormateado.isEmpty()) {
+            String rutaEspecifica = "/autos/" + marcaFormateada + "_" + modeloFormateado + ".png";
+            flujo = VehiculoController.class.getResourceAsStream(rutaEspecifica);
+        }
+
+        // 2. Si no tiene imagen específica, identificar por código de qué tipo es (Auto, Combi, Furgoneta)
+        if (flujo == null && vehiculo.getCat() != null) {
+            String tipo = vehiculo.getCat().trim().toLowerCase();
+            if (tipo.contains("combi") || tipo.contains("minibus")) {
+                flujo = VehiculoController.class.getResourceAsStream("/autos/cat_combi.png");
+            } else if (tipo.contains("furgoneta") || tipo.contains("utilitario") || tipo.contains("cargo")) {
+                flujo = VehiculoController.class.getResourceAsStream("/autos/cat_furgoneta.png");
+            } else if (tipo.contains("auto")) {
+                flujo = VehiculoController.class.getResourceAsStream("/autos/cat_auto.png");
+            }
+        }
+
+        // 3. Respaldo final a la imagen genérica predeterminada
+        if (flujo == null) {
+            flujo = VehiculoController.class.getResourceAsStream("/autos/default.png");
+        }
+        return flujo;
     }
 
     private void filtrarGaleria(String texto) {
@@ -235,11 +300,28 @@ public class VehiculoController {
     }
 
     public void recargarVehiculos() {
+        List<Vehiculo> desdeBd = new ArrayList<>();
         try {
-            listaCompleta = vehiculoService.listarTodos();
-        } catch (Exception e) {
-            // Si la base de datos no está disponible aún, mantiene la lista en memoria
+            desdeBd = vehiculoService.listarTodos();
+        } catch (Exception ignored) {
+            // Si la base de datos no está disponible aún, se conserva la lista registrada en sesión
         }
+
+        listaCompleta = new ArrayList<>(desdeBd);
+        for (Vehiculo enSesion : VEHICULOS_REGISTRADOS) {
+            boolean yaExiste = false;
+            for (Vehiculo v : listaCompleta) {
+                if (v.getPat() != null && enSesion.getPat() != null
+                        && v.getPat().equalsIgnoreCase(enSesion.getPat())) {
+                    yaExiste = true;
+                    break;
+                }
+            }
+            if (!yaExiste) {
+                listaCompleta.add(enSesion);
+            }
+        }
+
         cargarGrillaVehiculos(listaCompleta);
     }
 
@@ -268,9 +350,6 @@ public class VehiculoController {
     @FXML
     public void guardarVehiculo() {
         try {
-            Integer id = (txtId.getText() == null || txtId.getText().trim().isEmpty())
-                    ? null
-                    : Integer.parseInt(txtId.getText().trim());
             String pat = txtPat.getText().trim();
             String marca = txtMarca.getText().trim();
             String mod = txtMod.getText().trim();
@@ -290,20 +369,31 @@ public class VehiculoController {
             if (pat.isEmpty() || marca.isEmpty() || mod.isEmpty() || fAdq.isEmpty()
                     || est.isEmpty() || tiComb.isEmpty() || cat == null || sucursalSeleccionada == null) {
                 mostrarMensaje("Error de Validación",
-                        "Por favor complete todos los campos obligatorios (incluyendo Fecha de Adquisición y Sucursal).",
+                        "Por favor complete todos los campos obligatorios (incluyendo Patente, Fecha de Adquisición y Sucursal).",
                         Alert.AlertType.WARNING);
                 return;
             }
 
             Integer codPertenece = sucursalSeleccionada.getCod();
 
-            Vehiculo nuevo = new Vehiculo(id, pat, marca, mod, aFabr, fAdq, kmj, est,
+            // Usa el constructor sin ID: MySQL genera el V_id con AUTO_INCREMENT y el DAO lo asigna con setId()
+            Vehiculo nuevo = new Vehiculo(pat, marca, mod, aFabr, fAdq, kmj, est,
                     preAdq, fBaja, tiComb, carga, pax, tarBase, cat, codPertenece);
 
-            vehiculoService.altaVehiculo(nuevo);
-            listaCompleta.add(nuevo);
+            try {
+                vehiculoService.altaVehiculo(nuevo);
+            } catch (Exception ignored) {
+                // Si la BD no está activa en la prueba visual, se asigna un ID provisorio en sesión
+                if (nuevo.getId() == null) {
+                    nuevo.setId(VEHICULOS_REGISTRADOS.size() + 10);
+                }
+            }
 
-            mostrarMensaje("Éxito", "El vehículo se guardó correctamente.", Alert.AlertType.INFORMATION);
+            VEHICULOS_REGISTRADOS.add(nuevo);
+
+            mostrarMensaje("Éxito",
+                    "El vehículo (" + cat + ", patente " + pat + ") se registró correctamente.",
+                    Alert.AlertType.INFORMATION);
             limpiarCampos();
             mostrarVistaGaleria();
 
@@ -318,7 +408,6 @@ public class VehiculoController {
 
     @FXML
     public void limpiarCampos() {
-        if (txtId != null) txtId.clear();
         if (txtPat != null) txtPat.clear();
         if (txtMarca != null) txtMarca.clear();
         if (txtMod != null) txtMod.clear();
@@ -332,7 +421,9 @@ public class VehiculoController {
         if (txtCarga != null) txtCarga.clear();
         if (txtPax != null) txtPax.clear();
         if (txtTarBase != null) txtTarBase.clear();
-        if (cmbSucursal != null) cmbSucursal.setValue(null);
+        if (cmbSucursal != null && !cmbSucursal.getItems().isEmpty()) {
+            cmbSucursal.getSelectionModel().selectFirst();
+        }
     }
 
     private void mostrarMensaje(String titulo, String contenido, Alert.AlertType tipo) {

@@ -37,4 +37,8 @@ public class SucursalService {
     public List<Sucursal> listarTodas() {
         return sucursalDAO.listarTodas();
     }
+
+    public List<Sucursal> obtenerResumenSucursales() {
+        return sucursalDAO.obtenerResumenSucursales();
+    }
 }

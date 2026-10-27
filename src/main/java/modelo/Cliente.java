@@ -11,6 +11,9 @@ public class Cliente {
     private String correo;
     private String fAlta;
 
+    // Atributo transitorio de lectura/interfaz para mostrar el estado en TableView
+    private String estado = "Activo";
+
     public Cliente() {
     }
 
@@ -18,6 +21,22 @@ public class Cliente {
         this.id = id;
     }
 
+    /**
+     * Constructor sin ID para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public Cliente(Integer dni, String nom, String apl, String dir, Long tel, String correo, String fAlta) {
+        this.dni = dni;
+        this.nom = nom;
+        this.apl = apl;
+        this.dir = dir;
+        this.tel = tel;
+        this.correo = correo;
+        this.fAlta = fAlta;
+    }
+
+    /**
+     * Constructor completo para consultas de lectura desde la base de datos.
+     */
     public Cliente(Integer id, Integer dni, String nom, String apl, String dir, Long tel, String correo, String fAlta) {
         this.id = id;
         this.dni = dni;
@@ -91,5 +110,21 @@ public class Cliente {
 
     public void setfAlta(String fAlta) {
         this.fAlta = fAlta;
+    }
+
+    public String getFAlta() {
+        return fAlta;
+    }
+
+    public void setFAlta(String fAlta) {
+        this.fAlta = fAlta;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

@@ -97,89 +97,85 @@
                             <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
                         </columnConstraints>
 
+                        <!-- Patente es UNIQUE en la base de datos (V_id es AUTO_INCREMENT) -->
                         <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="ID (V_id)"/>
-                            <TextField fx:id="txtId" promptText="Ej. 1" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
-                        </VBox>
-
-                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Patente (V_pat)"/>
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Patente (V_pat · Única)"/>
                             <TextField fx:id="txtPat" promptText="Ej. AB123CD" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Marca (V_marca)"/>
                             <TextField fx:id="txtMarca" promptText="Ej. Toyota" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Modelo (V_mod)"/>
                             <TextField fx:id="txtMod" promptText="Ej. Corolla" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Año Fabr. (V_aFabr)"/>
                             <TextField fx:id="txtAFabr" promptText="Ej. 2024" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
                         <!-- Fecha de Adquisición por Calendario (DatePicker no editable a mano) -->
-                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Adq. (V_fAdq)"/>
                             <DatePicker fx:id="dpFAdq" editable="false" maxWidth="Infinity"
                                         promptText="Seleccione en calendario"
                                         style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Kilometraje (V_kmj)"/>
                             <TextField fx:id="txtKmj" promptText="Ej. 15000" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Estado (V_est)"/>
                             <TextField fx:id="txtEst" promptText="Disponible" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Precio Adq. (V_preAdq)"/>
                             <TextField fx:id="txtPreAdq" promptText="Ej. 25000.0" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
                         <!-- Fecha de Baja por Calendario (Opcional, no editable a mano) -->
-                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Baja (Opcional)"/>
                             <DatePicker fx:id="dpFBaja" editable="false" maxWidth="Infinity"
                                         promptText="Opcional (calendario)"
                                         style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Combustible (V_tiComb)"/>
                             <TextField fx:id="txtTiComb" promptText="Nafta / Diesel" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Categoría (T_cat)"/>
                             <ComboBox fx:id="cmbCat" maxWidth="Infinity" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Cap. Carga (T_carga)"/>
                             <TextField fx:id="txtCarga" promptText="Ej. 450.0" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Pasajeros (T_pax)"/>
                             <TextField fx:id="txtPax" promptText="Ej. 5" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
-                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Tarifa Base (T_tarBase)"/>
                             <TextField fx:id="txtTarBase" promptText="Ej. 85.0" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
                         </VBox>
 
                         <!-- Selección de Sucursal mediante lista desplegable 'cod - nombre' -->
-                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
                             <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Sucursal (cod_Pertenece)"/>
                             <ComboBox fx:id="cmbSucursal" maxWidth="Infinity"
                                       promptText="Seleccione (cod - nombre)"

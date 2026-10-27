@@ -21,6 +21,27 @@ public class CheckInOut {
         this.id = id;
     }
 
+    /**
+     * Constructor sin ID para altas con AUTO_INCREMENT en la base de datos.
+     */
+    public CheckInOut(String feHrSal, Integer kmjSal, Double nivCombSal, String daExist,
+                      String feHrEnt, Integer kmjEnt, Double nivCombEnt, String daNuevos,
+                      Integer nroParticipa, Integer nroCorresponde) {
+        this.feHrSal = feHrSal;
+        this.kmjSal = kmjSal;
+        this.nivCombSal = nivCombSal;
+        this.daExist = daExist;
+        this.feHrEnt = feHrEnt;
+        this.kmjEnt = kmjEnt;
+        this.nivCombEnt = nivCombEnt;
+        this.daNuevos = daNuevos;
+        this.nroParticipa = nroParticipa;
+        this.nroCorresponde = nroCorresponde;
+    }
+
+    /**
+     * Constructor completo para consultas de lectura desde la base de datos.
+     */
     public CheckInOut(Integer id, String feHrSal, Integer kmjSal, Double nivCombSal, String daExist, 
                       String feHrEnt, Integer kmjEnt, Double nivCombEnt, String daNuevos, 
                       Integer nroParticipa, Integer nroCorresponde) {
