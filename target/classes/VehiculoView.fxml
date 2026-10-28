@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="640.0" prefWidth="900.0"
+            style="-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controlador.VehiculoController">
+
+    <center>
+        <StackPane>
+
+            <!-- ========================================================================= -->
+            <!-- VISTA 1: GALERÍA DE VEHÍCULOS CON SCROLLPANE Y TILEPANE                   -->
+            <!-- ========================================================================= -->
+            <VBox fx:id="vistaGaleria" spacing="20.0">
+                <padding>
+                    <Insets bottom="24.0" left="28.0" right="28.0" top="22.0"/>
+                </padding>
+
+                <!-- Panel superior con título, buscador rápido y botón 'Nuevo Vehículo' -->
+                <HBox alignment="CENTER_LEFT" spacing="14.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 18 24 18 24;">
+                    <VBox spacing="2.0">
+                        <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                               text="Flota de Vehículos"/>
+                        <Label fx:id="lblCantidadVehiculos"
+                               style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"
+                               text="0 vehículos en flota"/>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="txtBuscarVehiculo" prefWidth="280.0"
+                               promptText="Filtrar por marca, modelo o patente..."
+                               style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-border-color: transparent; -fx-padding: 10 14 10 14; -fx-font-size: 13px;"/>
+
+                    <Button onAction="#mostrarVistaAlta" prefHeight="40.0"
+                            style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 20 0 20; -fx-cursor: hand;"
+                            text="Nuevo Vehículo"/>
+                </HBox>
+
+                <!-- ScrollPane central con TilePane para mostrar los vehículos en formato grilla -->
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
+                            style="-fx-background: #F3F4F6; -fx-background-color: transparent; -fx-border-color: transparent;">
+                    <content>
+                        <TilePane fx:id="contenedorVehiculos" hgap="20.0" prefColumns="3" vgap="20.0"
+                                  style="-fx-background-color: #F3F4F6; -fx-padding: 4;">
+                        </TilePane>
+                    </content>
+                </ScrollPane>
+            </VBox>
+
+            <!-- ========================================================================= -->
+            <!-- VISTA 2: ALTA DE NUEVO VEHÍCULO                                           -->
+            <!-- ========================================================================= -->
+            <VBox fx:id="vistaAlta" managed="false" spacing="18.0" visible="false">
+                <padding>
+                    <Insets bottom="24.0" left="28.0" right="28.0" top="22.0"/>
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <Button onAction="#mostrarVistaGaleria" prefHeight="36.0"
+                            style="-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 0 14 0 14; -fx-cursor: hand;"
+                            text="← Volver a la Galería"/>
+                    <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                           text="Alta de Nuevo Vehículo"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button onAction="#limpiarCampos"
+                            style="-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-size: 13px; -fx-cursor: hand;"
+                            text="Limpiar"/>
+                </HBox>
+
+                <VBox spacing="16.0" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 24;">
+
+                    <GridPane hgap="16.0" vgap="14.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="25.0"/>
+                        </columnConstraints>
+
+                        <!-- Patente es UNIQUE en la base de datos (V_id es AUTO_INCREMENT) -->
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Patente (V_pat · Única)"/>
+                            <TextField fx:id="txtPat" promptText="Ej. AB123CD" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Marca (V_marca)"/>
+                            <TextField fx:id="txtMarca" promptText="Ej. Toyota" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Modelo (V_mod)"/>
+                            <TextField fx:id="txtMod" promptText="Ej. Corolla" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Año Fabr. (V_aFabr)"/>
+                            <TextField fx:id="txtAFabr" promptText="Ej. 2024" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <!-- Fecha de Adquisición por Calendario (DatePicker no editable a mano) -->
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Adq. (V_fAdq)"/>
+                            <DatePicker fx:id="dpFAdq" editable="false" maxWidth="Infinity"
+                                        promptText="Seleccione en calendario"
+                                        style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Kilometraje (V_kmj)"/>
+                            <TextField fx:id="txtKmj" promptText="Ej. 15000" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Estado (V_est)"/>
+                            <TextField fx:id="txtEst" promptText="Disponible" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Precio Adq. (V_preAdq)"/>
+                            <TextField fx:id="txtPreAdq" promptText="Ej. 25000.0" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <!-- Fecha de Baja por Calendario (Opcional, no editable a mano) -->
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Baja (Opcional)"/>
+                            <DatePicker fx:id="dpFBaja" editable="false" maxWidth="Infinity"
+                                        promptText="Opcional (calendario)"
+                                        style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Combustible (V_tiComb)"/>
+                            <TextField fx:id="txtTiComb" promptText="Nafta / Diesel" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Categoría (T_cat)"/>
+                            <ComboBox fx:id="cmbCat" maxWidth="Infinity" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Cap. Carga (T_carga)"/>
+                            <TextField fx:id="txtCarga" promptText="Ej. 450.0" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Pasajeros (T_pax)"/>
+                            <TextField fx:id="txtPax" promptText="Ej. 5" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Tarifa Base (T_tarBase)"/>
+                            <TextField fx:id="txtTarBase" promptText="Ej. 85.0" style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 9 12 9 12;"/>
+                        </VBox>
+
+                        <!-- Selección de Sucursal mediante lista desplegable 'cod - nombre' -->
+                        <VBox spacing="5.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Sucursal (cod_Pertenece)"/>
+                            <ComboBox fx:id="cmbSucursal" maxWidth="Infinity"
+                                      promptText="Seleccione (cod - nombre)"
+                                      style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Button maxWidth="Infinity" onAction="#guardarVehiculo" prefHeight="44.0"
+                            style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"
+                            text="Guardar Vehículo"/>
+                </VBox>
+            </VBox>
+
+        </StackPane>
+    </center>
+</BorderPane>

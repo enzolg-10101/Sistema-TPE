@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="640.0" prefWidth="900.0"
+            style="-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controlador.SucursalController">
+
+    <!-- Región TOP: HBox con el título 'Gestión de Sucursales' y el botón 'Nueva Sucursal' -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="14.0"
+              style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 18 24 18 24;">
+            <BorderPane.margin>
+                <Insets bottom="8.0" left="28.0" right="28.0" top="22.0"/>
+            </BorderPane.margin>
+
+            <VBox spacing="2.0">
+                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                       text="Gestión de Sucursales"/>
+                <Label fx:id="lblSubtituloSucursales"
+                       style="-fx-font-size: 13px; -fx-text-fill: #6B7280;"
+                       text="Haga clic en una tarjeta para consultar el detalle de la sucursal"/>
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="btnNuevaSucursal" onAction="#mostrarVistaAlta" prefHeight="40.0"
+                    style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 0 20 0 20; -fx-cursor: hand;"
+                    text="Nueva Sucursal"/>
+        </HBox>
+    </top>
+
+    <!-- Región CENTER: ScrollPane con TilePane (contenedorSucursales), vista de Detalle y vista de Alta -->
+    <center>
+        <StackPane>
+            <padding>
+                <Insets bottom="24.0" left="28.0" right="28.0" top="12.0"/>
+            </padding>
+
+            <!-- VISTA 1: GRILLA DE TARJETAS DE SUCURSALES (ScrollPane + TilePane) -->
+            <ScrollPane fx:id="vistaTarjetas" fitToWidth="true" hbarPolicy="NEVER"
+                        style="-fx-background: #F3F4F6; -fx-background-color: transparent; -fx-border-color: transparent;">
+                <content>
+                    <TilePane fx:id="contenedorSucursales" hgap="20.0" prefColumns="3" vgap="20.0"
+                              style="-fx-background-color: #F3F4F6; -fx-padding: 4;">
+                    </TilePane>
+                </content>
+            </ScrollPane>
+
+            <!-- VISTA 2: DETALLE DE LA SUCURSAL SELECCIONADA -->
+            <VBox fx:id="vistaDetalle" managed="false" spacing="18.0" visible="false">
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <Button onAction="#mostrarVistaTarjetas" prefHeight="36.0"
+                            style="-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 0 14 0 14; -fx-cursor: hand;"
+                            text="← Volver a Sucursales"/>
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                           text="Detalle de Sucursal"/>
+                </HBox>
+
+                <VBox spacing="16.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 26;">
+                    <HBox alignment="CENTER_LEFT" spacing="14.0">
+                        <VBox spacing="4.0">
+                            <Label fx:id="lblDetalleCodigo"
+                                   style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6B7280;"
+                                   text="CÓDIGO DE SUCURSAL #1"/>
+                            <Label fx:id="lblDetalleNombre"
+                                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                                   text="Nombre de Sucursal"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblDetalleFlota"
+                               style="-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 16 8 16;"
+                               text="Flota: 0 vehículos"/>
+                    </HBox>
+
+                    <Separator/>
+
+                    <GridPane hgap="24.0" vgap="14.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6B7280;"
+                                   text="DIRECCIÓN (S_dir)"/>
+                            <Label fx:id="lblDetalleDireccion"
+                                   style="-fx-font-size: 15px; -fx-text-fill: #111827; -fx-font-weight: bold;"
+                                   text="-"/>
+                        </VBox>
+
+                        <VBox spacing="4.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #6B7280;"
+                                   text="TELÉFONO DE CONTACTO (S_tel)"/>
+                            <Label fx:id="lblDetalleTelefono"
+                                   style="-fx-font-size: 15px; -fx-text-fill: #111827; -fx-font-weight: bold;"
+                                   text="-"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+            </VBox>
+
+            <!-- VISTA 3: ALTA DE NUEVA SUCURSAL -->
+            <VBox fx:id="vistaAlta" managed="false" spacing="18.0" visible="false">
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <Button onAction="#mostrarVistaTarjetas" prefHeight="36.0"
+                            style="-fx-background-color: #FFFFFF; -fx-border-color: #E5E7EB; -fx-border-radius: 10; -fx-background-radius: 10; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 0 14 0 14; -fx-cursor: hand;"
+                            text="← Volver a Sucursales"/>
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                           text="Alta de Nueva Sucursal"/>
+                </HBox>
+
+                <VBox spacing="18.0"
+                      style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 26;">
+                    <GridPane hgap="18.0" vgap="14.0">
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="34.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="36.0"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="30.0"/>
+                        </columnConstraints>
+
+                        <VBox spacing="6.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                   text="Nombre (S_nom)"/>
+                            <TextField fx:id="txtNom" promptText="Ej. Sucursal Centro"
+                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 10 12 10 12;"/>
+                        </VBox>
+
+                        <VBox spacing="6.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                   text="Dirección (S_dir)"/>
+                            <TextField fx:id="txtDir" promptText="Ej. Av. Colón 1450"
+                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 10 12 10 12;"/>
+                        </VBox>
+
+                        <VBox spacing="6.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                            <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                   text="Teléfono (S_tel)"/>
+                            <TextField fx:id="txtTel" promptText="Ej. 2234901234"
+                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-padding: 10 12 10 12;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <Button maxWidth="Infinity" onAction="#guardarSucursal" prefHeight="42.0"
+                            style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"
+                            text="Guardar Sucursal"/>
+                </VBox>
+            </VBox>
+
+        </StackPane>
+    </center>
+</BorderPane>
