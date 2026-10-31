@@ -318,8 +318,8 @@
                                 <DatePicker fx:id="dpFechaDevolucion" editable="false" maxWidth="Infinity" promptText="Calendario" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
                             </VBox>
                             <VBox spacing="3.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
-                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Importe Alquiler"/>
-                                <TextField fx:id="txtImpAlq" promptText="Ej. 85000" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Importe Alquiler (Tarifa x Días)"/>
+                                <TextField fx:id="txtImpAlq" editable="false" promptText="Calculado automático" style="-fx-background-color: #FEF3C7; -fx-background-radius: 8; -fx-text-fill: #D97706; -fx-font-weight: bold;"/>
                             </VBox>
                         </GridPane>
 

@@ -9,6 +9,7 @@ import dao.FirmaDAO;
 import dao.VehiculoDAO;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import modelo.Asigna;
 import modelo.CheckInOut;
 import modelo.Cliente;
@@ -33,9 +34,9 @@ public class ContratoService {
     private CheckInOutService checkInOutService;
 
     public ContratoService(ContratoDAO contratoDAO, ClienteDAO clienteDAO, VehiculoDAO vehiculoDAO,
-                           CheckInOutDAO checkInOutDAO, FirmaDAO firmaDAO, AsignaDAO asignaDAO,
-                           CorrespondeDAO correspondeDAO, ClienteService clienteService,
-                           CheckInOutService checkInOutService) {
+            CheckInOutDAO checkInOutDAO, FirmaDAO firmaDAO, AsignaDAO asignaDAO,
+            CorrespondeDAO correspondeDAO, ClienteService clienteService,
+            CheckInOutService checkInOutService) {
         this.contratoDAO = contratoDAO;
         this.clienteDAO = clienteDAO;
         this.vehiculoDAO = vehiculoDAO;
@@ -48,127 +49,64 @@ public class ContratoService {
     }
 
     /**
-     * Transacción estricta en JDBC para registrar un contrato que incluye dar de alta a un cliente nuevo.
-     * Si falla la inserción del contrato, hace rollback de la conexión para cancelar la creación del cliente.
+     * Alta de Contrato delegando toda la transacción atómica al procedimiento almacenado 'insertar_contrato'.
+     *
+     * @param existe       true si el cliente ya existe en BD (1), false si es un nuevo cliente que el SP debe dar de alta (0).
+     * @param contrato     datos del contrato a generar.
+     * @param cliente      datos del cliente.
+     * @param vehiculo     vehículo seleccionado.
+     * @param checkInOut   datos de salida del vehículo.
+     * @param nroPEnt      empleado de entrada (opcional/null en la apertura).
      */
-    public void registrarAlquilerNuevoCliente(Cliente cliente, Contrato contrato) {
-        Connection conexion = null;
-        try {
-            conexion = DatabaseConnection.getConnection();
-            conexion.setAutoCommit(false);
 
-            // 1. Insertar el nuevo cliente usando la conexión transaccional y recuperar su ID autogenerado
-            clienteDAO.insertar(cliente, conexion);
-            contrato.setIdCliente(cliente.getId());
-
-            // 2. Insertar el contrato usando la misma conexión transaccional
-            contratoDAO.insertar(contrato, conexion);
-
-            // 3. Si ambas operaciones fueron exitosas, confirmar la transacción
-            conexion.commit();
-
-        } catch (Exception e) {
-            if (conexion != null) {
-                try {
-                    conexion.rollback();
-                } catch (SQLException exRollback) {
-                    e.addSuppressed(exRollback);
-                }
-            }
-            throw new RuntimeException("Error en la transacción de alquiler con nuevo cliente (se aplicó rollback): " + e.getMessage(), e);
-        } finally {
-            if (conexion != null) {
-                try {
-                    conexion.setAutoCommit(true);
-                } catch (SQLException ignored) {
-                }
-                try {
-                    conexion.close();
-                } catch (SQLException ignored) {
-                }
-            }
+    public void altaContrato(boolean existe, Contrato contrato, Cliente cliente, Vehiculo vehiculo,
+            CheckInOut checkInOut, Integer nroPEnt) {
+        if (vehiculo != null && vehiculo.getId() != null) {
+            contrato.setIdAsigna(vehiculo.getId());
         }
+        if (existe && cliente != null && cliente.getId() != null) {
+            contrato.setIdFirma(cliente.getId());
+        }
+
+        contratoDAO.insertar(existe, contrato, cliente, checkInOut, nroPEnt);
+    }
+
+
+    public void altaContrato(boolean existe, Contrato contrato, Cliente cliente, Vehiculo vehiculo,
+            CheckInOut checkInOut) {
+        altaContrato(existe, contrato, cliente, vehiculo, checkInOut, null);
     }
 
     /**
-     * Método principal de alta de Contrato (con soporte para claves primarias AUTO_INCREMENT).
+     * Sobrecarga de conveniencia: deduce si el cliente existe según si cuenta con C_id asignado.
      */
-    public void altaContrato(Contrato contrato, Cliente cliente, Vehiculo vehiculo, CheckInOut checkInOut) throws Exception {
-        // Inicio-ts
-        try {
-            // Resolver primero Cliente (por ID o DNI único) y Vehículo (por Patente única)
-            // para asegurar que id_Firma e id_Asigna tengan su ID autogenerado antes de insertar el Contrato
-            Cliente c = seleccionarClienteFirma(cliente);
-            Vehiculo v = seleccionarVehiculoAsigna(vehiculo);
-
-            contrato.setIdFirma(c.getId());
-            contrato.setIdAsigna(v.getId());
-
-            // Grabar nupla en Contratos (asigna Co_nro autogenerado via getGeneratedKeys)
-            contratoDAO.insertar(contrato);
-
-            // Generar la nupla correspondiente en Firma1
-            Firma firma = new Firma(contrato.getId(), c.getId());
-            firmaDAO.insertar(firma);
-
-            // Generar la nupla correspondiente en Asigna2
-            Asigna asigna = new Asigna(contrato.getId(), v.getId());
-            asignaDAO.insertar(asigna);
-
-            // Por cada relación entrante sobreyectiva:
-            // Generar la nupla correspondiente en Corresponde3
-            checkInOut.setNroCorresponde(contrato.getNro());
-            generarNuplaCorresponde(contrato, checkInOut);
-
-        } catch (Exception e) {
-            throw new Exception("Error en la transacción de Alta de Contrato: " + e.getMessage(), e);
-        }
-        // Fin-ts
+    public void altaContrato(Contrato contrato, Cliente cliente, Vehiculo vehiculo, CheckInOut checkInOut) {
+        boolean existe = (cliente != null && cliente.getId() != null);
+        altaContrato(existe, contrato, cliente, vehiculo, checkInOut, null);
     }
 
-    // --- 1.1 Seleccionar el elemento c en la entidad Clientes ---
-    private Cliente seleccionarClienteFirma(Cliente cliente) {
-        Integer criterio = cliente.getId() != null ? cliente.getId() : cliente.getDni();
-        Cliente c = (criterio != null) ? clienteDAO.buscarPorId(criterio) : null;
 
-        if (c == null) {
-            c = clienteService.altaCliente(cliente);
-        }
-        return c;
+    /**
+     * Registro de alquiler para un cliente nuevo (existe = false).
+     */
+    public void registrarAlquilerNuevoCliente(Cliente cliente, Contrato contrato) {
+        altaContrato(false, contrato, cliente, null, null, null);
     }
 
-    // --- 2.1 Seleccionar el elemento (v) en la entidad Vehículos ---
-    private Vehiculo seleccionarVehiculoAsigna(Vehiculo vehiculo) {
-        Vehiculo v = vehiculoDAO.buscarPorId(vehiculo.getPat());
 
-        if (v == null) {
-            throw new RuntimeException("Error: El Vehículo especificado no existe.");
-        }
-        return v;
+    public void registrarAlquilerNuevoCliente(Cliente cliente, Contrato contrato, CheckInOut checkInOut) {
+        altaContrato(false, contrato, cliente, null, checkInOut, null);
     }
 
-    // --- 3 Generar la nupla correspondiente en Corresponde ---
-    private void generarNuplaCorresponde(Contrato contrato, CheckInOut checkInOut) {
-        CheckInOut ch = seleccionarCheckInOutCorresponde(checkInOut);
-
-        Corresponde corresponde = new Corresponde(contrato.getId(), ch.getId());
-        correspondeDAO.insertar(corresponde);
+    public List<Contrato> listarTodos() {
+        return contratoDAO.listarTodos();
     }
 
-    // --- 3.1 Seleccionar el elemento (ch) en la entidad Check_inout ---
-    private CheckInOut seleccionarCheckInOutCorresponde(CheckInOut checkInOut) {
-        CheckInOut ch = (checkInOut.getId() != null)
-                ? checkInOutDAO.buscarPorId(checkInOut.getId())
-                : null;
+    public Contrato buscarPorId(int id) {
+        return contratoDAO.buscarPorId(id);
+    }
 
-        if (ch == null) {
-            ch = checkInOutService.altaCheckInOut(checkInOut);
-        } else {
-            boolean estaVinculado = correspondeDAO.existeVinculo(ch.getId());
-            if (estaVinculado) {
-                throw new RuntimeException("Error: El Check_inout ya está vinculado a un contrato existente.");
-            }
-        }
-        return ch;
+    public void registrarDevolucion(int nroContrato, int kmj, double nivComb, String daNuevos, double cargos, int sucEnt) {
+        contratoDAO.registrarDevolucion(nroContrato, kmj, nivComb, daNuevos, cargos, sucEnt);
     }
 }

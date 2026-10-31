@@ -24,7 +24,7 @@ public class Contrato {
      * Constructor sin ID (nro) para altas con AUTO_INCREMENT en la base de datos.
      */
     public Contrato(String feHrEnt, String feHrDev, String condUso, String est,
-                    Double impFianza, Double impAlq, Double cargos, Integer idAsigna, Integer idFirma) {
+            Double impFianza, Double impAlq, Double cargos, Integer idAsigna, Integer idFirma) {
         this.feHrEnt = feHrEnt;
         this.feHrDev = feHrDev;
         this.condUso = condUso;
@@ -39,8 +39,8 @@ public class Contrato {
     /**
      * Constructor completo para consultas de lectura desde la base de datos.
      */
-    public Contrato(Integer nro, String feHrEnt, String feHrDev, String condUso, String est, 
-                    Double impFianza, Double impAlq, Double cargos, Integer idAsigna, Integer idFirma) {
+    public Contrato(Integer nro, String feHrEnt, String feHrDev, String condUso, String est,
+            Double impFianza, Double impAlq, Double cargos, Integer idAsigna, Integer idFirma) {
         this.nro = nro;
         this.feHrEnt = feHrEnt;
         this.feHrDev = feHrDev;
@@ -149,5 +149,44 @@ public class Contrato {
 
     public void setIdCliente(Integer idCliente) {
         this.idFirma = idCliente;
+    }
+
+    // Atributos de presentación para la interfaz gráfica (TableView y panel de
+    // detalles)
+    private String clienteNombre;
+    private Integer clienteDni;
+    private String vehiculoModelo;
+    private String vehiculoPatente;
+
+    public String getClienteNombre() {
+        return clienteNombre != null ? clienteNombre : (idFirma != null ? "Cliente #" + idFirma : "Sin asignar");
+    }
+
+    public void setClienteNombre(String clienteNombre) {
+        this.clienteNombre = clienteNombre;
+    }
+
+    public Integer getClienteDni() {
+        return clienteDni;
+    }
+
+    public void setClienteDni(Integer clienteDni) {
+        this.clienteDni = clienteDni;
+    }
+
+    public String getVehiculoModelo() {
+        return vehiculoModelo != null ? vehiculoModelo : (idAsigna != null ? "Vehículo #" + idAsigna : "Sin asignar");
+    }
+
+    public void setVehiculoModelo(String vehiculoModelo) {
+        this.vehiculoModelo = vehiculoModelo;
+    }
+
+    public String getVehiculoPatente() {
+        return vehiculoPatente != null ? vehiculoPatente : "-";
+    }
+
+    public void setVehiculoPatente(String vehiculoPatente) {
+        this.vehiculoPatente = vehiculoPatente;
     }
 }

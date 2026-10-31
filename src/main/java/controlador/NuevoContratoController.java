@@ -61,79 +61,113 @@ import servicio.VehiculoService;
 
 public class NuevoContratoController {
 
-    private static final String ESTILO_BOTON_CATEGORIA_NORMAL =
-            "-fx-background-color: #FFFFFF; -fx-background-radius: 18; "
+    private static final String ESTILO_BOTON_CATEGORIA_NORMAL = "-fx-background-color: #FFFFFF; -fx-background-radius: 18; "
             + "-fx-border-color: #E5E7EB; -fx-border-radius: 18; -fx-border-width: 1.5; "
             + "-fx-padding: 22; -fx-cursor: hand;";
 
-    private static final String ESTILO_BOTON_CATEGORIA_HOVER =
-            "-fx-background-color: #FFFFFF; -fx-background-radius: 18; "
+    private static final String ESTILO_BOTON_CATEGORIA_HOVER = "-fx-background-color: #FFFFFF; -fx-background-radius: 18; "
             + "-fx-border-color: #F59E0B; -fx-border-radius: 18; -fx-border-width: 2.0; "
             + "-fx-padding: 22; -fx-cursor: hand;";
 
-    private static final String ESTILO_CONTENEDOR_IMG_NORMAL =
-            "-fx-background-color: #F9FAFB; -fx-background-radius: 14;";
+    private static final String ESTILO_CONTENEDOR_IMG_NORMAL = "-fx-background-color: #F9FAFB; -fx-background-radius: 14;";
 
-    private static final String ESTILO_CONTENEDOR_IMG_HOVER =
-            "-fx-background-color: #FEF3C7; -fx-background-radius: 14;";
+    private static final String ESTILO_CONTENEDOR_IMG_HOVER = "-fx-background-color: #FEF3C7; -fx-background-radius: 14;";
 
-    private static final String ESTILO_CAMPO_CLIENTE_BLOQUEADO =
-            "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-border-color: transparent; -fx-text-fill: #374151;";
+    private static final String ESTILO_CAMPO_CLIENTE_BLOQUEADO = "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-border-color: transparent; -fx-text-fill: #374151;";
 
-    private static final String ESTILO_CAMPO_CLIENTE_EDITABLE =
-            "-fx-background-color: #FFFFFF; -fx-background-radius: 8; -fx-border-color: #F59E0B; -fx-border-radius: 8; -fx-border-width: 1.4; -fx-text-fill: #111827;";
+    private static final String ESTILO_CAMPO_CLIENTE_EDITABLE = "-fx-background-color: #FFFFFF; -fx-background-radius: 8; -fx-border-color: #F59E0B; -fx-border-radius: 8; -fx-border-width: 1.4; -fx-text-fill: #111827;";
 
     // Vistas del flujo de Nuevo Contrato
-    @FXML private VBox vistaCategorias;
-    @FXML private VBox vistaSeleccionVehiculo;
-    @FXML private VBox vistaFormularioContrato;
+    @FXML
+    private VBox vistaCategorias;
+    @FXML
+    private VBox vistaSeleccionVehiculo;
+    @FXML
+    private VBox vistaFormularioContrato;
 
     // Paso 1: Los 3 botones grandes de categoría y sus imágenes representativas
-    @FXML private Button btnCategoriaAuto;
-    @FXML private Button btnCategoriaCombi;
-    @FXML private Button btnCategoriaFurgoneta;
+    @FXML
+    private Button btnCategoriaAuto;
+    @FXML
+    private Button btnCategoriaCombi;
+    @FXML
+    private Button btnCategoriaFurgoneta;
 
-    @FXML private StackPane contenedorImgAuto;
-    @FXML private StackPane contenedorImgCombi;
-    @FXML private StackPane contenedorImgFurgoneta;
+    @FXML
+    private StackPane contenedorImgAuto;
+    @FXML
+    private StackPane contenedorImgCombi;
+    @FXML
+    private StackPane contenedorImgFurgoneta;
 
-    @FXML private ImageView imgAuto;
-    @FXML private ImageView imgCombi;
-    @FXML private ImageView imgFurgoneta;
+    @FXML
+    private ImageView imgAuto;
+    @FXML
+    private ImageView imgCombi;
+    @FXML
+    private ImageView imgFurgoneta;
 
-    // Paso 2: Galería de vehículos y barra superior de disponibilidad entre dos fechas
-    @FXML private Label lblTituloCategoria;
-    @FXML private Label lblCantidadCategoria;
-    @FXML private TextField txtBuscarVehiculo;
-    @FXML private DatePicker dpFiltroInicio;
-    @FXML private DatePicker dpFiltroDevolucion;
-    @FXML private Label lblDiasAlquiler;
-    @FXML private TilePane contenedorVehiculos;
+    // Paso 2: Galería de vehículos y barra superior de disponibilidad entre dos
+    // fechas
+    @FXML
+    private Label lblTituloCategoria;
+    @FXML
+    private Label lblCantidadCategoria;
+    @FXML
+    private TextField txtBuscarVehiculo;
+    @FXML
+    private DatePicker dpFiltroInicio;
+    @FXML
+    private DatePicker dpFiltroDevolucion;
+    @FXML
+    private Label lblDiasAlquiler;
+    @FXML
+    private TilePane contenedorVehiculos;
 
     // Paso 3: Resumen del vehículo seleccionado y formulario del contrato
-    @FXML private Label lblResumenVehiculoElegido;
-    @FXML private ImageView imgVehiculoSeleccionado;
-    @FXML private Label lblCardMarcaModelo;
-    @FXML private Label lblCardPatente;
-    @FXML private Label lblCardCategoria;
-    @FXML private Label lblCardTarifa;
+    @FXML
+    private Label lblResumenVehiculoElegido;
+    @FXML
+    private ImageView imgVehiculoSeleccionado;
+    @FXML
+    private Label lblCardMarcaModelo;
+    @FXML
+    private Label lblCardPatente;
+    @FXML
+    private Label lblCardCategoria;
+    @FXML
+    private Label lblCardTarifa;
 
-    // Campos del formulario de Contrato (sin IDs manuales: Co_nro, C_id y Ck_id son AUTO_INCREMENT)
-    @FXML private DatePicker dpFechaEntrega;
-    @FXML private DatePicker dpFechaDevolucion;
-    @FXML private TextField txtImpAlq;
+    // Campos del formulario de Contrato (sin IDs manuales: Co_nro, C_id y Ck_id son
+    // AUTO_INCREMENT)
+    @FXML
+    private DatePicker dpFechaEntrega;
+    @FXML
+    private DatePicker dpFechaDevolucion;
+    @FXML
+    private TextField txtImpAlq;
 
-    // Búsqueda de cliente existente (con pantalla emergente) o alta mediante la ventana flotante auxiliar
-    @FXML private TextField txtBuscarClienteContrato;
-    @FXML private Button btnBuscarCliente;
-    @FXML private Label lblEstadoClienteContrato;
-    @FXML private HBox tarjetaClienteSeleccionado;
-    @FXML private Label lblClienteResumenNombre;
-    @FXML private Label lblClienteResumenDatos;
+    // Búsqueda de cliente existente (con pantalla emergente) o alta mediante la
+    // ventana flotante auxiliar
+    @FXML
+    private TextField txtBuscarClienteContrato;
+    @FXML
+    private Button btnBuscarCliente;
+    @FXML
+    private Label lblEstadoClienteContrato;
+    @FXML
+    private HBox tarjetaClienteSeleccionado;
+    @FXML
+    private Label lblClienteResumenNombre;
+    @FXML
+    private Label lblClienteResumenDatos;
 
-    @FXML private TextField txtKmSalida;
-    @FXML private TextField txtCombSalida;
-    @FXML private TextField txtDaniosSalida;
+    @FXML
+    private TextField txtKmSalida;
+    @FXML
+    private TextField txtCombSalida;
+    @FXML
+    private TextField txtDaniosSalida;
 
     private final VehiculoService vehiculoService;
     private final ClienteDAO clienteDAO;
@@ -142,9 +176,19 @@ public class NuevoContratoController {
 
     private List<Vehiculo> flotaCompleta = new ArrayList<>();
     private List<Vehiculo> vehiculosCategoriaActual = new ArrayList<>();
-    private final List<Contrato> contratosEnMemoria = new ArrayList<>();
+    private static final List<Contrato> CONTRATOS_EN_MEMORIA = new ArrayList<>();
     private String categoriaSeleccionada = "Auto";
     private Vehiculo vehiculoSeleccionado;
+
+    public static List<Contrato> getContratosEnMemoria() {
+        return CONTRATOS_EN_MEMORIA;
+    }
+
+    public static void registrarContratoEnMemoria(Contrato contrato) {
+        if (contrato != null) {
+            CONTRATOS_EN_MEMORIA.add(contrato);
+        }
+    }
 
     private Cliente clienteElegidoExistente = null;
     private boolean clienteNuevoPendienteDeTransaccion = false;
@@ -166,8 +210,7 @@ public class NuevoContratoController {
                 new AsignaDAO(),
                 new CorrespondeDAO(),
                 new ClienteService(this.clienteDAO),
-                new CheckInOutService(checkInOutDAO)
-        );
+                new CheckInOutService(checkInOutDAO));
     }
 
     @FXML
@@ -177,14 +220,15 @@ public class NuevoContratoController {
         cargarImagenRepresentativa(imgCombi, "/autos/cat_combi.png");
         cargarImagenRepresentativa(imgFurgoneta, "/autos/cat_furgoneta.png");
 
-        // 2. Configurar la animación que resalta la imagen genérica del vehículo al pasar el mouse
+        // 2. Configurar la animación que resalta la imagen genérica del vehículo al
+        // pasar el mouse
         configurarAnimacionHoverCategoria(btnCategoriaAuto, contenedorImgAuto, imgAuto);
         configurarAnimacionHoverCategoria(btnCategoriaCombi, contenedorImgCombi, imgCombi);
         configurarAnimacionHoverCategoria(btnCategoriaFurgoneta, contenedorImgFurgoneta, imgFurgoneta);
 
         // 3. Configurar la barra de disponibilidad entre dos fechas (Paso 2):
-        //    Al elegir una fecha de inicio, el segundo calendario solo permite elegir
-        //    a partir del día siguiente (fechaInicio.plusDays(1)).
+        // Al elegir una fecha de inicio, el segundo calendario solo permite elegir
+        // a partir del día siguiente (fechaInicio.plusDays(1)).
         if (dpFiltroInicio != null && dpFiltroDevolucion != null) {
             dpFiltroInicio.setEditable(false);
             dpFiltroDevolucion.setEditable(false);
@@ -200,7 +244,8 @@ public class NuevoContratoController {
             actualizarEtiquetaDiasFiltro();
         }
 
-        // 4. Configurar la misma restricción lógica de fechas en el Paso 3 (Formulario del Contrato)
+        // 4. Configurar la misma restricción lógica de fechas en el Paso 3 (Formulario
+        // del Contrato)
         if (dpFechaEntrega != null && dpFechaDevolucion != null) {
             dpFechaEntrega.setEditable(false);
             dpFechaDevolucion.setEditable(false);
@@ -209,7 +254,15 @@ public class NuevoContratoController {
             dpFechaEntrega.setValue(hoy);
             dpFechaDevolucion.setValue(hoy.plusDays(1));
 
-            configurarRestriccionCalendarioDevolucion(dpFechaEntrega, dpFechaDevolucion, this::recalcularImporteEstimado);
+            configurarRestriccionCalendarioDevolucion(dpFechaEntrega, dpFechaDevolucion,
+                    this::recalcularImporteEstimado);
+
+            dpFechaEntrega.valueProperty().addListener((obs, oldVal, newVal) -> recalcularImporteEstimado());
+            dpFechaDevolucion.valueProperty().addListener((obs, oldVal, newVal) -> recalcularImporteEstimado());
+        }
+
+        if (txtImpAlq != null) {
+            txtImpAlq.setEditable(false);
         }
 
         // 5. Buscador dinámico en la galería de vehículos de la categoría
@@ -223,11 +276,12 @@ public class NuevoContratoController {
 
     /**
      * Vincula dos DatePicker (inicio y devolución) de modo que:
-     * - Al seleccionar una fecha de inicio, en el segundo calendario (devolución) quedan
-     *   deshabilitadas todas las fechas anteriores o iguales a la fecha de inicio.
+     * - Al seleccionar una fecha de inicio, en el segundo calendario (devolución)
+     * quedan
+     * deshabilitadas todas las fechas anteriores o iguales a la fecha de inicio.
      * - Solo se puede elegir a partir del día siguiente (fechaInicio.plusDays(1)).
      * - Si la fecha de devolución era anterior o igual a la nueva fecha de inicio,
-     *   avanza automáticamente al día siguiente de la fecha de inicio.
+     * avanza automáticamente al día siguiente de la fecha de inicio.
      */
     private void configurarRestriccionCalendarioDevolucion(
             DatePicker dpInicio,
@@ -262,7 +316,8 @@ public class NuevoContratoController {
                     dpDevolucion.setValue(diaSiguiente);
                 }
             }
-            // Reasignar el dayCellFactory fuerza a JavaFX a refrescar las celdas del segundo calendario
+            // Reasignar el dayCellFactory fuerza a JavaFX a refrescar las celdas del
+            // segundo calendario
             dpDevolucion.setDayCellFactory(null);
             dpDevolucion.setDayCellFactory(fabricaCeldasDevolucion);
 
@@ -300,7 +355,8 @@ public class NuevoContratoController {
     }
 
     /**
-     * Carga la imagen representativa de la categoría con fallback a /autos/default.png.
+     * Carga la imagen representativa de la categoría con fallback a
+     * /autos/default.png.
      */
     private void cargarImagenRepresentativa(ImageView imageView, String rutaCategoria) {
         if (imageView == null) {
@@ -316,7 +372,8 @@ public class NuevoContratoController {
     }
 
     /**
-     * Configura la animación al pasar el mouse sobre cada botón grande de categoría,
+     * Configura la animación al pasar el mouse sobre cada botón grande de
+     * categoría,
      * resaltando y escalando suavemente la imagen genérica del vehículo.
      */
     private void configurarAnimacionHoverCategoria(Button boton, StackPane contenedorImg, ImageView imageView) {
@@ -381,22 +438,31 @@ public class NuevoContratoController {
                 base.addAll(desdeBd);
             }
         } catch (Exception ignored) {
-            // Si la base de datos no está activa durante la prueba visual, se usan unidades de muestra
+            // Si la base de datos no está activa durante la prueba visual, se usan unidades
+            // de muestra
         }
 
         if (base.isEmpty()) {
-            base.add(new Vehiculo(1, "AB123CD", "Toyota", "Corolla", 2023, "2023-03-10", 14200, "Disponible", 24000.0, null, "Nafta", 420.0, 5, 45000.0, "Auto", 1));
-            base.add(new Vehiculo(2, "AF489KL", "Volkswagen", "Vento", 2024, "2024-01-15", 6800, "Disponible", 27500.0, null, "Nafta", 460.0, 5, 52000.0, "Auto", 1));
-            base.add(new Vehiculo(3, "AE902MN", "Peugeot", "208", 2022, "2022-07-20", 29500, "Disponible", 18500.0, null, "Nafta", 310.0, 5, 38000.0, "Auto", 1));
+            base.add(new Vehiculo(1, "AB123CD", "Toyota", "Corolla", 2023, "2023-03-10", 14200, "Disponible", 24000.0,
+                    null, "Nafta", 420.0, 5, 45000.0, "Auto", 1));
+            base.add(new Vehiculo(2, "AF489KL", "Volkswagen", "Vento", 2024, "2024-01-15", 6800, "Disponible", 27500.0,
+                    null, "Nafta", 460.0, 5, 52000.0, "Auto", 1));
+            base.add(new Vehiculo(3, "AE902MN", "Peugeot", "208", 2022, "2022-07-20", 29500, "Disponible", 18500.0,
+                    null, "Nafta", 310.0, 5, 38000.0, "Auto", 1));
 
-            base.add(new Vehiculo(4, "AD551OP", "Mercedes Benz", "Sprinter", 2023, "2023-05-12", 22400, "Disponible", 48000.0, null, "Diesel", 950.0, 15, 89000.0, "Combi", 1));
-            base.add(new Vehiculo(5, "AF774QR", "Ford", "Transit Minibus", 2024, "2024-02-01", 9100, "Disponible", 51000.0, null, "Diesel", 1000.0, 17, 94000.0, "Combi", 1));
+            base.add(new Vehiculo(4, "AD551OP", "Mercedes Benz", "Sprinter", 2023, "2023-05-12", 22400, "Disponible",
+                    48000.0, null, "Diesel", 950.0, 15, 89000.0, "Combi", 1));
+            base.add(new Vehiculo(5, "AF774QR", "Ford", "Transit Minibus", 2024, "2024-02-01", 9100, "Disponible",
+                    51000.0, null, "Diesel", 1000.0, 17, 94000.0, "Combi", 1));
 
-            base.add(new Vehiculo(6, "AC310ST", "Renault", "Kangoo Express", 2022, "2022-09-18", 34000, "Disponible", 22000.0, null, "Nafta", 750.0, 2, 56000.0, "Furgoneta", 1));
-            base.add(new Vehiculo(7, "AF118UV", "Fiat", "Ducato Cargo", 2023, "2023-11-05", 16300, "Disponible", 41000.0, null, "Diesel", 1450.0, 3, 78000.0, "Furgoneta", 1));
+            base.add(new Vehiculo(6, "AC310ST", "Renault", "Kangoo Express", 2022, "2022-09-18", 34000, "Disponible",
+                    22000.0, null, "Nafta", 750.0, 2, 56000.0, "Furgoneta", 1));
+            base.add(new Vehiculo(7, "AF118UV", "Fiat", "Ducato Cargo", 2023, "2023-11-05", 16300, "Disponible",
+                    41000.0, null, "Diesel", 1450.0, 3, 78000.0, "Furgoneta", 1));
         }
 
-        // Incluir también cualquier vehículo dado de alta en la pestaña 'Vehículos' durante la sesión
+        // Incluir también cualquier vehículo dado de alta en la pestaña 'Vehículos'
+        // durante la sesión
         for (Vehiculo registrado : VehiculoController.getVehiculosRegistradosEnSesion()) {
             boolean existe = false;
             for (Vehiculo v : base) {
@@ -473,8 +539,10 @@ public class NuevoContratoController {
     }
 
     /**
-     * Filtra los vehículos de la categoría actual verificando su disponibilidad entre
-     * dpFiltroInicio y dpFiltroDevolucion y aplicando el filtro de búsqueda por texto.
+     * Filtra los vehículos de la categoría actual verificando su disponibilidad
+     * entre
+     * dpFiltroInicio y dpFiltroDevolucion y aplicando el filtro de búsqueda por
+     * texto.
      */
     private void aplicarFiltrosDisponibilidadYTexto() {
         LocalDate fechaInicio = dpFiltroInicio != null ? dpFiltroInicio.getValue() : null;
@@ -511,8 +579,7 @@ public class NuevoContratoController {
                     ? " (" + fechaInicio + " al " + fechaFin + ")"
                     : "";
             lblCantidadCategoria.setText(
-                    (total == 1 ? "1 unidad disponible" : total + " unidades disponibles") + rangoTexto
-            );
+                    (total == 1 ? "1 unidad disponible" : total + " unidades disponibles") + rangoTexto);
         }
     }
 
@@ -527,10 +594,11 @@ public class NuevoContratoController {
         try {
             ocupados.addAll(contratoDAO.obtenerIdsVehiculosOcupadosEntreFechas(inicioStr, finStr));
         } catch (Exception ignored) {
-            // Si la base de datos no está conectada, se verifica contra los contratos en memoria
+            // Si la base de datos no está conectada, se verifica contra los contratos en
+            // memoria
         }
 
-        for (Contrato c : contratosEnMemoria) {
+        for (Contrato c : CONTRATOS_EN_MEMORIA) {
             if (c.getIdAsigna() != null && c.getFeHrEnt() != null && c.getFeHrDev() != null) {
                 if (c.getFeHrEnt().compareTo(finStr) <= 0 && c.getFeHrDev().compareTo(inicioStr) >= 0) {
                     ocupados.add(c.getIdAsigna());
@@ -561,7 +629,8 @@ public class NuevoContratoController {
     }
 
     /**
-     * Construye dinámicamente la tarjeta del vehículo reutilizando la estructura de VehiculoController
+     * Construye dinámicamente la tarjeta del vehículo reutilizando la estructura de
+     * VehiculoController
      * y agregando la acción de selección para el contrato.
      */
     private VBox crearTarjetaVehiculoContrato(Vehiculo vehiculo) {
@@ -571,11 +640,10 @@ public class NuevoContratoController {
         tarjeta.setPadding(new Insets(16.0));
         tarjeta.setStyle(
                 "-fx-background-color: #FFFFFF; "
-                + "-fx-background-radius: 14; "
-                + "-fx-border-color: #E5E7EB; "
-                + "-fx-border-radius: 14; "
-                + "-fx-border-width: 1;"
-        );
+                        + "-fx-background-radius: 14; "
+                        + "-fx-border-color: #E5E7EB; "
+                        + "-fx-border-radius: 14; "
+                        + "-fx-border-width: 1;");
 
         InputStream flujo = obtenerFlujoImagenVehiculo(vehiculo);
 
@@ -605,8 +673,7 @@ public class NuevoContratoController {
         Label lblPatente = new Label("Patente: " + (vehiculo.getPat() != null ? vehiculo.getPat() : "-"));
         lblPatente.setStyle(
                 "-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151; "
-                + "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 4 10 4 10;"
-        );
+                        + "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 4 10 4 10;");
 
         Region espaciador = new Region();
         HBox.setHgrow(espaciador, Priority.ALWAYS);
@@ -623,8 +690,7 @@ public class NuevoContratoController {
         btnElegir.setMaxWidth(Double.MAX_VALUE);
         btnElegir.setStyle(
                 "-fx-background-color: #111827; -fx-text-fill: #FFFFFF; -fx-font-size: 12px; "
-                + "-fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 12 8 12; -fx-cursor: hand;"
-        );
+                        + "-fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 12 8 12; -fx-cursor: hand;");
         btnElegir.setOnAction(e -> pasarAFormularioContrato(vehiculo));
 
         tarjeta.getChildren().addAll(contenedorImagen, lblMarca, lblModelo, filaInferior, btnElegir);
@@ -632,7 +698,8 @@ public class NuevoContratoController {
     }
 
     /**
-     * Aplica la misma lógica de imagen genérica (/autos/<marca>_<modelo>.png) con respaldo a la imagen
+     * Aplica la misma lógica de imagen genérica (/autos/<marca>_<modelo>.png) con
+     * respaldo a la imagen
      * de su categoría o /autos/default.png.
      */
     private InputStream obtenerFlujoImagenVehiculo(Vehiculo vehiculo) {
@@ -642,7 +709,8 @@ public class NuevoContratoController {
     private void pasarAFormularioContrato(Vehiculo vehiculo) {
         this.vehiculoSeleccionado = vehiculo;
 
-        // Transferir las fechas elegidas en la barra de disponibilidad al formulario del contrato
+        // Transferir las fechas elegidas en la barra de disponibilidad al formulario
+        // del contrato
         if (dpFiltroInicio != null && dpFiltroInicio.getValue() != null && dpFechaEntrega != null) {
             dpFechaEntrega.setValue(dpFiltroInicio.getValue());
         }
@@ -668,7 +736,8 @@ public class NuevoContratoController {
             lblCardTarifa.setText(String.format("$%.2f / día", vehiculo.getTarBase()));
         }
         if (lblResumenVehiculoElegido != null) {
-            lblResumenVehiculoElegido.setText("Unidad seleccionada: " + vehiculo.getMarca() + " " + vehiculo.getMod() + " (" + vehiculo.getPat() + ")");
+            lblResumenVehiculoElegido.setText("Unidad seleccionada: " + vehiculo.getMarca() + " " + vehiculo.getMod()
+                    + " (" + vehiculo.getPat() + ")");
         }
         if (txtKmSalida != null && vehiculo.getKmj() != null) {
             txtKmSalida.setText(String.valueOf(vehiculo.getKmj()));
@@ -685,7 +754,8 @@ public class NuevoContratoController {
     }
 
     /**
-     * Obtiene el padrón completo de clientes combinando la base de datos y los registrados en sesión.
+     * Obtiene el padrón completo de clientes combinando la base de datos y los
+     * registrados en sesión.
      */
     private List<Cliente> obtenerTodosLosClientesDisponibles() {
         List<Cliente> resultado = new ArrayList<>();
@@ -714,7 +784,8 @@ public class NuevoContratoController {
     }
 
     /**
-     * Filtra clientes buscando coincidencias por cualquier atributo (DNI, Nombre, Apellido, Teléfono, Correo o Dirección).
+     * Filtra clientes buscando coincidencias por cualquier atributo (DNI, Nombre,
+     * Apellido, Teléfono, Correo o Dirección).
      */
     private List<Cliente> filtrarClientesPorCualquierAtributo(List<Cliente> base, String criterioTexto) {
         String filtro = criterioTexto == null ? "" : criterioTexto.trim().toLowerCase();
@@ -746,9 +817,11 @@ public class NuevoContratoController {
     }
 
     /**
-     * Abre una pantalla emergente (Stage modal) con los resultados de búsqueda del cliente
+     * Abre una pantalla emergente (Stage modal) con los resultados de búsqueda del
+     * cliente
      * mostrando las columnas: Nombre, Apellido, DNI y Teléfono.
-     * Si no se encuentra por ningún atributo, permite habilitar directamente la carga de un Nuevo Cliente.
+     * Si no se encuentra por ningún atributo, permite habilitar directamente la
+     * carga de un Nuevo Cliente.
      */
     @FXML
     public void abrirVentanaBusquedaCliente() {
@@ -767,27 +840,27 @@ public class NuevoContratoController {
 
         VBox contenedorPrincipal = new VBox(14.0);
         contenedorPrincipal.setPadding(new Insets(20.0));
-        contenedorPrincipal.setStyle("-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;");
+        contenedorPrincipal
+                .setStyle("-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;");
 
         // Encabezado y buscador interactivo dentro de la ventana emergente
         VBox tarjetaSuperior = new VBox(10.0);
         tarjetaSuperior.setStyle(
                 "-fx-background-color: #FFFFFF; -fx-background-radius: 14; "
-                + "-fx-border-color: #E5E7EB; -fx-border-radius: 14; -fx-padding: 16;"
-        );
+                        + "-fx-border-color: #E5E7EB; -fx-border-radius: 14; -fx-padding: 16;");
 
         Label lblTituloPopup = new Label("Resultados de Búsqueda de Clientes");
         lblTituloPopup.setStyle("-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #111827;");
 
-        Label lblSubtituloPopup = new Label("Haga doble clic sobre un cliente o presione 'Seleccionar Cliente'. Si no existe, pulse '+ Cargar Nuevo Cliente'.");
+        Label lblSubtituloPopup = new Label(
+                "Haga doble clic sobre un cliente o presione 'Seleccionar Cliente'. Si no existe, pulse '+ Cargar Nuevo Cliente'.");
         lblSubtituloPopup.setStyle("-fx-font-size: 12px; -fx-text-fill: #6B7280;");
 
         TextField txtFiltroPopup = new TextField(textoInicial);
         txtFiltroPopup.setPromptText("Filtrar por Nombre, Apellido, DNI, Teléfono, Correo o Dirección...");
         txtFiltroPopup.setStyle(
                 "-fx-background-color: #F3F4F6; -fx-background-radius: 8; "
-                + "-fx-border-color: transparent; -fx-padding: 9 12 9 12; -fx-font-size: 13px;"
-        );
+                        + "-fx-border-color: transparent; -fx-padding: 9 12 9 12; -fx-font-size: 13px;");
 
         tarjetaSuperior.getChildren().addAll(lblTituloPopup, lblSubtituloPopup, txtFiltroPopup);
 
@@ -814,34 +887,35 @@ public class NuevoContratoController {
         tablaResultados.getColumns().add(colDni);
         tablaResultados.getColumns().add(colTel);
 
-        // Placeholder limpio solo con el mensaje informativo (sin botón adentro de la tabla)
+        // Placeholder limpio solo con el mensaje informativo (sin botón adentro de la
+        // tabla)
         Label lblSinCoincidencias = new Label("No se encontró ningún cliente con ese criterio.");
         lblSinCoincidencias.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 13px; -fx-font-weight: bold;");
         tablaResultados.setPlaceholder(lblSinCoincidencias);
 
         ObservableList<Cliente> itemsPopup = FXCollections.observableArrayList(
-                filtrarClientesPorCualquierAtributo(todosLosClientes, textoInicial)
-        );
+                filtrarClientesPorCualquierAtributo(todosLosClientes, textoInicial));
         tablaResultados.setItems(itemsPopup);
         if (!itemsPopup.isEmpty()) {
             tablaResultados.getSelectionModel().selectFirst();
         }
 
-        // Bandera para abrir la ventana flotante de Nuevo Cliente DESPUÉS de que cierre completamente esta ventana modal,
+        // Bandera para abrir la ventana flotante de Nuevo Cliente DESPUÉS de que cierre
+        // completamente esta ventana modal,
         // evitando el bloqueo de eventos por doble showAndWait() anidado en JavaFX.
-        final boolean[] abrirNuevoClienteAlCerrar = {false};
+        final boolean[] abrirNuevoClienteAlCerrar = { false };
 
         // Barra inferior de botones de la ventana emergente
         HBox barraBotones = new HBox(10.0);
         barraBotones.setAlignment(Pos.CENTER_RIGHT);
 
-        // Único botón '+ Cargar nuevo cliente' siempre visible en la esquina inferior izquierda
+        // Único botón '+ Cargar nuevo cliente' siempre visible en la esquina inferior
+        // izquierda
         Button btnCargarNuevo = new Button("+ Cargar nuevo cliente");
         btnCargarNuevo.setStyle(
                 "-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-border-color: #F59E0B; "
-                + "-fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-font-weight: bold; "
-                + "-fx-padding: 9 14 9 14; -fx-cursor: hand;"
-        );
+                        + "-fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 12px; -fx-font-weight: bold; "
+                        + "-fx-padding: 9 14 9 14; -fx-cursor: hand;");
         btnCargarNuevo.setOnAction(e -> {
             if (txtBuscarClienteContrato != null) {
                 txtBuscarClienteContrato.setText(txtFiltroPopup.getText());
@@ -856,15 +930,13 @@ public class NuevoContratoController {
         Button btnCancelar = new Button("Cancelar");
         btnCancelar.setStyle(
                 "-fx-background-color: #E5E7EB; -fx-text-fill: #374151; -fx-font-size: 12px; "
-                + "-fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 16 9 16; -fx-cursor: hand;"
-        );
+                        + "-fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 16 9 16; -fx-cursor: hand;");
         btnCancelar.setOnAction(e -> ventanaEmergente.close());
 
         Button btnSeleccionar = new Button("Seleccionar Cliente");
         btnSeleccionar.setStyle(
                 "-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 12px; "
-                + "-fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 18 9 18; -fx-cursor: hand;"
-        );
+                        + "-fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 9 18 9 18; -fx-cursor: hand;");
         btnSeleccionar.setOnAction(e -> {
             Cliente elegido = tablaResultados.getSelectionModel().getSelectedItem();
             if (elegido == null) {
@@ -890,7 +962,8 @@ public class NuevoContratoController {
             }
         });
 
-        // Doble clic sobre una fila selecciona automáticamente al cliente y cierra la ventana emergente
+        // Doble clic sobre una fila selecciona automáticamente al cliente y cierra la
+        // ventana emergente
         tablaResultados.setRowFactory(tv -> {
             TableRow<Cliente> fila = new TableRow<>();
             fila.setOnMouseClicked(event -> {
@@ -909,15 +982,18 @@ public class NuevoContratoController {
         ventanaEmergente.setScene(escenaPopup);
         ventanaEmergente.showAndWait();
 
-        // Una vez que la ventana de búsqueda terminó su ciclo modal por completo, se abre la ventana de Nuevo Cliente
+        // Una vez que la ventana de búsqueda terminó su ciclo modal por completo, se
+        // abre la ventana de Nuevo Cliente
         if (abrirNuevoClienteAlCerrar[0]) {
             Platform.runLater(this::abrirVentanaNuevoClienteContrato);
         }
     }
 
     /**
-     * Abre la ventana flotante auxiliar reutilizable (NuevoClienteDialogView.fxml) en modo diferido:
-     * el cliente NO se guarda en la base de datos hasta que se confirme la transacción del contrato.
+     * Abre la ventana flotante auxiliar reutilizable (NuevoClienteDialogView.fxml)
+     * en modo diferido:
+     * el cliente NO se guarda en la base de datos hasta que se confirme la
+     * transacción del contrato.
      */
     @FXML
     public void abrirVentanaNuevoClienteContrato() {
@@ -928,22 +1004,26 @@ public class NuevoContratoController {
                 ? txtBuscarClienteContrato.getText().trim()
                 : "";
 
-        Cliente nuevoCliente = NuevoClienteDialogController.mostrarVentanaNuevoClienteDiferidoParaContrato(owner, textoBuscado);
+        Cliente nuevoCliente = NuevoClienteDialogController.mostrarVentanaNuevoClienteDiferidoParaContrato(owner,
+                textoBuscado);
         if (nuevoCliente != null) {
             asignarClienteAlContrato(nuevoCliente, true);
         }
     }
 
     /**
-     * Asigna un cliente existente seleccionado desde la ventana emergente de búsqueda.
+     * Asigna un cliente existente seleccionado desde la ventana emergente de
+     * búsqueda.
      */
     private void asignarClienteSeleccionado(Cliente cliente) {
         asignarClienteAlContrato(cliente, false);
     }
 
     /**
-     * Asigna el cliente al contrato indicando si es un cliente nuevo pendiente de persistir
-     * junto con el contrato en la transacción JDBC o si ya existía en la base de datos.
+     * Asigna el cliente al contrato indicando si es un cliente nuevo pendiente de
+     * persistir
+     * junto con el contrato en la transacción JDBC o si ya existía en la base de
+     * datos.
      */
     private void asignarClienteAlContrato(Cliente cliente, boolean esNuevoPendienteDeTransaccion) {
         if (cliente == null) {
@@ -959,15 +1039,13 @@ public class NuevoContratoController {
         if (lblClienteResumenDatos != null) {
             lblClienteResumenDatos.setText(
                     "Tel: " + (cliente.getTel() != null ? cliente.getTel() : "-")
-                    + "   |   Correo: " + (cliente.getCorreo() != null ? cliente.getCorreo() : "-")
-                    + "   |   Dirección: " + (cliente.getDir() != null ? cliente.getDir() : "-")
-            );
+                            + "   |   Correo: " + (cliente.getCorreo() != null ? cliente.getCorreo() : "-")
+                            + "   |   Dirección: " + (cliente.getDir() != null ? cliente.getDir() : "-"));
         }
         if (tarjetaClienteSeleccionado != null) {
             tarjetaClienteSeleccionado.setStyle(
                     "-fx-background-color: #ECFDF5; -fx-background-radius: 12; "
-                    + "-fx-border-color: #10B981; -fx-border-radius: 12; -fx-padding: 12 16 12 16;"
-            );
+                            + "-fx-border-color: #10B981; -fx-border-radius: 12; -fx-padding: 12 16 12 16;");
         }
         if (lblEstadoClienteContrato != null) {
             String etiqueta = esNuevoPendienteDeTransaccion
@@ -976,8 +1054,7 @@ public class NuevoContratoController {
             lblEstadoClienteContrato.setText(etiqueta);
             lblEstadoClienteContrato.setStyle(
                     "-fx-background-color: #D1FAE5; -fx-text-fill: #065F46; "
-                    + "-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10 3 10; -fx-background-radius: 10;"
-            );
+                            + "-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10 3 10; -fx-background-radius: 10;");
         }
     }
 
@@ -1005,20 +1082,19 @@ public class NuevoContratoController {
             lblClienteResumenNombre.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #374151;");
         }
         if (lblClienteResumenDatos != null) {
-            lblClienteResumenDatos.setText("Busque un cliente por DNI, nombre, apellido o teléfono para asignarlo al contrato");
+            lblClienteResumenDatos
+                    .setText("Busque un cliente por DNI, nombre, apellido o teléfono para asignarlo al contrato");
         }
         if (tarjetaClienteSeleccionado != null) {
             tarjetaClienteSeleccionado.setStyle(
                     "-fx-background-color: #F9FAFB; -fx-background-radius: 12; "
-                    + "-fx-border-color: #E5E7EB; -fx-border-radius: 12; -fx-padding: 12 16 12 16;"
-            );
+                            + "-fx-border-color: #E5E7EB; -fx-border-radius: 12; -fx-padding: 12 16 12 16;");
         }
         if (lblEstadoClienteContrato != null) {
             lblEstadoClienteContrato.setText("Pendiente de selección");
             lblEstadoClienteContrato.setStyle(
                     "-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; "
-                    + "-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10 3 10; -fx-background-radius: 10;"
-            );
+                            + "-fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 10 3 10; -fx-background-radius: 10;");
         }
     }
 
@@ -1052,7 +1128,8 @@ public class NuevoContratoController {
     @FXML
     public void confirmarNuevoContrato() {
         if (vehiculoSeleccionado == null) {
-            mostrarMensaje("Vehículo requerido", "Seleccione primero un vehículo de la galería.", Alert.AlertType.WARNING);
+            mostrarMensaje("Vehículo requerido", "Seleccione primero un vehículo de la galería.",
+                    Alert.AlertType.WARNING);
             return;
         }
 
@@ -1064,47 +1141,83 @@ public class NuevoContratoController {
         }
 
         try {
-            String feEnt = dpFechaEntrega.getValue() != null ? dpFechaEntrega.getValue().toString() : "";
-            String feDev = dpFechaDevolucion.getValue() != null ? dpFechaDevolucion.getValue().toString() : "";
-            double impAlq = Double.parseDouble(txtImpAlq.getText().trim());
+            LocalDate fechaEntrega = dpFechaEntrega.getValue();
+            LocalDate fechaDevolucion = dpFechaDevolucion.getValue();
 
-            int kmSalida = Integer.parseInt(txtKmSalida.getText().trim());
-            double combSalida = Double.parseDouble(txtCombSalida.getText().trim());
-            String danios = txtDaniosSalida.getText().trim();
-
-            if (feEnt.isEmpty() || feDev.isEmpty()) {
-                mostrarMensaje("Fechas incompletas", "Seleccione las fechas de entrega y devolución.", Alert.AlertType.WARNING);
+            if (fechaEntrega == null || fechaDevolucion == null) {
+                mostrarMensaje("Fechas incompletas", "Seleccione las fechas de entrega y devolución.",
+                        Alert.AlertType.WARNING);
                 return;
             }
 
-            // Constructores sin ID: MySQL genera los IDs con AUTO_INCREMENT y los DAOs los asignan mediante setters
-            Contrato contrato = new Contrato(
-                    feEnt, feDev, "Estándar", "Activo",
-                    0.0, impAlq, 0.0, vehiculoSeleccionado.getId(), clienteElegidoExistente.getId()
-            );
-            CheckInOut checkInOut = new CheckInOut(
-                    feEnt, kmSalida, combSalida, danios,
-                    null, null, null, null, 1, null
-            );
+            String feEnt = fechaEntrega.toString();
+            String feDev = fechaDevolucion.toString();
 
-            if (clienteNuevoPendienteDeTransaccion) {
-                // Transacción estricta JDBC: inserta Cliente y Contrato en la misma conexión con commit/rollback
-                contratoService.registrarAlquilerNuevoCliente(clienteElegidoExistente, contrato);
-                // Solo si la transacción del contrato tuvo éxito, se agrega el nuevo cliente al padrón en memoria
-                ClienteController.registrarClienteEnMemoria(clienteElegidoExistente);
-                this.clienteNuevoPendienteDeTransaccion = false;
-            } else {
-                contratoService.altaContrato(contrato, clienteElegidoExistente, vehiculoSeleccionado, checkInOut);
+            // El importe de alquiler (impAlq) se calcula como la tarifa base del vehículo * la cantidad de días
+            long diasAlquiler = Math.max(1, ChronoUnit.DAYS.between(fechaEntrega, fechaDevolucion));
+            double tarifaBase = (vehiculoSeleccionado.getTarBase() != null) ? vehiculoSeleccionado.getTarBase() : 0.0;
+            double impAlq = diasAlquiler * tarifaBase;
+
+            // Reflejar el valor calculado en el campo de texto de la interfaz
+            if (txtImpAlq != null) {
+                txtImpAlq.setText(String.format("%.2f", impAlq).replace(",", "."));
             }
 
-            contratosEnMemoria.add(contrato);
+            int kmSalida = 0;
+            if (txtKmSalida != null && txtKmSalida.getText() != null && !txtKmSalida.getText().trim().isEmpty()) {
+                kmSalida = Integer.parseInt(txtKmSalida.getText().trim());
+            } else if (vehiculoSeleccionado.getKmj() != null) {
+                kmSalida = vehiculoSeleccionado.getKmj();
+            }
+
+            double combSalida = 100.0;
+            if (txtCombSalida != null && txtCombSalida.getText() != null && !txtCombSalida.getText().trim().isEmpty()) {
+                combSalida = Double.parseDouble(txtCombSalida.getText().trim());
+            }
+
+            String danios = (txtDaniosSalida != null && txtDaniosSalida.getText() != null && !txtDaniosSalida.getText().trim().isEmpty())
+                    ? txtDaniosSalida.getText().trim()
+                    : "Ninguno";
+
+            // Constructores sin ID: MySQL genera los IDs con AUTO_INCREMENT y los DAOs los
+            // asignan mediante setters
+            Contrato contrato = new Contrato(
+                    feEnt, feDev, "Estándar", "Activo",
+                    0.0, impAlq, 0.0, vehiculoSeleccionado.getId(), clienteElegidoExistente.getId());
+            CheckInOut checkInOut = new CheckInOut(
+                    feEnt, kmSalida, combSalida, danios,
+                    null, null, null, null, 1, null);
+
+            // Invocación única del procedimiento almacenado insertar_contrato
+            // (el parámetro booleano indica si el cliente ya existe [true] o si el SP debe
+            // crearlo [false])
+            boolean clienteExiste = !clienteNuevoPendienteDeTransaccion;
+            contratoService.altaContrato(clienteExiste, contrato, clienteElegidoExistente, vehiculoSeleccionado,
+                    checkInOut);
+
+            if (clienteNuevoPendienteDeTransaccion) {
+                ClienteController.registrarClienteEnMemoria(clienteElegidoExistente);
+                this.clienteNuevoPendienteDeTransaccion = false;
+            }
+
+            if (clienteElegidoExistente != null) {
+                contrato.setClienteNombre(clienteElegidoExistente.getNom() + " " + clienteElegidoExistente.getApl());
+                contrato.setClienteDni(clienteElegidoExistente.getDni());
+            }
+            if (vehiculoSeleccionado != null) {
+                contrato.setVehiculoModelo(vehiculoSeleccionado.getMarca() + " " + vehiculoSeleccionado.getMod());
+                contrato.setVehiculoPatente(vehiculoSeleccionado.getPat());
+            }
+
+            registrarContratoEnMemoria(contrato);
 
             String nroGenerado = contrato.getNro() != null ? String.valueOf(contrato.getNro()) : "(generado)";
             mostrarMensaje("Contrato Generado",
                     "El contrato N° " + nroGenerado + " a nombre de "
-                    + clienteElegidoExistente.getNom() + " " + clienteElegidoExistente.getApl()
-                    + " para el vehículo " + vehiculoSeleccionado.getMarca() + " " + vehiculoSeleccionado.getMod()
-                    + " se registró exitosamente.",
+                            + clienteElegidoExistente.getNom() + " " + clienteElegidoExistente.getApl()
+                            + " para el vehículo " + vehiculoSeleccionado.getMarca() + " "
+                            + vehiculoSeleccionado.getMod()
+                            + " se registró exitosamente.",
                     Alert.AlertType.INFORMATION);
             volverACategorias();
 
