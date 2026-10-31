@@ -246,6 +246,39 @@ public class ContratoDAO {
     }
 
     /**
+     * Ejecuta el procedimiento almacenado 'registrar_devolucion' en la base de
+     * datos.
+     * Actualiza el contrato a estado 'Devuelto' con los cargos correspondientes y
+     * completa la información de entrega en la tabla checkInOuts.
+     *
+     * @param nroContrato número de contrato (Co_nro)
+     * @param kmj         kilometraje de entrada/devolución
+     * @param nivComb     nivel de combustible de devolución (0.0 - 100.0)
+     * @param daNuevos    daños nuevos detectados al devolver
+     * @param cargos      cargos adicionales por demora o daños
+     * @param sucEnt      código de la sucursal donde se entrega el vehículo
+     */
+    public void registrarDevolucion(int nroContrato, int kmj, double nivComb, String daNuevos, double cargos,
+            int sucEnt) {
+        String call = "{call registrar_devolucion(?, ?, ?, ?, ?, ?)}";
+        try (Connection conn = DatabaseConnection.getConnection();
+                CallableStatement cstmt = conn.prepareCall(call)) {
+
+            cstmt.setInt(1, nroContrato);
+            cstmt.setInt(2, kmj);
+            cstmt.setDouble(3, nivComb);
+            cstmt.setString(4, (daNuevos != null && !daNuevos.trim().isEmpty()) ? daNuevos.trim() : "Ninguno");
+            cstmt.setDouble(5, cargos);
+            cstmt.setInt(6, sucEnt);
+
+            cstmt.execute();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al ejecutar registrar_devolucion: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Obtiene la lista completa de contratos desde la base de datos,
      * incorporando mediante JOIN los datos del cliente y del vehículo asociado.
      */

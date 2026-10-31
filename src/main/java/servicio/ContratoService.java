@@ -105,4 +105,8 @@ public class ContratoService {
     public Contrato buscarPorId(int id) {
         return contratoDAO.buscarPorId(id);
     }
+
+    public void registrarDevolucion(int nroContrato, int kmj, double nivComb, String daNuevos, double cargos, int sucEnt) {
+        contratoDAO.registrarDevolucion(nroContrato, kmj, nivComb, daNuevos, cargos, sucEnt);
+    }
 }
