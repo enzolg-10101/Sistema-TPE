@@ -155,7 +155,7 @@
                             <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"
                                    text="Fecha de Ingreso (E_fIng)"/>
                             <DatePicker fx:id="dpFIng" editable="false" maxWidth="Infinity"
-                                        promptText="Seleccione en el calendario"
+                                        promptText="dd-mm-aaaa"
                                         style="-fx-background-color: #F3F4F6; -fx-background-radius: 10; -fx-font-size: 13px;"/>
                         </VBox>
 

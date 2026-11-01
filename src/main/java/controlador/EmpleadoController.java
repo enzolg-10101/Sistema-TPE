@@ -22,6 +22,7 @@ import javafx.util.StringConverter;
 import modelo.Empleado;
 import modelo.Sucursal;
 import servicio.EmpleadoService;
+import util.FormatoFecha;
 
 public class EmpleadoController {
 
@@ -82,7 +83,7 @@ public class EmpleadoController {
 
     private void configurarControlesAlta() {
         if (dpFIng != null) {
-            dpFIng.setEditable(false);
+            FormatoFecha.configurarDatePicker(dpFIng);
         }
         if (cmbSucursal != null) {
             cmbSucursal.setConverter(new StringConverter<Sucursal>() {
@@ -129,7 +130,7 @@ public class EmpleadoController {
         colDir.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDir()));
         colTel.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getTel()));
         colCorreo.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getCorreo()));
-        colFIng.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getfIng()));
+        colFIng.setCellValueFactory(cell -> new SimpleStringProperty(FormatoFecha.formatearFechaGui(cell.getValue().getfIng())));
         colCodTrabaja.setCellValueFactory(cell -> new SimpleObjectProperty<>(cell.getValue().getCodTrabaja()));
     }
 
@@ -155,6 +156,7 @@ public class EmpleadoController {
                             || coincide(emp.getTel(), filtro)
                             || coincide(emp.getCorreo(), filtro)
                             || coincide(emp.getfIng(), filtro)
+                            || coincide(FormatoFecha.formatearFechaGui(emp.getfIng()), filtro)
                             || coincide(emp.getCodTrabaja(), filtro);
                 });
                 actualizarContadorResultados();

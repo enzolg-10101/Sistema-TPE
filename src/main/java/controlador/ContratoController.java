@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -41,6 +40,7 @@ import javafx.util.StringConverter;
 import modelo.Contrato;
 import modelo.Sucursal;
 import servicio.ContratoService;
+import util.FormatoFecha;
 
 public class ContratoController {
 
@@ -120,6 +120,31 @@ public class ContratoController {
         colImporte.setCellValueFactory(new PropertyValueFactory<>("impAlq"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("est"));
 
+        // Formato dd-mm-aaaa para las columnas de Fecha Entrega y Fecha Devolución
+        colFechaEntrega.setCellFactory(tc -> new TableCell<Contrato, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(FormatoFecha.formatearFechaGui(item));
+                }
+            }
+        });
+
+        colFechaDevolucion.setCellFactory(tc -> new TableCell<Contrato, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(FormatoFecha.formatearFechaGui(item));
+                }
+            }
+        });
+
         // Formato de moneda para el importe
         colImporte.setCellFactory(tc -> new TableCell<Contrato, Double>() {
             @Override
@@ -172,13 +197,17 @@ public class ContratoController {
                     String vehiculoStr = contrato.getVehiculoModelo() != null ? contrato.getVehiculoModelo().toLowerCase() : "";
                     String patenteStr = contrato.getVehiculoPatente() != null ? contrato.getVehiculoPatente().toLowerCase() : "";
                     String estadoStr = contrato.getEst() != null ? contrato.getEst().toLowerCase() : "";
+                    String feEntStr = FormatoFecha.formatearFechaGui(contrato.getFeHrEnt()).toLowerCase();
+                    String feDevStr = FormatoFecha.formatearFechaGui(contrato.getFeHrDev()).toLowerCase();
 
                     return nroStr.contains(filtro)
                             || clienteStr.contains(filtro)
                             || dniStr.contains(filtro)
                             || vehiculoStr.contains(filtro)
                             || patenteStr.contains(filtro)
-                            || estadoStr.contains(filtro);
+                            || estadoStr.contains(filtro)
+                            || feEntStr.contains(filtro)
+                            || feDevStr.contains(filtro);
                 });
                 actualizarContador();
             });
@@ -270,12 +299,14 @@ public class ContratoController {
 
         if (btnRegistrarDevolucion != null) {
             btnRegistrarDevolucion.setDisable(yaDevuelto);
+            btnRegistrarDevolucion.setMinHeight(42.0);
+            btnRegistrarDevolucion.setPrefHeight(42.0);
             if (yaDevuelto) {
                 btnRegistrarDevolucion.setText("Vehículo Ya Devuelto");
-                btnRegistrarDevolucion.setStyle("-fx-background-color: #E5E7EB; -fx-text-fill: #9CA3AF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: default;");
+                btnRegistrarDevolucion.setStyle("-fx-background-color: #E5E7EB; -fx-text-fill: #9CA3AF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 16 10 16; -fx-cursor: default;");
             } else {
                 btnRegistrarDevolucion.setText("Registrar Devolución");
-                btnRegistrarDevolucion.setStyle("-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;");
+                btnRegistrarDevolucion.setStyle("-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 16 10 16; -fx-cursor: hand;");
             }
         }
 
@@ -295,10 +326,10 @@ public class ContratoController {
             txtDetallePatente.setText(c.getVehiculoPatente());
         }
         if (txtDetalleFeEnt != null) {
-            txtDetalleFeEnt.setText(c.getFeHrEnt() != null ? c.getFeHrEnt() : "-");
+            txtDetalleFeEnt.setText(c.getFeHrEnt() != null ? FormatoFecha.formatearFechaGui(c.getFeHrEnt()) : "-");
         }
         if (txtDetalleFeDev != null) {
-            txtDetalleFeDev.setText(c.getFeHrDev() != null ? c.getFeHrDev() : "-");
+            txtDetalleFeDev.setText(c.getFeHrDev() != null ? FormatoFecha.formatearFechaGui(c.getFeHrDev()) : "-");
         }
         if (txtDetalleImpAlq != null) {
             txtDetalleImpAlq.setText(c.getImpAlq() != null ? String.format("$%.2f", c.getImpAlq()) : "$0.00");
@@ -359,6 +390,7 @@ public class ContratoController {
         ventana.setTitle("Registrar Devolución · Contrato #" + contratoSeleccionado.getNro());
 
         VBox root = new VBox(16.0);
+        root.setPrefWidth(520.0);
         root.setPadding(new Insets(24.0));
         root.setStyle("-fx-background-color: #F3F4F6; -fx-font-family: 'Segoe UI', 'Inter', sans-serif;");
 
@@ -459,12 +491,18 @@ public class ContratoController {
         // Barra de Botones
         HBox barraBotones = new HBox(12.0);
         barraBotones.setAlignment(Pos.CENTER_RIGHT);
+        barraBotones.setMinHeight(44.0);
+        barraBotones.setPrefHeight(44.0);
 
         Button btnCancelar = new Button("Cancelar");
+        btnCancelar.setMinHeight(40.0);
+        btnCancelar.setPrefHeight(40.0);
         btnCancelar.setStyle("-fx-background-color: #E5E7EB; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 18 10 18; -fx-cursor: hand;");
         btnCancelar.setOnAction(e -> ventana.close());
 
         Button btnConfirmar = new Button("Confirmar Devolución");
+        btnConfirmar.setMinHeight(40.0);
+        btnConfirmar.setPrefHeight(40.0);
         btnConfirmar.setStyle("-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 20 10 20; -fx-cursor: hand;");
 
         btnConfirmar.setOnAction(e -> {
@@ -514,6 +552,7 @@ public class ContratoController {
 
                 contratoSeleccionado.setEst("Devuelto");
                 contratoSeleccionado.setCargos(cargosVal);
+                NuevoContratoController.marcarContratoDevueltoEnMemoria(contratoSeleccionado.getNro(), cargosVal);
 
                 ventana.close();
 
@@ -535,9 +574,10 @@ public class ContratoController {
         barraBotones.getChildren().addAll(btnCancelar, btnConfirmar);
         root.getChildren().addAll(tarjetaEncabezado, tarjetaFormulario, barraBotones);
 
-        Scene scene = new Scene(root, 520.0, 420.0);
+        Scene scene = new Scene(root);
         ventana.setScene(scene);
         ventana.setResizable(false);
+        ventana.sizeToScene();
         ventana.showAndWait();
     }
 
@@ -608,4 +648,3 @@ public class ContratoController {
         alerta.showAndWait();
     }
 }
-

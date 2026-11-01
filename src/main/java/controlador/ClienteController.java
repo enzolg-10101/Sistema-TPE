@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import modelo.Cliente;
 import servicio.ClienteService;
+import util.FormatoFecha;
 
 public class ClienteController {
 
@@ -124,7 +125,7 @@ public class ClienteController {
         }
 
         if (dpFechaAlta != null) {
-            dpFechaAlta.setEditable(false);
+            FormatoFecha.configurarDatePicker(dpFechaAlta);
         }
 
         // 2. Filtrar la tabla en tiempo real cuando el usuario escriba en campoBusqueda
@@ -252,11 +253,7 @@ public class ClienteController {
 
         if (dpFechaAlta != null) {
             if (cliente.getfAlta() != null && !cliente.getfAlta().trim().isEmpty()) {
-                try {
-                    dpFechaAlta.setValue(LocalDate.parse(cliente.getfAlta().trim()));
-                } catch (Exception e) {
-                    dpFechaAlta.setValue(null);
-                }
+                dpFechaAlta.setValue(FormatoFecha.parsearFecha(cliente.getfAlta()));
             } else {
                 dpFechaAlta.setValue(null);
             }

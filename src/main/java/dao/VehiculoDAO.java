@@ -50,6 +50,56 @@ public class VehiculoDAO {
         }
     }
 
+    public void actualizar(Vehiculo vehiculo) {
+        String sqlPorId = "UPDATE Vehiculos SET V_pat = ?, V_marca = ?, V_mod = ?, V_aFabr = ?, "
+                        + "V_fAdq = ?, V_kmj = ?, V_est = ?, V_preAdq = ?, V_fBaja = ?, "
+                        + "V_tiComb = ?, T_carga = ?, T_pax = ?, T_tarBase = ?, T_cat = ?, cod_Pertenece = ? "
+                        + "WHERE V_id = ?";
+        String sqlPorPat = "UPDATE Vehiculos SET V_marca = ?, V_mod = ?, V_aFabr = ?, "
+                         + "V_fAdq = ?, V_kmj = ?, V_est = ?, V_preAdq = ?, V_fBaja = ?, "
+                         + "V_tiComb = ?, T_carga = ?, T_pax = ?, T_tarBase = ?, T_cat = ?, cod_Pertenece = ? "
+                         + "WHERE V_pat = ?";
+
+        boolean tieneId = vehiculo.getId() != null;
+        String sql = tieneId ? sqlPorId : sqlPorPat;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int idx = 1;
+            if (tieneId) {
+                stmt.setString(idx++, vehiculo.getPat());
+            }
+            stmt.setString(idx++, vehiculo.getMarca());
+            stmt.setString(idx++, vehiculo.getMod());
+            stmt.setInt(idx++, vehiculo.getaFabr());
+            stmt.setString(idx++, vehiculo.getfAdq());
+            stmt.setInt(idx++, vehiculo.getKmj());
+            stmt.setString(idx++, vehiculo.getEst());
+            stmt.setDouble(idx++, vehiculo.getPreAdq());
+            if (vehiculo.getfBaja() != null && !vehiculo.getfBaja().trim().isEmpty()) {
+                stmt.setString(idx++, vehiculo.getfBaja());
+            } else {
+                stmt.setNull(idx++, Types.VARCHAR);
+            }
+            stmt.setString(idx++, vehiculo.getTiComb());
+            stmt.setDouble(idx++, vehiculo.getCarga());
+            stmt.setInt(idx++, vehiculo.getPax());
+            stmt.setDouble(idx++, vehiculo.getTarBase());
+            stmt.setString(idx++, vehiculo.getCat());
+            stmt.setInt(idx++, vehiculo.getCodPertenece());
+
+            if (tieneId) {
+                stmt.setInt(idx, vehiculo.getId());
+            } else {
+                stmt.setString(idx, vehiculo.getPat());
+            }
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al actualizar el vehículo: " + e.getMessage(), e);
+        }
+    }
+
     public Vehiculo buscarPorId(String pat) {
         String sql = "SELECT V_id, V_pat, V_marca, V_mod, V_aFabr, V_fAdq, V_kmj, V_est, "
                    + "V_preAdq, V_fBaja, V_tiComb, T_carga, T_pax, T_tarBase, T_cat, cod_Pertenece "

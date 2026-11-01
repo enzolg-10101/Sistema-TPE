@@ -64,6 +64,7 @@ public class SucursalController {
 
     private final SucursalDAO sucursalDAO;
     private final SucursalService sucursalService;
+    private Sucursal sucursalSeleccionada;
 
     public SucursalController() {
         this.sucursalDAO = new SucursalDAO();
@@ -72,6 +73,17 @@ public class SucursalController {
 
     @FXML
     public void initialize() {
+        if (lblDetalleFlota != null) {
+            String estiloNormal = "-fx-background-color: #FEF3C7; -fx-text-fill: #D97706; -fx-font-size: 14px; "
+                    + "-fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 16 8 16; "
+                    + "-fx-cursor: hand; -fx-border-color: #FDE68A; -fx-border-radius: 10;";
+            String estiloHover = "-fx-background-color: #FDE68A; -fx-text-fill: #B45309; -fx-font-size: 14px; "
+                    + "-fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 8 16 8 16; "
+                    + "-fx-cursor: hand; -fx-border-color: #F59E0B; -fx-border-radius: 10;";
+            lblDetalleFlota.setStyle(estiloNormal);
+            lblDetalleFlota.setOnMouseEntered(e -> lblDetalleFlota.setStyle(estiloHover));
+            lblDetalleFlota.setOnMouseExited(e -> lblDetalleFlota.setStyle(estiloNormal));
+        }
         mostrarVistaTarjetas();
     }
 
@@ -123,7 +135,7 @@ public class SucursalController {
         lblDireccion.setStyle("-fx-font-size: 13px; -fx-text-fill: #6B7280;");
         lblDireccion.setWrapText(true);
 
-        // 3. Label: Texto destacado 'Flota: X vehículos'
+        // 3. Label: Texto destacado 'Flota: X vehículos' (informativo en la tarjeta; toda la tarjeta abre el detalle)
         Label lblFlota = new Label("Flota: " + sucursal.getCantidadVehiculos() + " vehículos");
         lblFlota.setStyle(
                 "-fx-background-color: #FEF3C7; "
@@ -151,6 +163,7 @@ public class SucursalController {
         if (sucursal == null) {
             return;
         }
+        this.sucursalSeleccionada = sucursal;
 
         if (lblDetalleCodigo != null) {
             lblDetalleCodigo.setText("CÓDIGO DE SUCURSAL #" + (sucursal.getCod() != null ? sucursal.getCod() : "-"));
@@ -175,6 +188,13 @@ public class SucursalController {
             vistaAlta.setManaged(false);
             vistaDetalle.setVisible(true);
             vistaDetalle.setManaged(true);
+        }
+    }
+
+    @FXML
+    public void verVehiculosSucursalSeleccionada() {
+        if (sucursalSeleccionada != null) {
+            HomeController.mostrarVehiculosDeSucursal(sucursalSeleccionada);
         }
     }
 

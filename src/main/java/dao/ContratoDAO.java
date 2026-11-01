@@ -374,26 +374,25 @@ public class ContratoDAO {
     }
 
     /**
-     * Obtiene los IDs de los vehículos (id_Asigna) que tienen contratos vigentes
-     * cuyos períodos
-     * se solapan con el rango [fechaInicio, fechaFin].
+     * Obtiene los IDs de los vehículos (id_Asigna) que se encuentran actualmente
+     * ocupados en contratos activos (es decir, aquellos contratos que aún NO fueron
+     * devueltos explícitamente mediante 'Registrar Devolución', sin importar si la
+     * fecha pactada ya pasó o no).
+     * Una vez que un contrato pasa a estado 'Devuelto', deja de bloquear al vehículo.
      */
     public Set<Integer> obtenerIdsVehiculosOcupadosEntreFechas(String fechaInicio, String fechaFin) {
         Set<Integer> ocupados = new HashSet<>();
         String sql = "SELECT DISTINCT id_Asigna FROM Contratos "
-                + "WHERE Co_feHrEnt <= ? AND Co_feHrDev >= ? "
-                + "AND (Co_est IS NULL OR LOWER(Co_est) NOT IN ('cancelado', 'finalizado'))";
+                + "WHERE id_Asigna IS NOT NULL "
+                + "AND (Co_est IS NULL OR LOWER(TRIM(Co_est)) NOT IN ('devuelto', 'pagado', 'finalizado', 'cancelado'))";
         try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, fechaFin);
-            stmt.setString(2, fechaInicio);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ocupados.add(rs.getInt("id_Asigna"));
-                }
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                ocupados.add(rs.getInt("id_Asigna"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error al verificar disponibilidad entre fechas: " + e.getMessage(), e);
+            throw new RuntimeException("Error al verificar disponibilidad de vehículos: " + e.getMessage(), e);
         }
         return ocupados;
     }

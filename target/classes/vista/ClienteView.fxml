@@ -170,7 +170,7 @@
                     <Label style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;"
                            text="Fecha Alta (C_fAlta)"/>
                     <DatePicker fx:id="dpFechaAlta" disable="true" editable="false" maxWidth="Infinity"
-                                promptText="Calendario"
+                                promptText="dd-mm-aaaa"
                                 style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
                 </VBox>
 

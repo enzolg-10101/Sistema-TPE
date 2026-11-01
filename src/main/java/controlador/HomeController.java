@@ -10,8 +10,11 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import modelo.Sucursal;
 
 public class HomeController {
+
+    private static HomeController instancia;
 
     private static final String ESTILO_BOTON_INACTIVO =
             "-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; "
@@ -43,8 +46,25 @@ public class HomeController {
 
     @FXML
     public void initialize() {
+        instancia = this;
         // El sistema inicia con el HomeScreen vacío (sin obligar a estar en una pantalla)
         activarBoton(null);
+    }
+
+    public static void mostrarVehiculosDeSucursal(Sucursal sucursal) {
+        VehiculoController.setSucursalFiltroPendiente(sucursal);
+        if (instancia != null) {
+            instancia.activarBoton(instancia.btnVehiculos);
+            instancia.cargarVista("/VehiculoView.fxml");
+        }
+    }
+
+    public static void volverASucursales() {
+        VehiculoController.setSucursalFiltroPendiente(null);
+        if (instancia != null) {
+            instancia.activarBoton(instancia.btnSucursales);
+            instancia.cargarVista("/SucursalView.fxml");
+        }
     }
 
     @FXML
@@ -61,6 +81,7 @@ public class HomeController {
 
     @FXML
     public void abrirPantallaVehiculos(ActionEvent event) {
+        VehiculoController.setSucursalFiltroPendiente(null);
         activarBoton(btnVehiculos);
         cargarVista("/VehiculoView.fxml");
     }

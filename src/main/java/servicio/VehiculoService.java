@@ -51,6 +51,30 @@ public class VehiculoService {
         // Fin-ts
     }
 
+    /**
+     * Modificación de los datos de un Vehículo existente.
+     */
+    public Vehiculo modificarVehiculo(Vehiculo vehiculo) {
+        try {
+            if (vehiculo == null) {
+                throw new IllegalArgumentException("El vehículo no puede ser nulo.");
+            }
+
+            // Verificar que la patente (Unique) no esté asignada a otro vehículo distinto
+            Vehiculo existentePorPat = vehiculoDAO.buscarPorId(vehiculo.getPat());
+            if (existentePorPat != null && vehiculo.getId() != null
+                    && !existentePorPat.getId().equals(vehiculo.getId())) {
+                throw new RuntimeException("Error: Ya existe otro vehículo con la patente " + vehiculo.getPat() + ".");
+            }
+
+            generarNuplaPertenece(vehiculo);
+            vehiculoDAO.actualizar(vehiculo);
+            return vehiculo;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al modificar el vehículo: " + e.getMessage(), e);
+        }
+    }
+
     public List<Vehiculo> listarTodos() {
         return vehiculoDAO.listarTodos();
     }

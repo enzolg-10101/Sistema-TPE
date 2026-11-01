@@ -205,7 +205,7 @@
                         <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
                                text="FECHA DE INICIO (RETIRO)"/>
                         <DatePicker fx:id="dpFiltroInicio" editable="false" prefWidth="185.0"
-                                    promptText="Seleccione inicio"
+                                    promptText="dd-mm-aaaa"
                                     style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
                     </VBox>
 
@@ -216,7 +216,7 @@
                         <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
                                text="FECHA DE DEVOLUCIÓN (DESDE DÍA SIGUIENTE)"/>
                         <DatePicker fx:id="dpFiltroDevolucion" editable="false" prefWidth="205.0"
-                                    promptText="Seleccione devolución"
+                                    promptText="dd-mm-aaaa"
                                     style="-fx-background-color: #F3F4F6; -fx-background-radius: 10;"/>
                     </VBox>
 
@@ -311,11 +311,11 @@
 
                             <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
                                 <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Entrega"/>
-                                <DatePicker fx:id="dpFechaEntrega" editable="false" maxWidth="Infinity" promptText="Calendario" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                                <DatePicker fx:id="dpFechaEntrega" editable="false" maxWidth="Infinity" promptText="dd-mm-aaaa" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
                             </VBox>
                             <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                                 <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Fecha Devolución"/>
-                                <DatePicker fx:id="dpFechaDevolucion" editable="false" maxWidth="Infinity" promptText="Calendario" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
+                                <DatePicker fx:id="dpFechaDevolucion" editable="false" maxWidth="Infinity" promptText="dd-mm-aaaa" style="-fx-background-color: #F3F4F6; -fx-background-radius: 8;"/>
                             </VBox>
                             <VBox spacing="3.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
                                 <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Importe Alquiler (Tarifa x Días)"/>

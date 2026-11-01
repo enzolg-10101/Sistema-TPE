@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import modelo.Cliente;
 import servicio.ClienteService;
+import util.FormatoFecha;
 
 public class NuevoClienteDialogController {
 
@@ -42,7 +43,7 @@ public class NuevoClienteDialogController {
             cmbEstado.getSelectionModel().selectFirst();
         }
         if (dpFechaAlta != null) {
-            dpFechaAlta.setEditable(false);
+            FormatoFecha.configurarDatePicker(dpFechaAlta);
             dpFechaAlta.setValue(LocalDate.now());
         }
     }

@@ -69,30 +69,30 @@
             <Label style="-fx-text-fill: #9CA3AF; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 4 0 4 8;"
                    text="MENÚ PRINCIPAL"/>
 
-            <!-- Botón: Empleados -->
-            <Button fx:id="btnEmpleados" maxWidth="Infinity" onAction="#abrirPantallaEmpleados"
-                    style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
-                    text="Empleados"/>
-
             <!-- Botón: Vehículos -->
             <Button fx:id="btnVehiculos" maxWidth="Infinity" onAction="#abrirPantallaVehiculos"
                     style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
                     text="Vehículos"/>
 
-            <!-- Botón: Sucursales -->
-            <Button fx:id="btnSucursales" maxWidth="Infinity" onAction="#abrirPantallaSucursales"
+            <!-- Botón: Contratos -->
+            <Button fx:id="btnContratos" maxWidth="Infinity" onAction="#abrirPantallaContratos"
                     style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
-                    text="Sucursales"/>
+                    text="Contratos"/>
 
             <!-- Botón: Clientes -->
             <Button fx:id="btnClientes" maxWidth="Infinity" onAction="#abrirPantallaClientes"
                     style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
                     text="Clientes"/>
 
-            <!-- Botón: Contratos -->
-            <Button fx:id="btnContratos" maxWidth="Infinity" onAction="#abrirPantallaContratos"
+            <!-- Botón: Empleados -->
+            <Button fx:id="btnEmpleados" maxWidth="Infinity" onAction="#abrirPantallaEmpleados"
                     style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
-                    text="Contratos"/>
+                    text="Empleados"/>
+
+            <!-- Botón: Sucursales -->
+            <Button fx:id="btnSucursales" maxWidth="Infinity" onAction="#abrirPantallaSucursales"
+                    style="-fx-background-color: transparent; -fx-text-fill: #4B5563; -fx-font-size: 14px; -fx-font-weight: 600; -fx-alignment: CENTER_LEFT; -fx-padding: 12 16 12 16; -fx-background-radius: 10; -fx-cursor: hand;"
+                    text="Sucursales"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 

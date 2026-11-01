@@ -58,6 +58,7 @@ import servicio.CheckInOutService;
 import servicio.ClienteService;
 import servicio.ContratoService;
 import servicio.VehiculoService;
+import util.FormatoFecha;
 
 public class NuevoContratoController {
 
@@ -190,6 +191,24 @@ public class NuevoContratoController {
         }
     }
 
+    /**
+     * Sincroniza en memoria el estado 'Devuelto' cuando se registra la devolución
+     * de un contrato desde la pestaña Contratos.
+     */
+    public static void marcarContratoDevueltoEnMemoria(Integer nroContrato, Double cargos) {
+        if (nroContrato == null) {
+            return;
+        }
+        for (Contrato c : CONTRATOS_EN_MEMORIA) {
+            if (nroContrato.equals(c.getNro())) {
+                c.setEst("Devuelto");
+                if (cargos != null) {
+                    c.setCargos(cargos);
+                }
+            }
+        }
+    }
+
     private Cliente clienteElegidoExistente = null;
     private boolean clienteNuevoPendienteDeTransaccion = false;
 
@@ -230,8 +249,8 @@ public class NuevoContratoController {
         // Al elegir una fecha de inicio, el segundo calendario solo permite elegir
         // a partir del día siguiente (fechaInicio.plusDays(1)).
         if (dpFiltroInicio != null && dpFiltroDevolucion != null) {
-            dpFiltroInicio.setEditable(false);
-            dpFiltroDevolucion.setEditable(false);
+            FormatoFecha.configurarDatePicker(dpFiltroInicio);
+            FormatoFecha.configurarDatePicker(dpFiltroDevolucion);
 
             LocalDate hoy = LocalDate.now();
             dpFiltroInicio.setValue(hoy);
@@ -247,8 +266,8 @@ public class NuevoContratoController {
         // 4. Configurar la misma restricción lógica de fechas en el Paso 3 (Formulario
         // del Contrato)
         if (dpFechaEntrega != null && dpFechaDevolucion != null) {
-            dpFechaEntrega.setEditable(false);
-            dpFechaDevolucion.setEditable(false);
+            FormatoFecha.configurarDatePicker(dpFechaEntrega);
+            FormatoFecha.configurarDatePicker(dpFechaDevolucion);
 
             LocalDate hoy = LocalDate.now();
             dpFechaEntrega.setValue(hoy);
@@ -501,7 +520,7 @@ public class NuevoContratoController {
 
         vehiculosCategoriaActual = new ArrayList<>();
         for (Vehiculo v : flotaCompleta) {
-            if (v.getCat() != null && v.getCat().trim().equalsIgnoreCase(categoria)) {
+            if (perteneceACategoria(v, categoria)) {
                 vehiculosCategoriaActual.add(v);
             }
         }
@@ -521,6 +540,32 @@ public class NuevoContratoController {
         vistaFormularioContrato.setManaged(false);
         vistaSeleccionVehiculo.setVisible(true);
         vistaSeleccionVehiculo.setManaged(true);
+    }
+
+    private boolean perteneceACategoria(Vehiculo v, String categoriaBuscada) {
+        if (v == null || categoriaBuscada == null) {
+            return false;
+        }
+        String catVehiculo = (v.getCat() != null) ? v.getCat().trim().toLowerCase() : "";
+        String buscada = categoriaBuscada.trim().toLowerCase();
+
+        if (catVehiculo.equals(buscada)) {
+            return true;
+        }
+        boolean esCombi = catVehiculo.contains("combi") || catVehiculo.contains("minibus") || catVehiculo.contains("minibús");
+        boolean esFurgoneta = catVehiculo.contains("furgon") || catVehiculo.contains("furgón")
+                || catVehiculo.contains("utilitario") || catVehiculo.contains("cargo");
+
+        if (buscada.equals("combi")) {
+            return esCombi;
+        }
+        if (buscada.equals("furgoneta")) {
+            return esFurgoneta;
+        }
+        if (buscada.equals("auto")) {
+            return catVehiculo.contains("auto") || (!esCombi && !esFurgoneta);
+        }
+        return false;
     }
 
     /**
@@ -559,8 +604,14 @@ public class NuevoContratoController {
             if (v.getId() != null && idsOcupados.contains(v.getId())) {
                 continue;
             }
-            if (v.getEst() != null && v.getEst().trim().equalsIgnoreCase("En Mantenimiento")) {
-                continue;
+            if (v.getEst() != null) {
+                String estVehiculo = v.getEst().trim().toLowerCase();
+                if (estVehiculo.contains("mantenimiento")
+                        || estVehiculo.contains("alquilado")
+                        || estVehiculo.contains("ocupado")
+                        || estVehiculo.contains("rentado")) {
+                    continue;
+                }
             }
             boolean coincideTexto = texto.isEmpty()
                     || (v.getMarca() != null && v.getMarca().toLowerCase().contains(texto))
@@ -576,7 +627,7 @@ public class NuevoContratoController {
         if (lblCantidadCategoria != null) {
             int total = disponibles.size();
             String rangoTexto = (fechaInicio != null && fechaFin != null)
-                    ? " (" + fechaInicio + " al " + fechaFin + ")"
+                    ? " (" + FormatoFecha.formatearFechaGui(fechaInicio) + " al " + FormatoFecha.formatearFechaGui(fechaFin) + ")"
                     : "";
             lblCantidadCategoria.setText(
                     (total == 1 ? "1 unidad disponible" : total + " unidades disponibles") + rangoTexto);
@@ -585,23 +636,28 @@ public class NuevoContratoController {
 
     private Set<Integer> obtenerVehiculosOcupadosEnRango(LocalDate fechaInicio, LocalDate fechaFin) {
         Set<Integer> ocupados = new HashSet<>();
-        if (fechaInicio == null || fechaFin == null) {
-            return ocupados;
-        }
-        String inicioStr = fechaInicio.toString();
-        String finStr = fechaFin.toString();
+        String inicioStr = fechaInicio != null ? fechaInicio.toString() : "";
+        String finStr = fechaFin != null ? fechaFin.toString() : "";
 
+        boolean bdConsultadaConExito = false;
         try {
             ocupados.addAll(contratoDAO.obtenerIdsVehiculosOcupadosEntreFechas(inicioStr, finStr));
+            bdConsultadaConExito = true;
         } catch (Exception ignored) {
-            // Si la base de datos no está conectada, se verifica contra los contratos en
-            // memoria
+            // Si la base de datos no está conectada, se verifica contra los contratos en memoria
         }
 
-        for (Contrato c : CONTRATOS_EN_MEMORIA) {
-            if (c.getIdAsigna() != null && c.getFeHrEnt() != null && c.getFeHrDev() != null) {
-                if (c.getFeHrEnt().compareTo(finStr) <= 0 && c.getFeHrDev().compareTo(inicioStr) >= 0) {
-                    ocupados.add(c.getIdAsigna());
+        if (!bdConsultadaConExito) {
+            for (Contrato c : CONTRATOS_EN_MEMORIA) {
+                if (c.getIdAsigna() != null) {
+                    String est = c.getEst() != null ? c.getEst().trim().toLowerCase() : "activo";
+                    boolean devuelto = est.equals("devuelto")
+                            || est.equals("pagado")
+                            || est.equals("finalizado")
+                            || est.equals("cancelado");
+                    if (!devuelto) {
+                        ocupados.add(c.getIdAsigna());
+                    }
                 }
             }
         }
