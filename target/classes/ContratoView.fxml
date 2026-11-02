@@ -99,7 +99,7 @@
     <!-- REGIÓN RIGHT: DETALLE COMPLETO DEL CONTRATO SELECCIONADO                   -->
     <!-- ========================================================================= -->
     <right>
-        <VBox fx:id="panelDetalleContrato" managed="false" prefWidth="375.0" spacing="8.0" visible="false"
+        <VBox fx:id="panelDetalleContrato" managed="false" prefWidth="385.0" spacing="8.0" visible="false"
               style="-fx-background-color: #FFFFFF; -fx-background-radius: 16; -fx-border-color: #E5E7EB; -fx-border-radius: 16; -fx-padding: 16 18 16 18;">
             <BorderPane.margin>
                 <Insets bottom="24.0" left="0.0" right="28.0" top="10.0"/>
@@ -129,97 +129,152 @@
             <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
                         style="-fx-background-color: transparent; -fx-background: #FFFFFF; -fx-border-color: transparent; -fx-padding: 0;">
                 <content>
-                    <GridPane hgap="10.0" vgap="8.0" style="-fx-padding: 2 2 4 0;">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="54.0"/>
-                            <ColumnConstraints hgrow="ALWAYS" percentWidth="46.0"/>
-                        </columnConstraints>
+                    <VBox spacing="10.0" style="-fx-padding: 2 2 4 0;">
+                        <GridPane hgap="10.0" vgap="7.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="52.0"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="48.0"/>
+                            </columnConstraints>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="N° de Contrato"/>
-                            <TextField fx:id="txtDetalleNro" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="N° de Contrato"/>
+                                <TextField fx:id="txtDetalleNro" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Condición Uso"/>
-                            <TextField fx:id="txtDetalleCondUso" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Condición Uso"/>
+                                <TextField fx:id="txtDetalleCondUso" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Cliente Firmante"/>
-                            <TextField fx:id="txtDetalleCliente" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Cliente Firmante"/>
+                                <TextField fx:id="txtDetalleCliente" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="DNI Cliente"/>
-                            <TextField fx:id="txtDetalleDni" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="DNI Cliente"/>
+                                <TextField fx:id="txtDetalleDni" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Vehículo Asignado"/>
-                            <TextField fx:id="txtDetalleVehiculo" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Vehículo Asignado"/>
+                                <TextField fx:id="txtDetalleVehiculo" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Patente Vehículo"/>
-                            <TextField fx:id="txtDetallePatente" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Patente Vehículo"/>
+                                <TextField fx:id="txtDetallePatente" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Fecha Entrega"/>
-                            <TextField fx:id="txtDetalleFeEnt" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Fecha Entrega"/>
+                                <TextField fx:id="txtDetalleFeEnt" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Fecha Devolución"/>
-                            <TextField fx:id="txtDetalleFeDev" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Fecha Devolución"/>
+                                <TextField fx:id="txtDetalleFeDev" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="4">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Importe Alquiler"/>
-                            <TextField fx:id="txtDetalleImpAlq" editable="false"
-                                       style="-fx-background-color: #FEF3C7; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold; -fx-text-fill: #D97706;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="4">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Importe Alquiler"/>
+                                <TextField fx:id="txtDetalleImpAlq" editable="false"
+                                           style="-fx-background-color: #FEF3C7; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold; -fx-text-fill: #D97706;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Fianza"/>
-                            <TextField fx:id="txtDetalleFianza" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
-                        </VBox>
+                            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #374151;"
+                                       text="Cargos Devolución"/>
+                                <TextField fx:id="txtDetalleCargos" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            </VBox>
 
-                        <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5">
-                            <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #374151;"
-                                   text="Cargos Adicionales (Devolución)"/>
-                            <TextField fx:id="txtDetalleCargos" editable="false"
-                                       style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10;"/>
+                            <!-- Resumen Financiero de Liquidación y Pagos -->
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                                       text="Total Liquidado"/>
+                                <TextField fx:id="txtDetalleTotal" editable="false"
+                                           style="-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                            </VBox>
+
+                            <VBox spacing="3.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #065F46;"
+                                       text="Total Abonado"/>
+                                <TextField fx:id="txtDetalleTotalPagado" editable="false"
+                                           style="-fx-background-color: #ECFDF5; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold; -fx-text-fill: #047857;"/>
+                            </VBox>
+
+                            <VBox spacing="3.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                                <Label style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #B91C1C;"
+                                       text="Saldo Pendiente a Cobrar"/>
+                                <TextField fx:id="txtDetalleSaldoPendiente" editable="false"
+                                           style="-fx-background-color: #FEF2F2; -fx-border-color: #FCA5A5; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 6 10 6 10; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-text-fill: #B91C1C;"/>
+                            </VBox>
+                        </GridPane>
+
+                        <Separator/>
+
+                        <!-- Historial de Pagos del Contrato -->
+                        <VBox spacing="5.0">
+                            <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                <Label style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #111827;"
+                                       text="Pagos Registrados (Transacción 4.6)"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblCantidadPagos" style="-fx-font-size: 11px; -fx-text-fill: #6B7280;"
+                                       text="0 pagos"/>
+                            </HBox>
+
+                            <TableView fx:id="tablaPagosContrato" prefHeight="120.0"
+                                       style="-fx-background-radius: 8; -fx-border-color: #E5E7EB; -fx-border-radius: 8;">
+                                <placeholder>
+                                    <Label style="-fx-text-fill: #9CA3AF; -fx-font-size: 11.5px;"
+                                           text="Sin pagos registrados para este contrato."/>
+                                </placeholder>
+                                <columns>
+                                    <TableColumn fx:id="colPagoFecha" prefWidth="105.0" text="Fecha"/>
+                                    <TableColumn fx:id="colPagoMedio" prefWidth="95.0" text="Medio"/>
+                                    <TableColumn fx:id="colPagoImporte" prefWidth="85.0" text="Importe"/>
+                                </columns>
+                                <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                </columnResizePolicy>
+                            </TableView>
                         </VBox>
-                    </GridPane>
+                    </VBox>
                 </content>
             </ScrollPane>
 
-            <!-- Botón de acción para Registrar Devolución siempre visible con alto fijo -->
-            <Button fx:id="btnRegistrarDevolucion" maxWidth="Infinity" minHeight="42.0" prefHeight="42.0"
-                    onAction="#abrirDialogoDevolucion"
-                    style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 10 16 10 16; -fx-cursor: hand;"
-                    text="Registrar Devolución"/>
+            <Separator/>
+
+            <!-- Botones de Acción: Devolución y Pago -->
+            <VBox spacing="7.0">
+                <Button fx:id="btnRegistrarDevolucion" maxWidth="Infinity" minHeight="38.0" prefHeight="38.0"
+                        onAction="#abrirDialogoDevolucion"
+                        style="-fx-background-color: #262626; -fx-text-fill: #FFFFFF; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"
+                        text="Registrar Devolución"/>
+
+                <Button fx:id="btnRegistrarPago" maxWidth="Infinity" minHeight="38.0" prefHeight="38.0"
+                        onAction="#abrirDialogoPago"
+                        style="-fx-background-color: #059669; -fx-text-fill: #FFFFFF; -fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-cursor: hand;"
+                        text="💳 Registrar Pago"/>
+            </VBox>
         </VBox>
     </right>
 

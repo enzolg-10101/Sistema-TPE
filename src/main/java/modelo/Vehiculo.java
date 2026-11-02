@@ -6,6 +6,7 @@ public class Vehiculo {
     private String pat;
     private String marca;
     private String mod;
+    private String tran;
     private Integer aFabr;
     private String fAdq;
     private Integer kmj;
@@ -32,9 +33,19 @@ public class Vehiculo {
     public Vehiculo(String pat, String marca, String mod, Integer aFabr, String fAdq,
                     Integer kmj, String est, Double preAdq, String fBaja, String tiComb,
                     Double carga, Integer pax, Double tarBase, String cat, Integer codPertenece) {
+        this(pat, marca, mod, "Manual", aFabr, fAdq, kmj, est, preAdq, fBaja, tiComb, carga, pax, tarBase, cat, codPertenece);
+    }
+
+    /**
+     * Constructor sin ID incluyendo transmisión (V_tran).
+     */
+    public Vehiculo(String pat, String marca, String mod, String tran, Integer aFabr, String fAdq,
+                    Integer kmj, String est, Double preAdq, String fBaja, String tiComb,
+                    Double carga, Integer pax, Double tarBase, String cat, Integer codPertenece) {
         this.pat = pat;
         this.marca = marca;
         this.mod = mod;
+        this.tran = tran;
         this.aFabr = aFabr;
         this.fAdq = fAdq;
         this.kmj = kmj;
@@ -52,13 +63,23 @@ public class Vehiculo {
     /**
      * Constructor completo para consultas de lectura desde la base de datos.
      */
-    public Vehiculo(Integer id, String pat, String marca, String mod, Integer aFabr, String fAdq, 
-                    Integer kmj, String est, Double preAdq, String fBaja, String tiComb, 
+    public Vehiculo(Integer id, String pat, String marca, String mod, Integer aFabr, String fAdq,
+                    Integer kmj, String est, Double preAdq, String fBaja, String tiComb,
+                    Double carga, Integer pax, Double tarBase, String cat, Integer codPertenece) {
+        this(id, pat, marca, mod, "Manual", aFabr, fAdq, kmj, est, preAdq, fBaja, tiComb, carga, pax, tarBase, cat, codPertenece);
+    }
+
+    /**
+     * Constructor completo incluyendo transmisión (V_tran).
+     */
+    public Vehiculo(Integer id, String pat, String marca, String mod, String tran, Integer aFabr, String fAdq,
+                    Integer kmj, String est, Double preAdq, String fBaja, String tiComb,
                     Double carga, Integer pax, Double tarBase, String cat, Integer codPertenece) {
         this.id = id;
         this.pat = pat;
         this.marca = marca;
         this.mod = mod;
+        this.tran = tran;
         this.aFabr = aFabr;
         this.fAdq = fAdq;
         this.kmj = kmj;
@@ -103,6 +124,14 @@ public class Vehiculo {
 
     public void setMod(String mod) {
         this.mod = mod;
+    }
+
+    public String getTran() {
+        return tran;
+    }
+
+    public void setTran(String tran) {
+        this.tran = tran;
     }
 
     public Integer getaFabr() {

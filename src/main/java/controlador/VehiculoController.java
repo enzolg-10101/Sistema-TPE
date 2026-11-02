@@ -1,6 +1,8 @@
 package controlador;
 
 import dao.ContratoDAO;
+import dao.EmpleadoDAO;
+import dao.MantenimientoDAO;
 import dao.SucursalDAO;
 import dao.VehiculoDAO;
 import java.io.InputStream;
@@ -13,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,6 +27,8 @@ import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,8 +39,12 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import modelo.Contrato;
+import modelo.Empleado;
+import modelo.Mantenimiento;
 import modelo.Sucursal;
+import modelo.TipoMantenimiento;
 import modelo.Vehiculo;
+import servicio.MantenimientoService;
 import servicio.VehiculoService;
 import util.FormatoFecha;
 
@@ -74,10 +84,12 @@ public class VehiculoController {
         CATALOGO_VEHICULOS.put("Mercedes-Benz", Arrays.asList("Sprinter", "Vito"));
     }
 
-    // Contenedores para alternar entre Galería, Ficha Detallada y Alta de Nuevo Vehículo
+    // Contenedores para alternar entre Galería, Ficha Detallada, Alta y Mantenimiento
     @FXML private VBox vistaGaleria;
     @FXML private VBox vistaDetalle;
     @FXML private VBox vistaAlta;
+    @FXML private VBox vistaHistorialMantenimiento;
+    @FXML private VBox vistaNuevoMantenimiento;
 
     // Galería, filtro desplegable por tipo y buscador
     @FXML private TilePane contenedorVehiculos;
@@ -109,7 +121,8 @@ public class VehiculoController {
     @FXML private TextField txtDetMod;
     @FXML private ComboBox<Integer> cmbDetAFabr;
     @FXML private ComboBox<String> cmbDetCat;
-    @FXML private TextField txtDetTiComb;
+    @FXML private ComboBox<String> cmbDetTiComb;
+    @FXML private ComboBox<String> cmbDetTransmision;
     @FXML private TextField txtDetKmj;
     @FXML private TextField txtDetCarga;
     @FXML private TextField txtDetPax;
@@ -119,6 +132,46 @@ public class VehiculoController {
     @FXML private TextField txtDetPreAdq;
     @FXML private DatePicker dpDetFBaja;
     @FXML private ComboBox<Sucursal> cmbDetSucursal;
+
+    // Botones de acciones de mantenimiento en la ficha técnica (vistaDetalle)
+    @FXML private Button btnVerMantenimientos;
+    @FXML private Button btnNuevoMantenimiento;
+
+    // Componentes de la pantalla de Historial de Mantenimientos (vistaHistorialMantenimiento)
+    @FXML private Label lblHistorialTitulo;
+    @FXML private Label lblHistorialSubtitulo;
+    @FXML private Label lblHistorialTotalServicios;
+    @FXML private Label lblHistorialCostoTotal;
+    @FXML private Label lblHistorialEstadoTabla;
+    @FXML private TableView<Mantenimiento> tablaMantenimientos;
+    @FXML private TableColumn<Mantenimiento, Integer> colMantId;
+    @FXML private TableColumn<Mantenimiento, String> colMantFecha;
+    @FXML private TableColumn<Mantenimiento, String> colMantTipo;
+    @FXML private TableColumn<Mantenimiento, String> colMantKmj;
+    @FXML private TableColumn<Mantenimiento, String> colMantCosto;
+    @FXML private TableColumn<Mantenimiento, String> colMantEmpleado;
+    @FXML private TableColumn<Mantenimiento, String> colMantObs;
+
+    // Componentes de la pantalla de Registro de Mantenimiento (vistaNuevoMantenimiento)
+    @FXML private Label lblNuevoMantTitulo;
+    @FXML private Label lblNuevoMantSubtitulo;
+    @FXML private Label lblNuevoMantVehiculoInfo;
+    @FXML private Label lblNuevoMantPatente;
+    @FXML private Label lblNuevoMantKmjActual;
+    @FXML private Label lblNuevoMantSucursal;
+    @FXML private DatePicker dpNuevoMantFecha;
+    @FXML private ComboBox<TipoMantenimiento> cmbNuevoMantTipo;
+    @FXML private TextField txtNuevoMantKmj;
+    @FXML private TextField txtNuevoMantCosto;
+    @FXML private ComboBox<Empleado> cmbNuevoMantEmpleado;
+    @FXML private TextField txtNuevoMantObs;
+    @FXML private Label lblNuevoMantContadorObs;
+
+    // Servicios y DAOs para Mantenimiento y Empleados
+    private final MantenimientoService mantenimientoService = new MantenimientoService();
+    private final EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+    private final Map<Integer, Empleado> cacheEmpleados = new HashMap<>();
+    private boolean vieneDesdeHistorial = false;
 
     private Vehiculo vehiculoActualDetalle;
 
@@ -131,8 +184,8 @@ public class VehiculoController {
     @FXML private TextField txtKmj;
     @FXML private TextField txtEst;
     @FXML private TextField txtPreAdq;
-    @FXML private DatePicker dpFBaja;
-    @FXML private TextField txtTiComb;
+    @FXML private ComboBox<String> cmbTiComb;
+    @FXML private ComboBox<String> cmbTransmision;
     @FXML private TextField txtCarga;
     @FXML private TextField txtPax;
     @FXML private TextField txtTarBase;
@@ -195,11 +248,24 @@ public class VehiculoController {
             cmbDetCat.getItems().setAll("Auto", "Combi", "Furgoneta");
         }
 
+        if (cmbTiComb != null) {
+            cmbTiComb.getItems().setAll("Nafta", "Diesel");
+            cmbTiComb.getSelectionModel().selectFirst();
+        }
+        if (cmbDetTiComb != null) {
+            cmbDetTiComb.getItems().setAll("Nafta", "Diesel");
+        }
+
+        if (cmbTransmision != null) {
+            cmbTransmision.getItems().setAll("Manual", "Automática");
+            cmbTransmision.getSelectionModel().selectFirst();
+        }
+        if (cmbDetTransmision != null) {
+            cmbDetTransmision.getItems().setAll("Manual", "Automática");
+        }
+
         if (dpFAdq != null) {
             FormatoFecha.configurarDatePicker(dpFAdq);
-        }
-        if (dpFBaja != null) {
-            FormatoFecha.configurarDatePicker(dpFBaja);
         }
         if (dpDetFAdq != null) {
             FormatoFecha.configurarDatePicker(dpDetFAdq);
@@ -239,6 +305,9 @@ public class VehiculoController {
         if (txtBuscarVehiculo != null) {
             txtBuscarVehiculo.textProperty().addListener((obs, oldVal, newVal) -> aplicarFiltrosGaleria());
         }
+
+        configurarTablaMantenimientos();
+        configurarFormularioMantenimiento();
 
         recargarVehiculos();
         mostrarVistaGaleria();
@@ -590,8 +659,17 @@ public class VehiculoController {
             }
             cmbDetCat.setValue(catActual);
         }
-        if (txtDetTiComb != null) {
-            txtDetTiComb.setText(v.getTiComb() != null ? v.getTiComb() : "");
+        if (cmbDetTiComb != null) {
+            String combActual = (v.getTiComb() != null && v.getTiComb().trim().equalsIgnoreCase("diesel"))
+                    ? "Diesel"
+                    : "Nafta";
+            cmbDetTiComb.setValue(combActual);
+        }
+        if (cmbDetTransmision != null) {
+            String tranActual = (v.getTran() != null && v.getTran().trim().toLowerCase().startsWith("auto"))
+                    ? "Automática"
+                    : "Manual";
+            cmbDetTransmision.setValue(tranActual);
         }
         if (txtDetKmj != null) {
             txtDetKmj.setText(v.getKmj() != null ? String.valueOf(v.getKmj()) : "0");
@@ -649,6 +727,14 @@ public class VehiculoController {
             vistaAlta.setVisible(false);
             vistaAlta.setManaged(false);
         }
+        if (vistaHistorialMantenimiento != null) {
+            vistaHistorialMantenimiento.setVisible(false);
+            vistaHistorialMantenimiento.setManaged(false);
+        }
+        if (vistaNuevoMantenimiento != null) {
+            vistaNuevoMantenimiento.setVisible(false);
+            vistaNuevoMantenimiento.setManaged(false);
+        }
         vistaDetalle.setVisible(true);
         vistaDetalle.setManaged(true);
     }
@@ -678,7 +764,7 @@ public class VehiculoController {
             txtDetPat.setStyle(editable ? estiloPatenteEdicion : estiloPatenteLectura);
         }
         TextField[] camposNormales = {
-            txtDetMarca, txtDetMod, txtDetTiComb, txtDetKmj,
+            txtDetMarca, txtDetMod, txtDetKmj,
             txtDetCarga, txtDetPax, txtDetEst, txtDetPreAdq
         };
         for (TextField tf : camposNormales) {
@@ -692,7 +778,7 @@ public class VehiculoController {
             txtDetTarBase.setStyle(editable ? estiloTarifaEdicion : estiloTarifaLectura);
         }
 
-        ComboBox<?>[] combos = {cmbDetAFabr, cmbDetCat, cmbDetSucursal};
+        ComboBox<?>[] combos = {cmbDetAFabr, cmbDetCat, cmbDetTiComb, cmbDetTransmision, cmbDetSucursal};
         for (ComboBox<?> cb : combos) {
             if (cb != null) {
                 cb.setMouseTransparent(!editable);
@@ -782,7 +868,8 @@ public class VehiculoController {
             String fBaja = (dpDetFBaja != null && dpDetFBaja.getValue() != null)
                     ? dpDetFBaja.getValue().toString()
                     : null;
-            String tiComb = txtDetTiComb != null ? txtDetTiComb.getText().trim() : "";
+            String tiComb = (cmbDetTiComb != null && cmbDetTiComb.getValue() != null) ? cmbDetTiComb.getValue().trim() : "";
+            String tran = (cmbDetTransmision != null && cmbDetTransmision.getValue() != null) ? cmbDetTransmision.getValue().trim() : "";
             Double carga = Double.parseDouble(txtDetCarga.getText().trim());
             Integer pax = Integer.parseInt(txtDetPax.getText().trim());
             Double tarBase = Double.parseDouble(txtDetTarBase.getText().trim());
@@ -790,9 +877,9 @@ public class VehiculoController {
             Sucursal sucursalSeleccionada = cmbDetSucursal != null ? cmbDetSucursal.getValue() : null;
 
             if (pat.isEmpty() || marca.isEmpty() || mod.isEmpty() || aFabr == null || fechaAdq == null
-                    || est.isEmpty() || tiComb.isEmpty() || cat == null || sucursalSeleccionada == null) {
+                    || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null || sucursalSeleccionada == null) {
                 mostrarMensaje("Error de Validación",
-                        "Por favor complete todos los campos obligatorios (Patente, Marca, Modelo, Año, Fecha de Adquisición, Estado, Combustible, Categoría y Sucursal).",
+                        "Por favor complete todos los campos obligatorios (Patente, Marca, Modelo, Año, Fecha de Adquisición, Estado, Combustible, Transmisión, Categoría y Sucursal).",
                         Alert.AlertType.WARNING);
                 return;
             }
@@ -807,7 +894,7 @@ public class VehiculoController {
 
             Vehiculo datosActualizados = new Vehiculo(
                     vehiculoActualDetalle.getId(),
-                    pat, marca, mod, aFabr, fAdq, kmj, est,
+                    pat, marca, mod, tran, aFabr, fAdq, kmj, est,
                     preAdq, fBaja, tiComb, carga, pax, tarBase, cat,
                     sucursalSeleccionada.getCod()
             );
@@ -817,6 +904,7 @@ public class VehiculoController {
             vehiculoActualDetalle.setPat(pat);
             vehiculoActualDetalle.setMarca(marca);
             vehiculoActualDetalle.setMod(mod);
+            vehiculoActualDetalle.setTran(tran);
             vehiculoActualDetalle.setaFabr(aFabr);
             vehiculoActualDetalle.setfAdq(fAdq);
             vehiculoActualDetalle.setKmj(kmj);
@@ -876,6 +964,14 @@ public class VehiculoController {
         if (vistaAlta != null) {
             vistaAlta.setVisible(false);
             vistaAlta.setManaged(false);
+        }
+        if (vistaHistorialMantenimiento != null) {
+            vistaHistorialMantenimiento.setVisible(false);
+            vistaHistorialMantenimiento.setManaged(false);
+        }
+        if (vistaNuevoMantenimiento != null) {
+            vistaNuevoMantenimiento.setVisible(false);
+            vistaNuevoMantenimiento.setManaged(false);
         }
         if (vistaGaleria != null) {
             vistaGaleria.setVisible(true);
@@ -1117,6 +1213,14 @@ public class VehiculoController {
                 vistaDetalle.setVisible(false);
                 vistaDetalle.setManaged(false);
             }
+            if (vistaHistorialMantenimiento != null) {
+                vistaHistorialMantenimiento.setVisible(false);
+                vistaHistorialMantenimiento.setManaged(false);
+            }
+            if (vistaNuevoMantenimiento != null) {
+                vistaNuevoMantenimiento.setVisible(false);
+                vistaNuevoMantenimiento.setManaged(false);
+            }
             vistaAlta.setVisible(true);
             vistaAlta.setManaged(true);
         }
@@ -1130,6 +1234,14 @@ public class VehiculoController {
             if (vistaDetalle != null) {
                 vistaDetalle.setVisible(false);
                 vistaDetalle.setManaged(false);
+            }
+            if (vistaHistorialMantenimiento != null) {
+                vistaHistorialMantenimiento.setVisible(false);
+                vistaHistorialMantenimiento.setManaged(false);
+            }
+            if (vistaNuevoMantenimiento != null) {
+                vistaNuevoMantenimiento.setVisible(false);
+                vistaNuevoMantenimiento.setManaged(false);
             }
             vistaGaleria.setVisible(true);
             vistaGaleria.setManaged(true);
@@ -1152,8 +1264,8 @@ public class VehiculoController {
             Integer kmj = Integer.parseInt(txtKmj.getText().trim());
             String est = txtEst.getText().trim();
             Double preAdq = Double.parseDouble(txtPreAdq.getText().trim());
-            String fBaja = dpFBaja.getValue() != null ? dpFBaja.getValue().toString() : null;
-            String tiComb = txtTiComb.getText().trim();
+            String tiComb = (cmbTiComb != null && cmbTiComb.getValue() != null) ? cmbTiComb.getValue().trim() : "";
+            String tran = (cmbTransmision != null && cmbTransmision.getValue() != null) ? cmbTransmision.getValue().trim() : "";
             Double carga = Double.parseDouble(txtCarga.getText().trim());
             Integer pax = Integer.parseInt(txtPax.getText().trim());
             Double tarBase = Double.parseDouble(txtTarBase.getText().trim());
@@ -1161,9 +1273,9 @@ public class VehiculoController {
             Sucursal sucursalSeleccionada = cmbSucursal.getValue();
 
             if (pat.isEmpty() || marca.isEmpty() || mod.isEmpty() || aFabr == null || fechaAdq == null
-                    || est.isEmpty() || tiComb.isEmpty() || cat == null || sucursalSeleccionada == null) {
+                    || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null || sucursalSeleccionada == null) {
                 mostrarMensaje("Error de Validación",
-                        "Por favor complete todos los campos obligatorios (incluyendo Patente, Año de Fabricación, Fecha de Adquisición y Sucursal).",
+                        "Por favor complete todos los campos obligatorios (incluyendo Patente, Marca, Modelo, Combustible, Transmisión, Año de Fabricación, Fecha de Adquisición y Sucursal).",
                         Alert.AlertType.WARNING);
                 return;
             }
@@ -1187,9 +1299,9 @@ public class VehiculoController {
 
             Integer codPertenece = sucursalSeleccionada.getCod();
 
-            // Usa el constructor sin ID: MySQL genera el V_id con AUTO_INCREMENT y el DAO lo asigna con setId()
-            Vehiculo nuevo = new Vehiculo(pat, marca, mod, aFabr, fAdq, kmj, est,
-                    preAdq, fBaja, tiComb, carga, pax, tarBase, cat, codPertenece);
+            // Usa el constructor sin ID (fBaja = null en el alta; solo se edita en la ficha de detalle)
+            Vehiculo nuevo = new Vehiculo(pat, marca, mod, tran, aFabr, fAdq, kmj, est,
+                    preAdq, null, tiComb, carga, pax, tarBase, cat, codPertenece);
 
             vehiculoService.altaVehiculo(nuevo);
 
@@ -1225,8 +1337,12 @@ public class VehiculoController {
         if (txtKmj != null) txtKmj.clear();
         if (txtEst != null) txtEst.clear();
         if (txtPreAdq != null) txtPreAdq.clear();
-        if (dpFBaja != null) dpFBaja.setValue(null);
-        if (txtTiComb != null) txtTiComb.clear();
+        if (cmbTiComb != null && !cmbTiComb.getItems().isEmpty()) {
+            cmbTiComb.getSelectionModel().selectFirst();
+        }
+        if (cmbTransmision != null && !cmbTransmision.getItems().isEmpty()) {
+            cmbTransmision.getSelectionModel().selectFirst();
+        }
         if (txtCarga != null) txtCarga.clear();
         if (txtPax != null) txtPax.clear();
         if (txtTarBase != null) txtTarBase.clear();
@@ -1241,5 +1357,550 @@ public class VehiculoController {
         alerta.setHeaderText(null);
         alerta.setContentText(contenido);
         alerta.showAndWait();
+    }
+
+    // =========================================================================
+    // MÓDULO DE MANTENIMIENTOS DEL VEHÍCULO (HISTORIAL Y ALTA - TRANSACCIÓN 4.4)
+    // =========================================================================
+
+    private void configurarTablaMantenimientos() {
+        if (tablaMantenimientos == null) {
+            return;
+        }
+
+        if (colMantId != null) {
+            colMantId.setCellValueFactory(cellData ->
+                    new SimpleObjectProperty<>(cellData.getValue() != null ? cellData.getValue().getId() : null));
+        }
+        if (colMantFecha != null) {
+            colMantFecha.setCellValueFactory(cellData -> {
+                if (cellData.getValue() == null || cellData.getValue().getFec() == null) {
+                    return new SimpleStringProperty("-");
+                }
+                return new SimpleStringProperty(FormatoFecha.formatearFechaGui(cellData.getValue().getFec()));
+            });
+        }
+        if (colMantTipo != null) {
+            colMantTipo.setCellValueFactory(cellData -> {
+                if (cellData.getValue() == null || cellData.getValue().getTipo() == null) {
+                    return new SimpleStringProperty("-");
+                }
+                return new SimpleStringProperty(cellData.getValue().getTipo().getDescripcion());
+            });
+        }
+        if (colMantKmj != null) {
+            colMantKmj.setCellValueFactory(cellData -> {
+                if (cellData.getValue() == null || cellData.getValue().getKmj() == null) {
+                    return new SimpleStringProperty("-");
+                }
+                return new SimpleStringProperty(String.format("%,d km", cellData.getValue().getKmj()));
+            });
+        }
+        if (colMantCosto != null) {
+            colMantCosto.setCellValueFactory(cellData -> {
+                if (cellData.getValue() == null || cellData.getValue().getCosto() == null) {
+                    return new SimpleStringProperty("$0.00");
+                }
+                return new SimpleStringProperty(String.format("$%.2f", cellData.getValue().getCosto()));
+            });
+        }
+        if (colMantEmpleado != null) {
+            colMantEmpleado.setCellValueFactory(cellData -> {
+                if (cellData.getValue() == null || cellData.getValue().getIdRealiza() == null) {
+                    return new SimpleStringProperty("-");
+                }
+                return new SimpleStringProperty(obtenerNombreEmpleado(cellData.getValue().getIdRealiza()));
+            });
+        }
+        if (colMantObs != null) {
+            colMantObs.setCellValueFactory(cellData -> {
+                if (cellData.getValue() == null || cellData.getValue().getObs() == null) {
+                    return new SimpleStringProperty("");
+                }
+                return new SimpleStringProperty(cellData.getValue().getObs());
+            });
+        }
+
+        Label placeholder = new Label("No se registran mantenimientos previos para esta unidad.");
+        placeholder.setStyle("-fx-font-size: 13px; -fx-text-fill: #6B7280; -fx-padding: 20;");
+        tablaMantenimientos.setPlaceholder(placeholder);
+    }
+
+    private void configurarFormularioMantenimiento() {
+        if (dpNuevoMantFecha != null) {
+            FormatoFecha.configurarDatePicker(dpNuevoMantFecha);
+            dpNuevoMantFecha.setValue(LocalDate.now());
+            dpNuevoMantFecha.setDayCellFactory(picker -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    setDisable(empty || date.isAfter(LocalDate.now()));
+                }
+            });
+        }
+
+        if (cmbNuevoMantTipo != null) {
+            cmbNuevoMantTipo.getItems().setAll(TipoMantenimiento.values());
+            cmbNuevoMantTipo.setConverter(new StringConverter<TipoMantenimiento>() {
+                @Override
+                public String toString(TipoMantenimiento tipo) {
+                    return tipo != null ? tipo.getDescripcion() : "";
+                }
+
+                @Override
+                public TipoMantenimiento fromString(String string) {
+                    return TipoMantenimiento.fromString(string);
+                }
+            });
+            if (!cmbNuevoMantTipo.getItems().isEmpty()) {
+                cmbNuevoMantTipo.getSelectionModel().selectFirst();
+            }
+        }
+
+        if (cmbNuevoMantEmpleado != null) {
+            cmbNuevoMantEmpleado.setConverter(new StringConverter<Empleado>() {
+                @Override
+                public String toString(Empleado emp) {
+                    if (emp == null) return "";
+                    String apl = emp.getApl() != null ? emp.getApl().trim() : "";
+                    String nom = emp.getNom() != null ? emp.getNom().trim() : "";
+                    String dni = emp.getDni() != null ? String.valueOf(emp.getDni()) : "";
+                    return (apl + ", " + nom + " (DNI: " + dni + ")").trim();
+                }
+
+                @Override
+                public Empleado fromString(String string) {
+                    return null;
+                }
+            });
+            cargarEmpleados();
+        }
+
+        if (txtNuevoMantObs != null && lblNuevoMantContadorObs != null) {
+            txtNuevoMantObs.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal == null) {
+                    lblNuevoMantContadorObs.setText("0 / 100 caracteres");
+                    return;
+                }
+                if (newVal.length() > 100) {
+                    txtNuevoMantObs.setText(newVal.substring(0, 100));
+                    newVal = txtNuevoMantObs.getText();
+                }
+                lblNuevoMantContadorObs.setText(newVal.length() + " / 100 caracteres");
+            });
+        }
+    }
+
+    private void cargarEmpleados() {
+        try {
+            List<Empleado> empleados = empleadoDAO.listarTodos();
+            cacheEmpleados.clear();
+            for (Empleado e : empleados) {
+                if (e.getId() != null) {
+                    cacheEmpleados.put(e.getId(), e);
+                }
+            }
+            if (cmbNuevoMantEmpleado != null) {
+                cmbNuevoMantEmpleado.getItems().setAll(empleados);
+            }
+        } catch (Exception e) {
+            System.err.println("No se pudieron cargar los empleados para mantenimiento: " + e.getMessage());
+        }
+    }
+
+    private String obtenerNombreEmpleado(Integer idEmpleado) {
+        if (idEmpleado == null) return "-";
+        Empleado e = cacheEmpleados.get(idEmpleado);
+        if (e != null) {
+            String apl = e.getApl() != null ? e.getApl().trim() : "";
+            String nom = e.getNom() != null ? e.getNom().trim() : "";
+            return (apl + ", " + nom).trim();
+        }
+        return "Empleado #" + idEmpleado;
+    }
+
+    /**
+     * Abre la pantalla con el historial de mantenimientos previos del vehículo actual.
+     */
+    @FXML
+    public void abrirHistorialMantenimiento() {
+        if (vehiculoActualDetalle == null) {
+            mostrarMensaje("Atención", "No se ha seleccionado ningún vehículo para ver mantenimientos.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        if (vistaDetalle != null) {
+            vistaDetalle.setVisible(false);
+            vistaDetalle.setManaged(false);
+        }
+        if (vistaGaleria != null) {
+            vistaGaleria.setVisible(false);
+            vistaGaleria.setManaged(false);
+        }
+        if (vistaAlta != null) {
+            vistaAlta.setVisible(false);
+            vistaAlta.setManaged(false);
+        }
+        if (vistaNuevoMantenimiento != null) {
+            vistaNuevoMantenimiento.setVisible(false);
+            vistaNuevoMantenimiento.setManaged(false);
+        }
+
+        cargarHistorialMantenimiento(vehiculoActualDetalle);
+
+        if (vistaHistorialMantenimiento != null) {
+            vistaHistorialMantenimiento.setVisible(true);
+            vistaHistorialMantenimiento.setManaged(true);
+        }
+    }
+
+    private void cargarHistorialMantenimiento(Vehiculo v) {
+        if (v == null) return;
+        cargarEmpleados();
+
+        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : "")).trim();
+        String pat = v.getPat() != null ? v.getPat() : "-";
+        Integer id = v.getId();
+
+        if (lblHistorialTitulo != null) {
+            lblHistorialTitulo.setText("Mantenimientos Previos · " + marcaMod);
+        }
+        if (lblHistorialSubtitulo != null) {
+            lblHistorialSubtitulo.setText("Unidad: " + marcaMod + " · Patente: " + pat + " · ID de Unidad: #" + (id != null ? id : "-"));
+        }
+
+        List<Mantenimiento> mantenimientos = Collections.emptyList();
+        if (id != null) {
+            try {
+                mantenimientos = mantenimientoService.listarPorVehiculo(id);
+            } catch (Exception e) {
+                System.err.println("Error al obtener mantenimientos del vehículo: " + e.getMessage());
+            }
+        }
+
+        if (tablaMantenimientos != null) {
+            tablaMantenimientos.getItems().setAll(mantenimientos);
+        }
+
+        int cantidad = mantenimientos.size();
+        double costoTotal = 0.0;
+        for (Mantenimiento m : mantenimientos) {
+            if (m.getCosto() != null) {
+                costoTotal += m.getCosto();
+            }
+        }
+
+        if (lblHistorialTotalServicios != null) {
+            lblHistorialTotalServicios.setText(String.valueOf(cantidad));
+        }
+        if (lblHistorialCostoTotal != null) {
+            lblHistorialCostoTotal.setText(String.format("$%.2f", costoTotal));
+        }
+        if (lblHistorialEstadoTabla != null) {
+            lblHistorialEstadoTabla.setText(cantidad == 0
+                    ? "Esta unidad no registra mantenimientos previos en la base de datos"
+                    : "Mostrando " + cantidad + " servicio(s) registrado(s)");
+        }
+    }
+
+    /**
+     * Abre la pantalla para registrar un nuevo mantenimiento desde la ficha del vehículo.
+     */
+    @FXML
+    public void abrirNuevoMantenimiento() {
+        if (vehiculoActualDetalle == null) {
+            mostrarMensaje("Atención", "No se ha seleccionado ningún vehículo para registrar mantenimiento.", Alert.AlertType.WARNING);
+            return;
+        }
+        vieneDesdeHistorial = false;
+        prepararYMostrarNuevoMantenimiento(vehiculoActualDetalle);
+    }
+
+    /**
+     * Abre la pantalla para registrar un nuevo mantenimiento directamente desde el historial.
+     */
+    @FXML
+    public void mostrarVistaNuevoMantenimientoDesdeHistorial() {
+        if (vehiculoActualDetalle == null) {
+            return;
+        }
+        vieneDesdeHistorial = true;
+        prepararYMostrarNuevoMantenimiento(vehiculoActualDetalle);
+    }
+
+    private void prepararYMostrarNuevoMantenimiento(Vehiculo v) {
+        if (v == null) return;
+        cargarEmpleados();
+
+        if (vistaDetalle != null) {
+            vistaDetalle.setVisible(false);
+            vistaDetalle.setManaged(false);
+        }
+        if (vistaGaleria != null) {
+            vistaGaleria.setVisible(false);
+            vistaGaleria.setManaged(false);
+        }
+        if (vistaAlta != null) {
+            vistaAlta.setVisible(false);
+            vistaAlta.setManaged(false);
+        }
+        if (vistaHistorialMantenimiento != null) {
+            vistaHistorialMantenimiento.setVisible(false);
+            vistaHistorialMantenimiento.setManaged(false);
+        }
+
+        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : "")).trim();
+        String pat = v.getPat() != null ? v.getPat() : "-";
+        Integer kmj = v.getKmj() != null ? v.getKmj() : 0;
+        String sucursalTexto = formatearSucursal(v.getCodPertenece());
+
+        if (lblNuevoMantTitulo != null) {
+            lblNuevoMantTitulo.setText("Registrar Mantenimiento · " + marcaMod);
+        }
+        if (lblNuevoMantSubtitulo != null) {
+            lblNuevoMantSubtitulo.setText("Carga de servicio en taller oficial para patente " + pat + " (Transacción 4.4)");
+        }
+        if (lblNuevoMantVehiculoInfo != null) {
+            lblNuevoMantVehiculoInfo.setText(marcaMod + " (" + (v.getCat() != null ? v.getCat() : "Auto") + ")");
+        }
+        if (lblNuevoMantPatente != null) {
+            lblNuevoMantPatente.setText(pat);
+        }
+        if (lblNuevoMantKmjActual != null) {
+            lblNuevoMantKmjActual.setText(String.format("%,d km", kmj));
+        }
+        if (lblNuevoMantSucursal != null) {
+            lblNuevoMantSucursal.setText(sucursalTexto);
+        }
+
+        // Limpiar / resetear campos del formulario
+        if (dpNuevoMantFecha != null) {
+            dpNuevoMantFecha.setValue(LocalDate.now());
+        }
+        if (cmbNuevoMantTipo != null) {
+            if (!cmbNuevoMantTipo.getItems().isEmpty()) {
+                cmbNuevoMantTipo.getSelectionModel().selectFirst();
+            }
+        }
+        if (txtNuevoMantKmj != null) {
+            txtNuevoMantKmj.setText(String.valueOf(kmj));
+        }
+        if (txtNuevoMantCosto != null) {
+            txtNuevoMantCosto.clear();
+        }
+        if (cmbNuevoMantEmpleado != null) {
+            if (!cmbNuevoMantEmpleado.getItems().isEmpty()) {
+                cmbNuevoMantEmpleado.getSelectionModel().selectFirst();
+            }
+        }
+        if (txtNuevoMantObs != null) {
+            txtNuevoMantObs.clear();
+        }
+        if (lblNuevoMantContadorObs != null) {
+            lblNuevoMantContadorObs.setText("0 / 100 caracteres");
+        }
+
+        if (vistaNuevoMantenimiento != null) {
+            vistaNuevoMantenimiento.setVisible(true);
+            vistaNuevoMantenimiento.setManaged(true);
+        }
+    }
+
+    /**
+     * Vuelve desde el historial de mantenimientos a la ficha del vehículo.
+     */
+    @FXML
+    public void volverADetalleDesdeMantenimiento() {
+        if (vistaHistorialMantenimiento != null) {
+            vistaHistorialMantenimiento.setVisible(false);
+            vistaHistorialMantenimiento.setManaged(false);
+        }
+        if (vistaDetalle != null) {
+            vistaDetalle.setVisible(true);
+            vistaDetalle.setManaged(true);
+        }
+    }
+
+    /**
+     * Vuelve desde el formulario de nuevo mantenimiento a la pantalla previa (historial o ficha).
+     */
+    @FXML
+    public void volverADetalleDesdeNuevoMantenimiento() {
+        if (vistaNuevoMantenimiento != null) {
+            vistaNuevoMantenimiento.setVisible(false);
+            vistaNuevoMantenimiento.setManaged(false);
+        }
+        if (vieneDesdeHistorial) {
+            if (vistaHistorialMantenimiento != null) {
+                vistaHistorialMantenimiento.setVisible(true);
+                vistaHistorialMantenimiento.setManaged(true);
+            }
+        } else {
+            if (vistaDetalle != null) {
+                vistaDetalle.setVisible(true);
+                vistaDetalle.setManaged(true);
+            }
+        }
+    }
+
+    /**
+     * Limpia los campos del formulario de registro de mantenimiento.
+     */
+    @FXML
+    public void limpiarFormularioNuevoMantenimiento() {
+        if (dpNuevoMantFecha != null) {
+            dpNuevoMantFecha.setValue(LocalDate.now());
+        }
+        if (cmbNuevoMantTipo != null) {
+            cmbNuevoMantTipo.getSelectionModel().clearSelection();
+        }
+        if (txtNuevoMantKmj != null) {
+            Integer kmjActual = vehiculoActualDetalle != null && vehiculoActualDetalle.getKmj() != null
+                    ? vehiculoActualDetalle.getKmj()
+                    : 0;
+            txtNuevoMantKmj.setText(String.valueOf(kmjActual));
+        }
+        if (txtNuevoMantCosto != null) {
+            txtNuevoMantCosto.clear();
+        }
+        if (cmbNuevoMantEmpleado != null) {
+            cmbNuevoMantEmpleado.getSelectionModel().clearSelection();
+        }
+        if (txtNuevoMantObs != null) {
+            txtNuevoMantObs.clear();
+        }
+        if (lblNuevoMantContadorObs != null) {
+            lblNuevoMantContadorObs.setText("0 / 100 caracteres");
+        }
+    }
+
+    /**
+     * Valida y persiste un nuevo mantenimiento para el vehículo actual según Transacción 4.4.
+     */
+    @FXML
+    public void guardarNuevoMantenimiento() {
+        if (vehiculoActualDetalle == null || vehiculoActualDetalle.getId() == null) {
+            mostrarMensaje("Error", "No se pudo identificar la unidad vehicular a la cual registrar el mantenimiento.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        LocalDate fecha = dpNuevoMantFecha != null ? dpNuevoMantFecha.getValue() : null;
+        if (fecha == null) {
+            mostrarMensaje("Campo Requerido", "Debe seleccionar la fecha en la que se realizó el mantenimiento.", Alert.AlertType.WARNING);
+            if (dpNuevoMantFecha != null) dpNuevoMantFecha.requestFocus();
+            return;
+        }
+        if (fecha.isAfter(LocalDate.now())) {
+            mostrarMensaje("Fecha Inválida", "La fecha del mantenimiento no puede ser posterior a la fecha actual.", Alert.AlertType.WARNING);
+            if (dpNuevoMantFecha != null) dpNuevoMantFecha.requestFocus();
+            return;
+        }
+
+        TipoMantenimiento tipo = cmbNuevoMantTipo != null ? cmbNuevoMantTipo.getValue() : null;
+        if (tipo == null) {
+            mostrarMensaje("Campo Requerido", "Debe seleccionar el tipo de mantenimiento realizado (Fluidos, Filtros, Neumáticos, etc.).", Alert.AlertType.WARNING);
+            if (cmbNuevoMantTipo != null) cmbNuevoMantTipo.requestFocus();
+            return;
+        }
+
+        String kmjStr = txtNuevoMantKmj != null ? txtNuevoMantKmj.getText().trim() : "";
+        if (kmjStr.isEmpty()) {
+            mostrarMensaje("Campo Requerido", "Debe ingresar el kilometraje del vehículo al momento del servicio.", Alert.AlertType.WARNING);
+            if (txtNuevoMantKmj != null) txtNuevoMantKmj.requestFocus();
+            return;
+        }
+        int kmj;
+        try {
+            kmj = Integer.parseInt(kmjStr);
+            if (kmj < 0) {
+                mostrarMensaje("Valor Inválido", "El kilometraje no puede ser negativo.", Alert.AlertType.WARNING);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Valor Inválido", "El kilometraje debe ser un número entero válido.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        String costoStr = txtNuevoMantCosto != null ? txtNuevoMantCosto.getText().trim().replace(",", ".") : "";
+        if (costoStr.isEmpty()) {
+            mostrarMensaje("Campo Requerido", "Debe ingresar el costo del mantenimiento.", Alert.AlertType.WARNING);
+            if (txtNuevoMantCosto != null) txtNuevoMantCosto.requestFocus();
+            return;
+        }
+        double costo;
+        try {
+            costo = Double.parseDouble(costoStr);
+            if (costo < 0) {
+                mostrarMensaje("Valor Inválido", "El costo del mantenimiento no puede ser negativo.", Alert.AlertType.WARNING);
+                return;
+            }
+            if (costo > 999999.99) {
+                mostrarMensaje("Valor Inválido", "El costo no puede superar $999.999,99.", Alert.AlertType.WARNING);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            mostrarMensaje("Valor Inválido", "El costo debe ser un valor numérico válido (ej. 15000.00).", Alert.AlertType.WARNING);
+            return;
+        }
+
+        Empleado empleado = cmbNuevoMantEmpleado != null ? cmbNuevoMantEmpleado.getValue() : null;
+        if (empleado == null || empleado.getId() == null) {
+            mostrarMensaje("Campo Requerido", "Debe seleccionar el empleado / mecánico que realizó el mantenimiento.", Alert.AlertType.WARNING);
+            if (cmbNuevoMantEmpleado != null) cmbNuevoMantEmpleado.requestFocus();
+            return;
+        }
+
+        String obs = txtNuevoMantObs != null ? txtNuevoMantObs.getText().trim() : "";
+        if (obs.length() > 100) {
+            mostrarMensaje("Texto demasiado largo", "Las observaciones no pueden superar los 100 caracteres.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        Mantenimiento m = new Mantenimiento();
+        m.setFec(fecha.toString()); // yyyy-MM-dd
+        m.setTipo(tipo);
+        m.setKmj(kmj);
+        m.setCosto(costo);
+        m.setObs(obs.isEmpty() ? null : obs);
+        m.setIdRealiza(empleado.getId());
+        m.setIdRealizado(vehiculoActualDetalle.getId());
+
+        try {
+            mantenimientoService.altaMantenimiento(m);
+
+            // Si el kilometraje del mantenimiento es mayor al actual del vehículo, actualizarlo
+            if (vehiculoActualDetalle.getKmj() == null || kmj > vehiculoActualDetalle.getKmj()) {
+                vehiculoActualDetalle.setKmj(kmj);
+                try {
+                    VehiculoDAO vDao = new VehiculoDAO();
+                    vDao.actualizar(vehiculoActualDetalle);
+                } catch (Exception exActualizar) {
+                    System.err.println("Aviso: No se pudo actualizar el km en el vehículo: " + exActualizar.getMessage());
+                }
+                if (txtDetKmj != null) {
+                    txtDetKmj.setText(String.valueOf(kmj));
+                }
+            }
+
+            mostrarMensaje("Mantenimiento Registrado con Éxito",
+                    "El mantenimiento #" + (m.getId() != null ? m.getId() : "") + " (" + tipo.getDescripcion() + ") por $"
+                            + String.format("%.2f", costo) + " se registró correctamente para la unidad "
+                            + vehiculoActualDetalle.getPat() + ".",
+                    Alert.AlertType.INFORMATION);
+
+            // Redirigir a la pantalla de Historial de Mantenimientos para que el usuario visualice el nuevo registro
+            if (vistaNuevoMantenimiento != null) {
+                vistaNuevoMantenimiento.setVisible(false);
+                vistaNuevoMantenimiento.setManaged(false);
+            }
+            cargarHistorialMantenimiento(vehiculoActualDetalle);
+            if (vistaHistorialMantenimiento != null) {
+                vistaHistorialMantenimiento.setVisible(true);
+                vistaHistorialMantenimiento.setManaged(true);
+            }
+
+        } catch (Exception e) {
+            mostrarMensaje("Error al Guardar Mantenimiento", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

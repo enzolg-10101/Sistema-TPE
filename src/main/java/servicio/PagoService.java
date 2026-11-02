@@ -2,6 +2,7 @@ package servicio;
 
 import dao.ContratoDAO;
 import dao.PagoDAO;
+import java.util.List;
 import modelo.Contrato;
 import modelo.Pago;
 
@@ -44,6 +45,32 @@ public class PagoService {
         // Fin-ts
     }
 
+    public List<Pago> listarPorContrato(int nroContrato) {
+        return pagoDAO.listarPorContrato(nroContrato);
+    }
+
+    public double obtenerTotalPagado(int nroContrato) {
+        return pagoDAO.obtenerTotalPagado(nroContrato);
+    }
+
+    public double calcularTotalContrato(Contrato c) {
+        if (c == null) {
+            return 0.0;
+        }
+        double alq = (c.getImpAlq() != null) ? c.getImpAlq() : 0.0;
+        double cargos = (c.getCargos() != null) ? c.getCargos() : 0.0;
+        return alq + cargos;
+    }
+
+    public double calcularSaldoPendiente(Contrato c) {
+        if (c == null || c.getNro() == null) {
+            return 0.0;
+        }
+        double total = calcularTotalContrato(c);
+        double pagado = obtenerTotalPagado(c.getNro());
+        return Math.max(0.0, total - pagado);
+    }
+
     // --- 1 Generar la nupla correspondiente en Registra ---
     private void generarNuplaRegistra(Pago pago) {
         // Inicio-ts
@@ -58,7 +85,22 @@ public class PagoService {
         if (nroContrato == null) {
             throw new RuntimeException("Error: Debe especificar el número de contrato asociado al pago.");
         }
-        Contrato c = contratoDAO.buscarPorId(nroContrato);
+        Contrato c = null;
+        try {
+            c = contratoDAO.buscarPorId(nroContrato);
+        } catch (Exception ignored) {
+        }
+
+        // Si la base de datos no está disponible o el contrato se generó en la sesión
+        if (c == null) {
+            for (Contrato enMem : controlador.NuevoContratoController.getContratosEnMemoria()) {
+                if (nroContrato.equals(enMem.getNro())) {
+                    c = enMem;
+                    break;
+                }
+            }
+        }
+
         if (c == null) {
             throw new RuntimeException("Error: El Contrato especificado (" + nroContrato + ") no existe.");
         }

@@ -16,12 +16,33 @@ public enum MedioPago {
         return descripcion;
     }
 
+    /**
+     * Retorna el nombre exacto para la base de datos (ENUM('Credito','Debito','Transferencia','Efectivo')).
+     */
+    public String getNombreBd() {
+        switch (this) {
+            case CREDITO:
+                return "Credito";
+            case DEBITO:
+                return "Debito";
+            case TRANSFERENCIA:
+                return "Transferencia";
+            case EFECTIVO:
+                return "Efectivo";
+            default:
+                return name();
+        }
+    }
+
     public static MedioPago fromString(String texto) {
         if (texto == null) {
             return null;
         }
+        String limpio = texto.trim();
         for (MedioPago m : MedioPago.values()) {
-            if (m.descripcion.equalsIgnoreCase(texto) || m.name().equalsIgnoreCase(texto)) {
+            if (m.descripcion.equalsIgnoreCase(limpio)
+                    || m.name().equalsIgnoreCase(limpio)
+                    || m.getNombreBd().equalsIgnoreCase(limpio)) {
                 return m;
             }
         }

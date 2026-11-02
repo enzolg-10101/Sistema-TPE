@@ -209,6 +209,20 @@ public class NuevoContratoController {
         }
     }
 
+    /**
+     * Sincroniza en memoria el estado 'Pagado' cuando se cancela el total adeudado.
+     */
+    public static void marcarContratoPagadoEnMemoria(Integer nroContrato) {
+        if (nroContrato == null) {
+            return;
+        }
+        for (Contrato c : CONTRATOS_EN_MEMORIA) {
+            if (nroContrato.equals(c.getNro())) {
+                c.setEst("Pagado");
+            }
+        }
+    }
+
     private Cliente clienteElegidoExistente = null;
     private boolean clienteNuevoPendienteDeTransaccion = false;
 
