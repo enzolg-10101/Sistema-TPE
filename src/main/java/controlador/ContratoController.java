@@ -41,11 +41,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import modelo.Cliente;
 import modelo.Contrato;
 import modelo.MedioPago;
 import modelo.Pago;
 import modelo.Sucursal;
 import servicio.ContratoService;
+import servicio.GeneradorPdfService;
 import servicio.PagoService;
 import util.FormatoFecha;
 
@@ -94,11 +96,13 @@ public class ContratoController {
     @FXML private TableColumn<Pago, Double> colPagoImporte;
 
     // Botones de acción
+    @FXML private Button btnGenerarComprobantePdf;
     @FXML private Button btnRegistrarDevolucion;
     @FXML private Button btnRegistrarPago;
 
     private final ContratoService contratoService;
     private final PagoService pagoService;
+    private final GeneradorPdfService generadorPdfService = new GeneradorPdfService();
     private final SucursalDAO sucursalDAO = new SucursalDAO();
     private final ObservableList<Contrato> listaContratos = FXCollections.observableArrayList();
     private FilteredList<Contrato> listaFiltrada;
@@ -927,6 +931,70 @@ public class ContratoController {
         ventana.setResizable(false);
         ventana.sizeToScene();
         ventana.showAndWait();
+    }
+
+    /**
+     * Genera un comprobante de pago en formato PDF utilizando iText 5 para el pago
+     * seleccionado en la tabla de pagos (o el más reciente si no hay fila seleccionada).
+     */
+    @FXML
+    public void generarComprobantePdfPago() {
+        if (contratoSeleccionado == null) {
+            mostrarAlerta("Seleccione un contrato",
+                    "Debe seleccionar un contrato de la lista para emitir el comprobante de pago.",
+                    Alert.AlertType.WARNING);
+            return;
+        }
+
+        if (tablaPagosContrato == null || tablaPagosContrato.getItems().isEmpty()) {
+            mostrarAlerta("Sin pagos registrados",
+                    "El contrato seleccionado no posee pagos registrados para emitir un comprobante.",
+                    Alert.AlertType.INFORMATION);
+            return;
+        }
+
+        Pago pagoSeleccionado = tablaPagosContrato.getSelectionModel().getSelectedItem();
+        if (pagoSeleccionado == null) {
+            // Si el usuario no seleccionó una fila específica, tomamos el último pago registrado
+            pagoSeleccionado = tablaPagosContrato.getItems().get(tablaPagosContrato.getItems().size() - 1);
+        }
+
+        // Obtener la entidad Cliente
+        Cliente cliente = null;
+        try {
+            if (contratoSeleccionado.getIdFirma() != null) {
+                cliente = new ClienteDAO().buscarPorId(contratoSeleccionado.getIdFirma());
+            }
+        } catch (Exception e) {
+            System.err.println("No se pudo obtener el cliente por ID: " + e.getMessage());
+        }
+
+        if (cliente == null) {
+            cliente = new Cliente();
+            cliente.setNom(contratoSeleccionado.getClienteNombre());
+            cliente.setDni(contratoSeleccionado.getClienteDni());
+        }
+
+        try {
+            List<Pago> historial = tablaPagosContrato != null ? tablaPagosContrato.getItems() : null;
+            File pdfGenerado = generadorPdfService.generarComprobante(pagoSeleccionado, contratoSeleccionado, cliente, historial);
+
+            mostrarAlerta("Comprobante generado",
+                    "El comprobante de pago se ha generado exitosamente en:\n" + pdfGenerado.getAbsolutePath(),
+                    Alert.AlertType.INFORMATION);
+
+            // Abrir automáticamente el archivo PDF generado en el visor predeterminado del sistema
+            try {
+                if (java.awt.Desktop.isDesktopSupported() && pdfGenerado.exists()) {
+                    java.awt.Desktop.getDesktop().open(pdfGenerado);
+                }
+            } catch (Exception ignored) {
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al generar PDF",
+                    "No se pudo generar el comprobante PDF: " + e.getMessage(),
+                    Alert.AlertType.ERROR);
+        }
     }
 
     /**

@@ -30,6 +30,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -224,6 +225,20 @@ public class VehiculoController {
         this.sucursalFiltroActiva = sucursalFiltroPendiente;
         sucursalFiltroPendiente = null;
         actualizarEncabezadoSucursalFiltro();
+
+        // Formateador Mercosur para patente: fuerza mayúsculas y bloquea escritura superando 7 caracteres
+        if (txtPat != null) {
+            txtPat.setTextFormatter(new TextFormatter<>(change -> {
+                change.setText(change.getText().toUpperCase());
+                return change.getControlNewText().length() <= 7 ? change : null;
+            }));
+        }
+        if (txtDetPat != null) {
+            txtDetPat.setTextFormatter(new TextFormatter<>(change -> {
+                change.setText(change.getText().toUpperCase());
+                return change.getControlNewText().length() <= 7 ? change : null;
+            }));
+        }
 
         if (comboMarca != null) {
             List<String> marcasOrdenadas = new ArrayList<>(CATALOGO_VEHICULOS.keySet());
@@ -884,6 +899,13 @@ public class VehiculoController {
                 return;
             }
 
+            if (!pat.matches("^[A-Z]{2}\\d{3}[A-Z]{2}$")) {
+                mostrarMensaje("Error de Validación",
+                        "La patente debe tener el formato válido Mercosur (ej. AA123BC)",
+                        Alert.AlertType.WARNING);
+                return;
+            }
+
             if (fechaAdq.getYear() < aFabr) {
                 mostrarMensaje("Error de Validación",
                         "La fecha de adquisición (" + FormatoFecha.formatearFechaGui(fechaAdq)
@@ -1276,6 +1298,13 @@ public class VehiculoController {
                     || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null || sucursalSeleccionada == null) {
                 mostrarMensaje("Error de Validación",
                         "Por favor complete todos los campos obligatorios (incluyendo Patente, Marca, Modelo, Combustible, Transmisión, Año de Fabricación, Fecha de Adquisición y Sucursal).",
+                        Alert.AlertType.WARNING);
+                return;
+            }
+
+            if (!pat.matches("^[A-Z]{2}\\d{3}[A-Z]{2}$")) {
+                mostrarMensaje("Error de Validación",
+                        "La patente debe tener el formato válido Mercosur (ej. AA123BC)",
                         Alert.AlertType.WARNING);
                 return;
             }

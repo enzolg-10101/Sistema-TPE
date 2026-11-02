@@ -256,6 +256,11 @@
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                                 </columnResizePolicy>
                             </TableView>
+
+                            <Button fx:id="btnGenerarComprobantePdf" maxWidth="Infinity" minHeight="32.0" prefHeight="32.0"
+                                    onAction="#generarComprobantePdfPago"
+                                    style="-fx-background-color: #FFFFFF; -fx-border-color: #CBD5E1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #1E293B; -fx-font-size: 11px; -fx-font-weight: bold; -fx-cursor: hand;"
+                                    text="Generar Comprobante (PDF)"/>
                         </VBox>
                     </VBox>
                 </content>
