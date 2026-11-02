@@ -805,6 +805,15 @@ public class VehiculoController {
                 return;
             }
 
+            Vehiculo datosActualizados = new Vehiculo(
+                    vehiculoActualDetalle.getId(),
+                    pat, marca, mod, aFabr, fAdq, kmj, est,
+                    preAdq, fBaja, tiComb, carga, pax, tarBase, cat,
+                    sucursalSeleccionada.getCod()
+            );
+
+            vehiculoService.modificarVehiculo(datosActualizados);
+
             vehiculoActualDetalle.setPat(pat);
             vehiculoActualDetalle.setMarca(marca);
             vehiculoActualDetalle.setMod(mod);
@@ -820,15 +829,6 @@ public class VehiculoController {
             vehiculoActualDetalle.setTarBase(tarBase);
             vehiculoActualDetalle.setCat(cat);
             vehiculoActualDetalle.setCodPertenece(sucursalSeleccionada.getCod());
-
-            try {
-                vehiculoService.modificarVehiculo(vehiculoActualDetalle);
-            } catch (Exception e) {
-                // Si el error es por patente duplicada en BD, informar al usuario
-                if (e.getMessage() != null && e.getMessage().contains("Ya existe otro vehículo")) {
-                    throw e;
-                }
-            }
 
             // Actualizar también en la lista de sesión en memoria si corresponde
             for (int i = 0; i < VEHICULOS_REGISTRADOS.size(); i++) {
@@ -1191,14 +1191,7 @@ public class VehiculoController {
             Vehiculo nuevo = new Vehiculo(pat, marca, mod, aFabr, fAdq, kmj, est,
                     preAdq, fBaja, tiComb, carga, pax, tarBase, cat, codPertenece);
 
-            try {
-                vehiculoService.altaVehiculo(nuevo);
-            } catch (Exception ignored) {
-                // Si la BD no está activa en la prueba visual, se asigna un ID provisorio en sesión
-                if (nuevo.getId() == null) {
-                    nuevo.setId(VEHICULOS_REGISTRADOS.size() + 10);
-                }
-            }
+            vehiculoService.altaVehiculo(nuevo);
 
             VEHICULOS_REGISTRADOS.add(nuevo);
 
