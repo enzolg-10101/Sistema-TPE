@@ -51,23 +51,22 @@ import util.FormatoFecha;
 
 public class VehiculoController {
 
-    private static final String ESTILO_TARJETA_NORMAL =
-            "-fx-background-color: #FFFFFF; "
+    private static final String ESTILO_TARJETA_NORMAL = "-fx-background-color: #FFFFFF; "
             + "-fx-background-radius: 14; "
             + "-fx-border-color: #E5E7EB; "
             + "-fx-border-radius: 14; "
             + "-fx-border-width: 1; "
             + "-fx-cursor: hand;";
 
-    private static final String ESTILO_TARJETA_HOVER =
-            "-fx-background-color: #FFFFFF; "
+    private static final String ESTILO_TARJETA_HOVER = "-fx-background-color: #FFFFFF; "
             + "-fx-background-radius: 14; "
             + "-fx-border-color: #F59E0B; "
             + "-fx-border-radius: 14; "
             + "-fx-border-width: 1.5; "
             + "-fx-cursor: hand;";
 
-    // Lista compartida en memoria para conservar los vehículos registrados durante la sesión
+    // Lista compartida en memoria para conservar los vehículos registrados durante
+    // la sesión
     private static final List<Vehiculo> VEHICULOS_REGISTRADOS = new ArrayList<>();
 
     // Diccionario en memoria para marcas y modelos del mercado argentino
@@ -85,88 +84,161 @@ public class VehiculoController {
         CATALOGO_VEHICULOS.put("Mercedes-Benz", Arrays.asList("Sprinter", "Vito"));
     }
 
-    // Contenedores para alternar entre Galería, Ficha Detallada, Alta y Mantenimiento
-    @FXML private VBox vistaGaleria;
-    @FXML private VBox vistaDetalle;
-    @FXML private VBox vistaAlta;
-    @FXML private VBox vistaHistorialMantenimiento;
-    @FXML private VBox vistaNuevoMantenimiento;
+    // Contenedores para alternar entre Galería, Ficha Detallada, Alta y
+    // Mantenimiento
+    @FXML
+    private VBox vistaGaleria;
+    @FXML
+    private VBox vistaDetalle;
+    @FXML
+    private VBox vistaAlta;
+    @FXML
+    private VBox vistaHistorialMantenimiento;
+    @FXML
+    private VBox vistaNuevoMantenimiento;
 
     // Galería, filtro desplegable por tipo y buscador
-    @FXML private TilePane contenedorVehiculos;
-    @FXML private ComboBox<String> cmbFiltroTipo;
-    @FXML private TextField txtBuscarVehiculo;
-    @FXML private Label lblTituloGaleria;
-    @FXML private Button btnLimpiarFiltroSucursal;
-    @FXML private Label lblCantidadVehiculos;
+    @FXML
+    private TilePane contenedorVehiculos;
+    @FXML
+    private ComboBox<String> cmbFiltroTipo;
+    @FXML
+    private TextField txtBuscarVehiculo;
+    @FXML
+    private Label lblTituloGaleria;
+    @FXML
+    private Button btnLimpiarFiltroSucursal;
+    @FXML
+    private Label lblCantidadVehiculos;
 
     // Componentes de la pantalla de Ficha Completa del Vehículo (vistaDetalle)
-    @FXML private Label lblFichaTitulo;
-    @FXML private Label lblFichaSubtitulo;
-    @FXML private Label lblDetalleBadgeDisponibilidad;
-    @FXML private Label lblDetalleCatBadge;
-    @FXML private ImageView imgDetalleVehiculo;
-    @FXML private Label lblDetalleMarcaModelo;
-    @FXML private Label lblDetallePatenteBadge;
-    @FXML private Label lblDetalleTarifaDestacada;
-    @FXML private Label lblDetalleSucursalDestacada;
-    @FXML private Label lblTituloDatosDetalle;
-    @FXML private Button btnEditarDetalle;
-    @FXML private Button btnLimpiarFBajaDetalle;
-    @FXML private Separator sepAccionesEdicionDetalle;
-    @FXML private HBox boxAccionesEdicionDetalle;
+    @FXML
+    private Label lblFichaTitulo;
+    @FXML
+    private Label lblFichaSubtitulo;
+    @FXML
+    private Label lblDetalleBadgeDisponibilidad;
+    @FXML
+    private Label lblDetalleCatBadge;
+    @FXML
+    private ImageView imgDetalleVehiculo;
+    @FXML
+    private Label lblDetalleMarcaModelo;
+    @FXML
+    private Label lblDetallePatenteBadge;
+    @FXML
+    private Label lblDetalleTarifaDestacada;
+    @FXML
+    private Label lblDetalleSucursalDestacada;
+    @FXML
+    private Label lblTituloDatosDetalle;
+    @FXML
+    private Button btnEditarDetalle;
+    @FXML
+    private Button btnLimpiarFBajaDetalle;
+    @FXML
+    private Separator sepAccionesEdicionDetalle;
+    @FXML
+    private HBox boxAccionesEdicionDetalle;
 
-    @FXML private TextField txtDetId;
-    @FXML private TextField txtDetPat;
-    @FXML private TextField txtDetMarca;
-    @FXML private TextField txtDetMod;
-    @FXML private ComboBox<Integer> cmbDetAFabr;
-    @FXML private ComboBox<String> cmbDetCat;
-    @FXML private ComboBox<String> cmbDetTiComb;
-    @FXML private ComboBox<String> cmbDetTransmision;
-    @FXML private TextField txtDetKmj;
-    @FXML private TextField txtDetCarga;
-    @FXML private TextField txtDetPax;
-    @FXML private TextField txtDetTarBase;
-    @FXML private TextField txtDetEst;
-    @FXML private DatePicker dpDetFAdq;
-    @FXML private TextField txtDetPreAdq;
-    @FXML private DatePicker dpDetFBaja;
-    @FXML private ComboBox<Sucursal> cmbDetSucursal;
+    @FXML
+    private TextField txtDetId;
+    @FXML
+    private TextField txtDetPat;
+    @FXML
+    private TextField txtDetMarca;
+    @FXML
+    private TextField txtDetMod;
+    @FXML
+    private ComboBox<Integer> cmbDetAFabr;
+    @FXML
+    private ComboBox<String> cmbDetCat;
+    @FXML
+    private ComboBox<String> cmbDetTiComb;
+    @FXML
+    private ComboBox<String> cmbDetTransmision;
+    @FXML
+    private TextField txtDetKmj;
+    @FXML
+    private TextField txtDetCarga;
+    @FXML
+    private TextField txtDetPax;
+    @FXML
+    private TextField txtDetTarBase;
+    @FXML
+    private TextField txtDetEst;
+    @FXML
+    private DatePicker dpDetFAdq;
+    @FXML
+    private TextField txtDetPreAdq;
+    @FXML
+    private DatePicker dpDetFBaja;
+    @FXML
+    private ComboBox<Sucursal> cmbDetSucursal;
 
     // Botones de acciones de mantenimiento en la ficha técnica (vistaDetalle)
-    @FXML private Button btnVerMantenimientos;
-    @FXML private Button btnNuevoMantenimiento;
+    @FXML
+    private Button btnVerMantenimientos;
+    @FXML
+    private Button btnNuevoMantenimiento;
 
-    // Componentes de la pantalla de Historial de Mantenimientos (vistaHistorialMantenimiento)
-    @FXML private Label lblHistorialTitulo;
-    @FXML private Label lblHistorialSubtitulo;
-    @FXML private Label lblHistorialTotalServicios;
-    @FXML private Label lblHistorialCostoTotal;
-    @FXML private Label lblHistorialEstadoTabla;
-    @FXML private TableView<Mantenimiento> tablaMantenimientos;
-    @FXML private TableColumn<Mantenimiento, Integer> colMantId;
-    @FXML private TableColumn<Mantenimiento, String> colMantFecha;
-    @FXML private TableColumn<Mantenimiento, String> colMantTipo;
-    @FXML private TableColumn<Mantenimiento, String> colMantKmj;
-    @FXML private TableColumn<Mantenimiento, String> colMantCosto;
-    @FXML private TableColumn<Mantenimiento, String> colMantEmpleado;
-    @FXML private TableColumn<Mantenimiento, String> colMantObs;
+    // Componentes de la pantalla de Historial de Mantenimientos
+    // (vistaHistorialMantenimiento)
+    @FXML
+    private Label lblHistorialTitulo;
+    @FXML
+    private Label lblHistorialSubtitulo;
+    @FXML
+    private Label lblHistorialTotalServicios;
+    @FXML
+    private Label lblHistorialCostoTotal;
+    @FXML
+    private Label lblHistorialEstadoTabla;
+    @FXML
+    private TableView<Mantenimiento> tablaMantenimientos;
+    @FXML
+    private TableColumn<Mantenimiento, Integer> colMantId;
+    @FXML
+    private TableColumn<Mantenimiento, String> colMantFecha;
+    @FXML
+    private TableColumn<Mantenimiento, String> colMantTipo;
+    @FXML
+    private TableColumn<Mantenimiento, String> colMantKmj;
+    @FXML
+    private TableColumn<Mantenimiento, String> colMantCosto;
+    @FXML
+    private TableColumn<Mantenimiento, String> colMantEmpleado;
+    @FXML
+    private TableColumn<Mantenimiento, String> colMantObs;
 
-    // Componentes de la pantalla de Registro de Mantenimiento (vistaNuevoMantenimiento)
-    @FXML private Label lblNuevoMantTitulo;
-    @FXML private Label lblNuevoMantSubtitulo;
-    @FXML private Label lblNuevoMantVehiculoInfo;
-    @FXML private Label lblNuevoMantPatente;
-    @FXML private Label lblNuevoMantKmjActual;
-    @FXML private Label lblNuevoMantSucursal;
-    @FXML private DatePicker dpNuevoMantFecha;
-    @FXML private ComboBox<TipoMantenimiento> cmbNuevoMantTipo;
-    @FXML private TextField txtNuevoMantKmj;
-    @FXML private TextField txtNuevoMantCosto;
-    @FXML private ComboBox<Empleado> cmbNuevoMantEmpleado;
-    @FXML private TextField txtNuevoMantObs;
-    @FXML private Label lblNuevoMantContadorObs;
+    // Componentes de la pantalla de Registro de Mantenimiento
+    // (vistaNuevoMantenimiento)
+    @FXML
+    private Label lblNuevoMantTitulo;
+    @FXML
+    private Label lblNuevoMantSubtitulo;
+    @FXML
+    private Label lblNuevoMantVehiculoInfo;
+    @FXML
+    private Label lblNuevoMantPatente;
+    @FXML
+    private Label lblNuevoMantKmjActual;
+    @FXML
+    private Label lblNuevoMantSucursal;
+    @FXML
+    private DatePicker dpNuevoMantFecha;
+    @FXML
+    private ComboBox<TipoMantenimiento> cmbNuevoMantTipo;
+    @FXML
+    private TextField txtNuevoMantKmj;
+    @FXML
+    private TextField txtNuevoMantCosto;
+    @FXML
+    private ComboBox<Empleado> cmbNuevoMantEmpleado;
+    @FXML
+    private TextField txtNuevoMantObs;
+    @FXML
+    private Label lblNuevoMantContadorObs;
 
     // Servicios y DAOs para Mantenimiento y Empleados
     private final MantenimientoService mantenimientoService = new MantenimientoService();
@@ -176,22 +248,38 @@ public class VehiculoController {
 
     private Vehiculo vehiculoActualDetalle;
 
-    // Campos del formulario de Nuevo Vehículo (sin ID manual, V_id es AUTO_INCREMENT y V_pat es UNIQUE)
-    @FXML private TextField txtPat;
-    @FXML private ComboBox<String> comboMarca;
-    @FXML private ComboBox<String> comboModelo;
-    @FXML private ComboBox<Integer> cmbAFabr;
-    @FXML private DatePicker dpFAdq;
-    @FXML private TextField txtKmj;
-    @FXML private TextField txtEst;
-    @FXML private TextField txtPreAdq;
-    @FXML private ComboBox<String> cmbTiComb;
-    @FXML private ComboBox<String> cmbTransmision;
-    @FXML private TextField txtCarga;
-    @FXML private TextField txtPax;
-    @FXML private TextField txtTarBase;
-    @FXML private ComboBox<String> cmbCat;
-    @FXML private ComboBox<Sucursal> cmbSucursal;
+    // Campos del formulario de Nuevo Vehículo (sin ID manual, V_id es
+    // AUTO_INCREMENT y V_pat es UNIQUE)
+    @FXML
+    private TextField txtPat;
+    @FXML
+    private ComboBox<String> comboMarca;
+    @FXML
+    private ComboBox<String> comboModelo;
+    @FXML
+    private ComboBox<Integer> cmbAFabr;
+    @FXML
+    private DatePicker dpFAdq;
+    @FXML
+    private TextField txtKmj;
+    @FXML
+    private TextField txtEst;
+    @FXML
+    private TextField txtPreAdq;
+    @FXML
+    private ComboBox<String> cmbTiComb;
+    @FXML
+    private ComboBox<String> cmbTransmision;
+    @FXML
+    private TextField txtCarga;
+    @FXML
+    private TextField txtPax;
+    @FXML
+    private TextField txtTarBase;
+    @FXML
+    private ComboBox<String> cmbCat;
+    @FXML
+    private ComboBox<Sucursal> cmbSucursal;
 
     private static Sucursal sucursalFiltroPendiente;
     private Sucursal sucursalFiltroActiva;
@@ -226,7 +314,8 @@ public class VehiculoController {
         sucursalFiltroPendiente = null;
         actualizarEncabezadoSucursalFiltro();
 
-        // Formateador Mercosur para patente: fuerza mayúsculas y bloquea escritura superando 7 caracteres
+        // Formateador Mercosur para patente: fuerza mayúsculas y bloquea escritura
+        // superando 7 caracteres
         if (txtPat != null) {
             txtPat.setTextFormatter(new TextFormatter<>(change -> {
                 change.setText(change.getText().toUpperCase());
@@ -421,7 +510,8 @@ public class VehiculoController {
         try {
             sucursales = sucursalDAO.listarTodas();
         } catch (Exception ignored) {
-            // Si la base de datos aún no está conectada, se ofrece una sucursal por defecto para permitir pruebas
+            // Si la base de datos aún no está conectada, se ofrece una sucursal por defecto
+            // para permitir pruebas
         }
         if (sucursales == null || sucursales.isEmpty()) {
             sucursales = new ArrayList<>();
@@ -451,7 +541,8 @@ public class VehiculoController {
     }
 
     /**
-     * Limpia el TilePane y construye dinámicamente una tarjeta (VBox) clickeable por cada vehículo de la lista.
+     * Limpia el TilePane y construye dinámicamente una tarjeta (VBox) clickeable
+     * por cada vehículo de la lista.
      */
     public void cargarGrillaVehiculos(List<Vehiculo> lista) {
         if (contenedorVehiculos == null) {
@@ -472,8 +563,7 @@ public class VehiculoController {
             int total = lista.size();
             lblCantidadVehiculos.setText(
                     (total == 1 ? "1 vehículo en flota" : total + " vehículos en flota")
-                    + " · Haga clic en un vehículo para ver su ficha completa"
-            );
+                            + " · Haga clic en un vehículo para ver su ficha completa");
         }
     }
 
@@ -487,11 +577,13 @@ public class VehiculoController {
         tarjeta.setPadding(new Insets(16.0));
         tarjeta.setStyle(ESTILO_TARJETA_NORMAL);
 
-        // Obtiene la imagen del vehículo identificando su tipo (Auto, Combi o Furgoneta)
+        // Obtiene la imagen del vehículo identificando su tipo (Auto, Combi o
+        // Furgoneta)
         // o usando la imagen genérica predeterminada
         InputStream flujo = obtenerFlujoImagenPorTipo(vehiculo);
 
-        // Contenedor de la imagen con etiqueta superior de estado (Disponible / Alquilado)
+        // Contenedor de la imagen con etiqueta superior de estado (Disponible /
+        // Alquilado)
         VBox contenedorImagen = new VBox(4.0);
         contenedorImagen.setAlignment(Pos.CENTER);
         contenedorImagen.setPrefHeight(150.0);
@@ -501,12 +593,11 @@ public class VehiculoController {
         Label lblEstadoDisponibilidad = new Label(alquilado ? "● Alquilado" : "● Disponible");
         lblEstadoDisponibilidad.setStyle(alquilado
                 ? "-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #B91C1C; "
-                  + "-fx-background-color: #FEE2E2; -fx-border-color: #FCA5A5; -fx-border-radius: 6; "
-                  + "-fx-background-radius: 6; -fx-padding: 2 8 2 8;"
+                        + "-fx-background-color: #FEE2E2; -fx-border-color: #FCA5A5; -fx-border-radius: 6; "
+                        + "-fx-background-radius: 6; -fx-padding: 2 8 2 8;"
                 : "-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #15803D; "
-                  + "-fx-background-color: #DCFCE7; -fx-border-color: #86EFAC; -fx-border-radius: 6; "
-                  + "-fx-background-radius: 6; -fx-padding: 2 8 2 8;"
-        );
+                        + "-fx-background-color: #DCFCE7; -fx-border-color: #86EFAC; -fx-border-radius: 6; "
+                        + "-fx-background-radius: 6; -fx-padding: 2 8 2 8;");
 
         HBox barraEstadoSuperior = new HBox(lblEstadoDisponibilidad);
         barraEstadoSuperior.setAlignment(Pos.CENTER_RIGHT);
@@ -536,8 +627,7 @@ public class VehiculoController {
         Label lblTipo = new Label(categoriaTexto);
         lblTipo.setStyle(
                 "-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #D97706; "
-                + "-fx-background-color: #FEF3C7; -fx-background-radius: 6; -fx-padding: 2 8 2 8;"
-        );
+                        + "-fx-background-color: #FEF3C7; -fx-background-radius: 6; -fx-padding: 2 8 2 8;");
 
         filaTitulo.getChildren().addAll(lblMarca, espTitulo, lblTipo);
 
@@ -551,8 +641,7 @@ public class VehiculoController {
         Label lblPatente = new Label("Patente: " + (vehiculo.getPat() != null ? vehiculo.getPat() : "-"));
         lblPatente.setStyle(
                 "-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151; "
-                + "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 4 10 4 10;"
-        );
+                        + "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 4 10 4 10;");
 
         Region espaciador = new Region();
         HBox.setHgrow(espaciador, Priority.ALWAYS);
@@ -567,7 +656,8 @@ public class VehiculoController {
 
         tarjeta.getChildren().addAll(contenedorImagen, filaTitulo, lblModelo, filaInferior);
 
-        // Efecto hover y acción de clic para abrir la ficha completa en una nueva pantalla
+        // Efecto hover y acción de clic para abrir la ficha completa en una nueva
+        // pantalla
         tarjeta.setOnMouseEntered(e -> tarjeta.setStyle(ESTILO_TARJETA_HOVER));
         tarjeta.setOnMouseExited(e -> tarjeta.setStyle(ESTILO_TARJETA_NORMAL));
         tarjeta.setOnMouseClicked(e -> abrirFichaVehiculo(vehiculo));
@@ -576,7 +666,8 @@ public class VehiculoController {
     }
 
     /**
-     * Abre la pantalla de Ficha Completa del Vehículo (vistaDetalle) mostrando todos sus atributos para ver o editar.
+     * Abre la pantalla de Ficha Completa del Vehículo (vistaDetalle) mostrando
+     * todos sus atributos para ver o editar.
      */
     public void abrirFichaVehiculo(Vehiculo v) {
         if (v == null || vistaDetalle == null) {
@@ -586,7 +677,8 @@ public class VehiculoController {
         cargarSucursales();
 
         boolean alquilado = estaVehiculoAlquilado(v);
-        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : "")).trim();
+        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : ""))
+                .trim();
         if (marcaMod.isEmpty()) {
             marcaMod = "Vehículo sin nombre";
         }
@@ -603,12 +695,11 @@ public class VehiculoController {
             lblDetalleBadgeDisponibilidad.setText(alquilado ? "● Alquilado" : "● Disponible");
             lblDetalleBadgeDisponibilidad.setStyle(alquilado
                     ? "-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #B91C1C; "
-                      + "-fx-background-color: #FEE2E2; -fx-border-color: #FCA5A5; -fx-border-radius: 8; "
-                      + "-fx-background-radius: 8; -fx-padding: 6 14 6 14;"
+                            + "-fx-background-color: #FEE2E2; -fx-border-color: #FCA5A5; -fx-border-radius: 8; "
+                            + "-fx-background-radius: 8; -fx-padding: 6 14 6 14;"
                     : "-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #15803D; "
-                      + "-fx-background-color: #DCFCE7; -fx-border-color: #86EFAC; -fx-border-radius: 8; "
-                      + "-fx-background-radius: 8; -fx-padding: 6 14 6 14;"
-            );
+                            + "-fx-background-color: #DCFCE7; -fx-border-color: #86EFAC; -fx-border-radius: 8; "
+                            + "-fx-background-radius: 8; -fx-padding: 6 14 6 14;");
         }
 
         if (lblDetalleCatBadge != null) {
@@ -628,8 +719,7 @@ public class VehiculoController {
         }
         if (lblDetalleTarifaDestacada != null) {
             lblDetalleTarifaDestacada.setText(
-                    v.getTarBase() != null ? String.format("$%.2f / día", v.getTarBase()) : "$0.00 / día"
-            );
+                    v.getTarBase() != null ? String.format("$%.2f / día", v.getTarBase()) : "$0.00 / día");
         }
 
         String sucursalTexto = formatearSucursal(v.getCodPertenece());
@@ -730,7 +820,8 @@ public class VehiculoController {
             }
         }
 
-        // Iniciar siempre en modo solo lectura hasta que el usuario presione "Editar Vehículo"
+        // Iniciar siempre en modo solo lectura hasta que el usuario presione "Editar
+        // Vehículo"
         setModoEdicionDetalle(false);
 
         // Cambiar a la pantalla de Ficha Completa
@@ -755,7 +846,8 @@ public class VehiculoController {
     }
 
     /**
-     * Habilita o deshabilita la edición de los campos en la pantalla de Ficha del Vehículo.
+     * Habilita o deshabilita la edición de los campos en la pantalla de Ficha del
+     * Vehículo.
      */
     private void setModoEdicionDetalle(boolean editable) {
         String estiloTextoLectura = "-fx-background-color: #F3F4F6; -fx-background-radius: 8; -fx-padding: 8 10 8 10;";
@@ -779,8 +871,8 @@ public class VehiculoController {
             txtDetPat.setStyle(editable ? estiloPatenteEdicion : estiloPatenteLectura);
         }
         TextField[] camposNormales = {
-            txtDetMarca, txtDetMod, txtDetKmj,
-            txtDetCarga, txtDetPax, txtDetEst, txtDetPreAdq
+                txtDetMarca, txtDetMod, txtDetKmj,
+                txtDetCarga, txtDetPax, txtDetEst, txtDetPreAdq
         };
         for (TextField tf : camposNormales) {
             if (tf != null) {
@@ -793,7 +885,7 @@ public class VehiculoController {
             txtDetTarBase.setStyle(editable ? estiloTarifaEdicion : estiloTarifaLectura);
         }
 
-        ComboBox<?>[] combos = {cmbDetAFabr, cmbDetCat, cmbDetTiComb, cmbDetTransmision, cmbDetSucursal};
+        ComboBox<?>[] combos = { cmbDetAFabr, cmbDetCat, cmbDetTiComb, cmbDetTransmision, cmbDetSucursal };
         for (ComboBox<?> cb : combos) {
             if (cb != null) {
                 cb.setMouseTransparent(!editable);
@@ -802,7 +894,7 @@ public class VehiculoController {
             }
         }
 
-        DatePicker[] pickers = {dpDetFAdq, dpDetFBaja};
+        DatePicker[] pickers = { dpDetFAdq, dpDetFBaja };
         for (DatePicker dp : pickers) {
             if (dp != null) {
                 dp.setMouseTransparent(!editable);
@@ -883,8 +975,11 @@ public class VehiculoController {
             String fBaja = (dpDetFBaja != null && dpDetFBaja.getValue() != null)
                     ? dpDetFBaja.getValue().toString()
                     : null;
-            String tiComb = (cmbDetTiComb != null && cmbDetTiComb.getValue() != null) ? cmbDetTiComb.getValue().trim() : "";
-            String tran = (cmbDetTransmision != null && cmbDetTransmision.getValue() != null) ? cmbDetTransmision.getValue().trim() : "";
+            String tiComb = (cmbDetTiComb != null && cmbDetTiComb.getValue() != null) ? cmbDetTiComb.getValue().trim()
+                    : "";
+            String tran = (cmbDetTransmision != null && cmbDetTransmision.getValue() != null)
+                    ? cmbDetTransmision.getValue().trim()
+                    : "";
             Double carga = Double.parseDouble(txtDetCarga.getText().trim());
             Integer pax = Integer.parseInt(txtDetPax.getText().trim());
             Double tarBase = Double.parseDouble(txtDetTarBase.getText().trim());
@@ -892,7 +987,8 @@ public class VehiculoController {
             Sucursal sucursalSeleccionada = cmbDetSucursal != null ? cmbDetSucursal.getValue() : null;
 
             if (pat.isEmpty() || marca.isEmpty() || mod.isEmpty() || aFabr == null || fechaAdq == null
-                    || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null || sucursalSeleccionada == null) {
+                    || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null
+                    || sucursalSeleccionada == null) {
                 mostrarMensaje("Error de Validación",
                         "Por favor complete todos los campos obligatorios (Patente, Marca, Modelo, Año, Fecha de Adquisición, Estado, Combustible, Transmisión, Categoría y Sucursal).",
                         Alert.AlertType.WARNING);
@@ -909,7 +1005,7 @@ public class VehiculoController {
             if (fechaAdq.getYear() < aFabr) {
                 mostrarMensaje("Error de Validación",
                         "La fecha de adquisición (" + FormatoFecha.formatearFechaGui(fechaAdq)
-                        + ") no puede ser menor al año de fabricación (" + aFabr + ").",
+                                + ") no puede ser menor al año de fabricación (" + aFabr + ").",
                         Alert.AlertType.WARNING);
                 return;
             }
@@ -918,8 +1014,7 @@ public class VehiculoController {
                     vehiculoActualDetalle.getId(),
                     pat, marca, mod, tran, aFabr, fAdq, kmj, est,
                     preAdq, fBaja, tiComb, carga, pax, tarBase, cat,
-                    sucursalSeleccionada.getCod()
-            );
+                    sucursalSeleccionada.getCod());
 
             vehiculoService.modificarVehiculo(datosActualizados);
 
@@ -959,7 +1054,8 @@ public class VehiculoController {
                     "Verifique que Kilometraje, Precio, Carga, Pasajeros y Tarifa sean valores numéricos válidos.",
                     Alert.AlertType.WARNING);
         } catch (Exception e) {
-            mostrarMensaje("Error", "No se pudieron guardar los cambios del vehículo: " + e.getMessage(), Alert.AlertType.ERROR);
+            mostrarMensaje("Error", "No se pudieron guardar los cambios del vehículo: " + e.getMessage(),
+                    Alert.AlertType.ERROR);
         }
     }
 
@@ -1003,15 +1099,18 @@ public class VehiculoController {
     }
 
     /**
-     * Identifica por código el tipo/categoría del vehículo registrado (Auto, Combi o Furgoneta)
-     * para asignarle su imagen genérica representativa correspondiente, o /autos/default.png por defecto.
+     * Identifica por código el tipo/categoría del vehículo registrado (Auto, Combi
+     * o Furgoneta)
+     * para asignarle su imagen genérica representativa correspondiente, o
+     * /autos/default.png por defecto.
      */
     public static InputStream obtenerFlujoImagenPorTipo(Vehiculo vehiculo) {
         if (vehiculo == null) {
             return VehiculoController.class.getResourceAsStream("/autos/default.png");
         }
 
-        // 1. Intentar primero imagen específica por Marca_Modelo si existiera en /autos/
+        // 1. Intentar primero imagen específica por Marca_Modelo si existiera en
+        // /autos/
         String marcaFormateada = vehiculo.getMarca() != null
                 ? vehiculo.getMarca().trim().replace(" ", "_")
                 : "";
@@ -1025,7 +1124,8 @@ public class VehiculoController {
             flujo = VehiculoController.class.getResourceAsStream(rutaEspecifica);
         }
 
-        // 2. Si no tiene imagen específica, identificar por código de qué tipo es (Auto, Combi, Furgoneta)
+        // 2. Si no tiene imagen específica, identificar por código de qué tipo es
+        // (Auto, Combi, Furgoneta)
         if (flujo == null && vehiculo.getCat() != null) {
             String tipo = vehiculo.getCat().trim().toLowerCase();
             if (tipo.contains("combi") || tipo.contains("minibus")) {
@@ -1046,7 +1146,8 @@ public class VehiculoController {
 
     /**
      * Determina si un vehículo se encuentra actualmente 'Alquilado' o 'Disponible'
-     * verificando tanto su atributo V_est como los contratos activos en la BD y en memoria.
+     * verificando tanto su atributo V_est como los contratos activos en la BD y en
+     * memoria.
      */
     private boolean estaVehiculoAlquilado(Vehiculo vehiculo) {
         if (vehiculo == null) {
@@ -1096,7 +1197,6 @@ public class VehiculoController {
             String est = c.getEst() != null ? c.getEst().trim().toLowerCase() : "activo";
             boolean contratoActivo = !est.equals("devuelto")
                     && !est.equals("pagado")
-                    && !est.equals("finalizado")
                     && !est.equals("cancelado");
             if (contratoActivo) {
                 if (c.getIdAsigna() != null) {
@@ -1181,7 +1281,8 @@ public class VehiculoController {
         if (catVehiculo.equals(buscada)) {
             return true;
         }
-        boolean esCombi = catVehiculo.contains("combi") || catVehiculo.contains("minibus") || catVehiculo.contains("minibús");
+        boolean esCombi = catVehiculo.contains("combi") || catVehiculo.contains("minibus")
+                || catVehiculo.contains("minibús");
         boolean esFurgoneta = catVehiculo.contains("furgon") || catVehiculo.contains("furgón")
                 || catVehiculo.contains("utilitario") || catVehiculo.contains("cargo");
 
@@ -1204,7 +1305,8 @@ public class VehiculoController {
         try {
             desdeBd = vehiculoService.listarTodos();
         } catch (Exception ignored) {
-            // Si la base de datos no está disponible aún, se conserva la lista registrada en sesión
+            // Si la base de datos no está disponible aún, se conserva la lista registrada
+            // en sesión
         }
 
         listaCompleta = new ArrayList<>(desdeBd);
@@ -1287,7 +1389,9 @@ public class VehiculoController {
             String est = txtEst.getText().trim();
             Double preAdq = Double.parseDouble(txtPreAdq.getText().trim());
             String tiComb = (cmbTiComb != null && cmbTiComb.getValue() != null) ? cmbTiComb.getValue().trim() : "";
-            String tran = (cmbTransmision != null && cmbTransmision.getValue() != null) ? cmbTransmision.getValue().trim() : "";
+            String tran = (cmbTransmision != null && cmbTransmision.getValue() != null)
+                    ? cmbTransmision.getValue().trim()
+                    : "";
             Double carga = Double.parseDouble(txtCarga.getText().trim());
             Integer pax = Integer.parseInt(txtPax.getText().trim());
             Double tarBase = Double.parseDouble(txtTarBase.getText().trim());
@@ -1295,7 +1399,8 @@ public class VehiculoController {
             Sucursal sucursalSeleccionada = cmbSucursal.getValue();
 
             if (pat.isEmpty() || marca.isEmpty() || mod.isEmpty() || aFabr == null || fechaAdq == null
-                    || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null || sucursalSeleccionada == null) {
+                    || est.isEmpty() || tiComb.isEmpty() || tran.isEmpty() || cat == null
+                    || sucursalSeleccionada == null) {
                 mostrarMensaje("Error de Validación",
                         "Por favor complete todos los campos obligatorios (incluyendo Patente, Marca, Modelo, Combustible, Transmisión, Año de Fabricación, Fecha de Adquisición y Sucursal).",
                         Alert.AlertType.WARNING);
@@ -1321,14 +1426,15 @@ public class VehiculoController {
             if (fechaAdq.getYear() < aFabr) {
                 mostrarMensaje("Error de Validación",
                         "La fecha de adquisición (" + FormatoFecha.formatearFechaGui(fechaAdq)
-                        + ") no puede ser menor al año de fabricación (" + aFabr + ").",
+                                + ") no puede ser menor al año de fabricación (" + aFabr + ").",
                         Alert.AlertType.WARNING);
                 return;
             }
 
             Integer codPertenece = sucursalSeleccionada.getCod();
 
-            // Usa el constructor sin ID (fBaja = null en el alta; solo se edita en la ficha de detalle)
+            // Usa el constructor sin ID (fBaja = null en el alta; solo se edita en la ficha
+            // de detalle)
             Vehiculo nuevo = new Vehiculo(pat, marca, mod, tran, aFabr, fAdq, kmj, est,
                     preAdq, null, tiComb, carga, pax, tarBase, cat, codPertenece);
 
@@ -1353,8 +1459,10 @@ public class VehiculoController {
 
     @FXML
     public void limpiarCampos() {
-        if (txtPat != null) txtPat.clear();
-        if (comboMarca != null) comboMarca.getSelectionModel().clearSelection();
+        if (txtPat != null)
+            txtPat.clear();
+        if (comboMarca != null)
+            comboMarca.getSelectionModel().clearSelection();
         if (comboModelo != null) {
             comboModelo.getSelectionModel().clearSelection();
             comboModelo.getItems().clear();
@@ -1362,19 +1470,26 @@ public class VehiculoController {
         if (cmbAFabr != null && !cmbAFabr.getItems().isEmpty()) {
             cmbAFabr.getSelectionModel().selectFirst();
         }
-        if (dpFAdq != null) dpFAdq.setValue(null);
-        if (txtKmj != null) txtKmj.clear();
-        if (txtEst != null) txtEst.clear();
-        if (txtPreAdq != null) txtPreAdq.clear();
+        if (dpFAdq != null)
+            dpFAdq.setValue(null);
+        if (txtKmj != null)
+            txtKmj.clear();
+        if (txtEst != null)
+            txtEst.clear();
+        if (txtPreAdq != null)
+            txtPreAdq.clear();
         if (cmbTiComb != null && !cmbTiComb.getItems().isEmpty()) {
             cmbTiComb.getSelectionModel().selectFirst();
         }
         if (cmbTransmision != null && !cmbTransmision.getItems().isEmpty()) {
             cmbTransmision.getSelectionModel().selectFirst();
         }
-        if (txtCarga != null) txtCarga.clear();
-        if (txtPax != null) txtPax.clear();
-        if (txtTarBase != null) txtTarBase.clear();
+        if (txtCarga != null)
+            txtCarga.clear();
+        if (txtPax != null)
+            txtPax.clear();
+        if (txtTarBase != null)
+            txtTarBase.clear();
         if (cmbSucursal != null && !cmbSucursal.getItems().isEmpty()) {
             cmbSucursal.getSelectionModel().selectFirst();
         }
@@ -1398,8 +1513,8 @@ public class VehiculoController {
         }
 
         if (colMantId != null) {
-            colMantId.setCellValueFactory(cellData ->
-                    new SimpleObjectProperty<>(cellData.getValue() != null ? cellData.getValue().getId() : null));
+            colMantId.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
+                    cellData.getValue() != null ? cellData.getValue().getId() : null));
         }
         if (colMantFecha != null) {
             colMantFecha.setCellValueFactory(cellData -> {
@@ -1490,7 +1605,8 @@ public class VehiculoController {
             cmbNuevoMantEmpleado.setConverter(new StringConverter<Empleado>() {
                 @Override
                 public String toString(Empleado emp) {
-                    if (emp == null) return "";
+                    if (emp == null)
+                        return "";
                     String apl = emp.getApl() != null ? emp.getApl().trim() : "";
                     String nom = emp.getNom() != null ? emp.getNom().trim() : "";
                     String dni = emp.getDni() != null ? String.valueOf(emp.getDni()) : "";
@@ -1538,7 +1654,8 @@ public class VehiculoController {
     }
 
     private String obtenerNombreEmpleado(Integer idEmpleado) {
-        if (idEmpleado == null) return "-";
+        if (idEmpleado == null)
+            return "-";
         Empleado e = cacheEmpleados.get(idEmpleado);
         if (e != null) {
             String apl = e.getApl() != null ? e.getApl().trim() : "";
@@ -1549,12 +1666,14 @@ public class VehiculoController {
     }
 
     /**
-     * Abre la pantalla con el historial de mantenimientos previos del vehículo actual.
+     * Abre la pantalla con el historial de mantenimientos previos del vehículo
+     * actual.
      */
     @FXML
     public void abrirHistorialMantenimiento() {
         if (vehiculoActualDetalle == null) {
-            mostrarMensaje("Atención", "No se ha seleccionado ningún vehículo para ver mantenimientos.", Alert.AlertType.WARNING);
+            mostrarMensaje("Atención", "No se ha seleccionado ningún vehículo para ver mantenimientos.",
+                    Alert.AlertType.WARNING);
             return;
         }
 
@@ -1584,10 +1703,12 @@ public class VehiculoController {
     }
 
     private void cargarHistorialMantenimiento(Vehiculo v) {
-        if (v == null) return;
+        if (v == null)
+            return;
         cargarEmpleados();
 
-        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : "")).trim();
+        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : ""))
+                .trim();
         String pat = v.getPat() != null ? v.getPat() : "-";
         Integer id = v.getId();
 
@@ -1595,7 +1716,8 @@ public class VehiculoController {
             lblHistorialTitulo.setText("Mantenimientos Previos · " + marcaMod);
         }
         if (lblHistorialSubtitulo != null) {
-            lblHistorialSubtitulo.setText("Unidad: " + marcaMod + " · Patente: " + pat + " · ID de Unidad: #" + (id != null ? id : "-"));
+            lblHistorialSubtitulo.setText(
+                    "Unidad: " + marcaMod + " · Patente: " + pat + " · ID de Unidad: #" + (id != null ? id : "-"));
         }
 
         List<Mantenimiento> mantenimientos = Collections.emptyList();
@@ -1633,12 +1755,14 @@ public class VehiculoController {
     }
 
     /**
-     * Abre la pantalla para registrar un nuevo mantenimiento desde la ficha del vehículo.
+     * Abre la pantalla para registrar un nuevo mantenimiento desde la ficha del
+     * vehículo.
      */
     @FXML
     public void abrirNuevoMantenimiento() {
         if (vehiculoActualDetalle == null) {
-            mostrarMensaje("Atención", "No se ha seleccionado ningún vehículo para registrar mantenimiento.", Alert.AlertType.WARNING);
+            mostrarMensaje("Atención", "No se ha seleccionado ningún vehículo para registrar mantenimiento.",
+                    Alert.AlertType.WARNING);
             return;
         }
         vieneDesdeHistorial = false;
@@ -1646,7 +1770,8 @@ public class VehiculoController {
     }
 
     /**
-     * Abre la pantalla para registrar un nuevo mantenimiento directamente desde el historial.
+     * Abre la pantalla para registrar un nuevo mantenimiento directamente desde el
+     * historial.
      */
     @FXML
     public void mostrarVistaNuevoMantenimientoDesdeHistorial() {
@@ -1658,7 +1783,8 @@ public class VehiculoController {
     }
 
     private void prepararYMostrarNuevoMantenimiento(Vehiculo v) {
-        if (v == null) return;
+        if (v == null)
+            return;
         cargarEmpleados();
 
         if (vistaDetalle != null) {
@@ -1678,7 +1804,8 @@ public class VehiculoController {
             vistaHistorialMantenimiento.setManaged(false);
         }
 
-        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : "")).trim();
+        String marcaMod = ((v.getMarca() != null ? v.getMarca() : "") + " " + (v.getMod() != null ? v.getMod() : ""))
+                .trim();
         String pat = v.getPat() != null ? v.getPat() : "-";
         Integer kmj = v.getKmj() != null ? v.getKmj() : 0;
         String sucursalTexto = formatearSucursal(v.getCodPertenece());
@@ -1687,7 +1814,8 @@ public class VehiculoController {
             lblNuevoMantTitulo.setText("Registrar Mantenimiento · " + marcaMod);
         }
         if (lblNuevoMantSubtitulo != null) {
-            lblNuevoMantSubtitulo.setText("Carga de servicio en taller oficial para patente " + pat + " (Transacción 4.4)");
+            lblNuevoMantSubtitulo
+                    .setText("Carga de servicio en taller oficial para patente " + pat + " (Transacción 4.4)");
         }
         if (lblNuevoMantVehiculoInfo != null) {
             lblNuevoMantVehiculoInfo.setText(marcaMod + " (" + (v.getCat() != null ? v.getCat() : "Auto") + ")");
@@ -1751,7 +1879,8 @@ public class VehiculoController {
     }
 
     /**
-     * Vuelve desde el formulario de nuevo mantenimiento a la pantalla previa (historial o ficha).
+     * Vuelve desde el formulario de nuevo mantenimiento a la pantalla previa
+     * (historial o ficha).
      */
     @FXML
     public void volverADetalleDesdeNuevoMantenimiento() {
@@ -1804,38 +1933,49 @@ public class VehiculoController {
     }
 
     /**
-     * Valida y persiste un nuevo mantenimiento para el vehículo actual según Transacción 4.4.
+     * Valida y persiste un nuevo mantenimiento para el vehículo actual según
+     * Transacción 4.4.
      */
     @FXML
     public void guardarNuevoMantenimiento() {
         if (vehiculoActualDetalle == null || vehiculoActualDetalle.getId() == null) {
-            mostrarMensaje("Error", "No se pudo identificar la unidad vehicular a la cual registrar el mantenimiento.", Alert.AlertType.ERROR);
+            mostrarMensaje("Error", "No se pudo identificar la unidad vehicular a la cual registrar el mantenimiento.",
+                    Alert.AlertType.ERROR);
             return;
         }
 
         LocalDate fecha = dpNuevoMantFecha != null ? dpNuevoMantFecha.getValue() : null;
         if (fecha == null) {
-            mostrarMensaje("Campo Requerido", "Debe seleccionar la fecha en la que se realizó el mantenimiento.", Alert.AlertType.WARNING);
-            if (dpNuevoMantFecha != null) dpNuevoMantFecha.requestFocus();
+            mostrarMensaje("Campo Requerido", "Debe seleccionar la fecha en la que se realizó el mantenimiento.",
+                    Alert.AlertType.WARNING);
+            if (dpNuevoMantFecha != null)
+                dpNuevoMantFecha.requestFocus();
             return;
         }
         if (fecha.isAfter(LocalDate.now())) {
-            mostrarMensaje("Fecha Inválida", "La fecha del mantenimiento no puede ser posterior a la fecha actual.", Alert.AlertType.WARNING);
-            if (dpNuevoMantFecha != null) dpNuevoMantFecha.requestFocus();
+            mostrarMensaje("Fecha Inválida", "La fecha del mantenimiento no puede ser posterior a la fecha actual.",
+                    Alert.AlertType.WARNING);
+            if (dpNuevoMantFecha != null)
+                dpNuevoMantFecha.requestFocus();
             return;
         }
 
         TipoMantenimiento tipo = cmbNuevoMantTipo != null ? cmbNuevoMantTipo.getValue() : null;
         if (tipo == null) {
-            mostrarMensaje("Campo Requerido", "Debe seleccionar el tipo de mantenimiento realizado (Fluidos, Filtros, Neumáticos, etc.).", Alert.AlertType.WARNING);
-            if (cmbNuevoMantTipo != null) cmbNuevoMantTipo.requestFocus();
+            mostrarMensaje("Campo Requerido",
+                    "Debe seleccionar el tipo de mantenimiento realizado (Fluidos, Filtros, Neumáticos, etc.).",
+                    Alert.AlertType.WARNING);
+            if (cmbNuevoMantTipo != null)
+                cmbNuevoMantTipo.requestFocus();
             return;
         }
 
         String kmjStr = txtNuevoMantKmj != null ? txtNuevoMantKmj.getText().trim() : "";
         if (kmjStr.isEmpty()) {
-            mostrarMensaje("Campo Requerido", "Debe ingresar el kilometraje del vehículo al momento del servicio.", Alert.AlertType.WARNING);
-            if (txtNuevoMantKmj != null) txtNuevoMantKmj.requestFocus();
+            mostrarMensaje("Campo Requerido", "Debe ingresar el kilometraje del vehículo al momento del servicio.",
+                    Alert.AlertType.WARNING);
+            if (txtNuevoMantKmj != null)
+                txtNuevoMantKmj.requestFocus();
             return;
         }
         int kmj;
@@ -1846,21 +1986,24 @@ public class VehiculoController {
                 return;
             }
         } catch (NumberFormatException e) {
-            mostrarMensaje("Valor Inválido", "El kilometraje debe ser un número entero válido.", Alert.AlertType.WARNING);
+            mostrarMensaje("Valor Inválido", "El kilometraje debe ser un número entero válido.",
+                    Alert.AlertType.WARNING);
             return;
         }
 
         String costoStr = txtNuevoMantCosto != null ? txtNuevoMantCosto.getText().trim().replace(",", ".") : "";
         if (costoStr.isEmpty()) {
             mostrarMensaje("Campo Requerido", "Debe ingresar el costo del mantenimiento.", Alert.AlertType.WARNING);
-            if (txtNuevoMantCosto != null) txtNuevoMantCosto.requestFocus();
+            if (txtNuevoMantCosto != null)
+                txtNuevoMantCosto.requestFocus();
             return;
         }
         double costo;
         try {
             costo = Double.parseDouble(costoStr);
             if (costo < 0) {
-                mostrarMensaje("Valor Inválido", "El costo del mantenimiento no puede ser negativo.", Alert.AlertType.WARNING);
+                mostrarMensaje("Valor Inválido", "El costo del mantenimiento no puede ser negativo.",
+                        Alert.AlertType.WARNING);
                 return;
             }
             if (costo > 999999.99) {
@@ -1868,20 +2011,24 @@ public class VehiculoController {
                 return;
             }
         } catch (NumberFormatException e) {
-            mostrarMensaje("Valor Inválido", "El costo debe ser un valor numérico válido (ej. 15000.00).", Alert.AlertType.WARNING);
+            mostrarMensaje("Valor Inválido", "El costo debe ser un valor numérico válido (ej. 15000.00).",
+                    Alert.AlertType.WARNING);
             return;
         }
 
         Empleado empleado = cmbNuevoMantEmpleado != null ? cmbNuevoMantEmpleado.getValue() : null;
         if (empleado == null || empleado.getId() == null) {
-            mostrarMensaje("Campo Requerido", "Debe seleccionar el empleado / mecánico que realizó el mantenimiento.", Alert.AlertType.WARNING);
-            if (cmbNuevoMantEmpleado != null) cmbNuevoMantEmpleado.requestFocus();
+            mostrarMensaje("Campo Requerido", "Debe seleccionar el empleado / mecánico que realizó el mantenimiento.",
+                    Alert.AlertType.WARNING);
+            if (cmbNuevoMantEmpleado != null)
+                cmbNuevoMantEmpleado.requestFocus();
             return;
         }
 
         String obs = txtNuevoMantObs != null ? txtNuevoMantObs.getText().trim() : "";
         if (obs.length() > 100) {
-            mostrarMensaje("Texto demasiado largo", "Las observaciones no pueden superar los 100 caracteres.", Alert.AlertType.WARNING);
+            mostrarMensaje("Texto demasiado largo", "Las observaciones no pueden superar los 100 caracteres.",
+                    Alert.AlertType.WARNING);
             return;
         }
 
@@ -1897,14 +2044,16 @@ public class VehiculoController {
         try {
             mantenimientoService.altaMantenimiento(m);
 
-            // Si el kilometraje del mantenimiento es mayor al actual del vehículo, actualizarlo
+            // Si el kilometraje del mantenimiento es mayor al actual del vehículo,
+            // actualizarlo
             if (vehiculoActualDetalle.getKmj() == null || kmj > vehiculoActualDetalle.getKmj()) {
                 vehiculoActualDetalle.setKmj(kmj);
                 try {
                     VehiculoDAO vDao = new VehiculoDAO();
                     vDao.actualizar(vehiculoActualDetalle);
                 } catch (Exception exActualizar) {
-                    System.err.println("Aviso: No se pudo actualizar el km en el vehículo: " + exActualizar.getMessage());
+                    System.err
+                            .println("Aviso: No se pudo actualizar el km en el vehículo: " + exActualizar.getMessage());
                 }
                 if (txtDetKmj != null) {
                     txtDetKmj.setText(String.valueOf(kmj));
@@ -1912,12 +2061,14 @@ public class VehiculoController {
             }
 
             mostrarMensaje("Mantenimiento Registrado con Éxito",
-                    "El mantenimiento #" + (m.getId() != null ? m.getId() : "") + " (" + tipo.getDescripcion() + ") por $"
+                    "El mantenimiento #" + (m.getId() != null ? m.getId() : "") + " (" + tipo.getDescripcion()
+                            + ") por $"
                             + String.format("%.2f", costo) + " se registró correctamente para la unidad "
                             + vehiculoActualDetalle.getPat() + ".",
                     Alert.AlertType.INFORMATION);
 
-            // Redirigir a la pantalla de Historial de Mantenimientos para que el usuario visualice el nuevo registro
+            // Redirigir a la pantalla de Historial de Mantenimientos para que el usuario
+            // visualice el nuevo registro
             if (vistaNuevoMantenimiento != null) {
                 vistaNuevoMantenimiento.setVisible(false);
                 vistaNuevoMantenimiento.setManaged(false);

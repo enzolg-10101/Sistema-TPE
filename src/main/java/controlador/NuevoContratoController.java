@@ -566,7 +566,8 @@ public class NuevoContratoController {
         if (catVehiculo.equals(buscada)) {
             return true;
         }
-        boolean esCombi = catVehiculo.contains("combi") || catVehiculo.contains("minibus") || catVehiculo.contains("minibús");
+        boolean esCombi = catVehiculo.contains("combi") || catVehiculo.contains("minibus")
+                || catVehiculo.contains("minibús");
         boolean esFurgoneta = catVehiculo.contains("furgon") || catVehiculo.contains("furgón")
                 || catVehiculo.contains("utilitario") || catVehiculo.contains("cargo");
 
@@ -641,7 +642,8 @@ public class NuevoContratoController {
         if (lblCantidadCategoria != null) {
             int total = disponibles.size();
             String rangoTexto = (fechaInicio != null && fechaFin != null)
-                    ? " (" + FormatoFecha.formatearFechaGui(fechaInicio) + " al " + FormatoFecha.formatearFechaGui(fechaFin) + ")"
+                    ? " (" + FormatoFecha.formatearFechaGui(fechaInicio) + " al "
+                            + FormatoFecha.formatearFechaGui(fechaFin) + ")"
                     : "";
             lblCantidadCategoria.setText(
                     (total == 1 ? "1 unidad disponible" : total + " unidades disponibles") + rangoTexto);
@@ -658,7 +660,8 @@ public class NuevoContratoController {
             ocupados.addAll(contratoDAO.obtenerIdsVehiculosOcupadosEntreFechas(inicioStr, finStr));
             bdConsultadaConExito = true;
         } catch (Exception ignored) {
-            // Si la base de datos no está conectada, se verifica contra los contratos en memoria
+            // Si la base de datos no está conectada, se verifica contra los contratos en
+            // memoria
         }
 
         if (!bdConsultadaConExito) {
@@ -667,7 +670,6 @@ public class NuevoContratoController {
                     String est = c.getEst() != null ? c.getEst().trim().toLowerCase() : "activo";
                     boolean devuelto = est.equals("devuelto")
                             || est.equals("pagado")
-                            || est.equals("finalizado")
                             || est.equals("cancelado");
                     if (!devuelto) {
                         ocupados.add(c.getIdAsigna());
@@ -1223,7 +1225,8 @@ public class NuevoContratoController {
             String feEnt = fechaEntrega.toString();
             String feDev = fechaDevolucion.toString();
 
-            // El importe de alquiler (impAlq) se calcula como la tarifa base del vehículo * la cantidad de días
+            // El importe de alquiler (impAlq) se calcula como la tarifa base del vehículo *
+            // la cantidad de días
             long diasAlquiler = Math.max(1, ChronoUnit.DAYS.between(fechaEntrega, fechaDevolucion));
             double tarifaBase = (vehiculoSeleccionado.getTarBase() != null) ? vehiculoSeleccionado.getTarBase() : 0.0;
             double impAlq = diasAlquiler * tarifaBase;
@@ -1245,9 +1248,10 @@ public class NuevoContratoController {
                 combSalida = Double.parseDouble(txtCombSalida.getText().trim());
             }
 
-            String danios = (txtDaniosSalida != null && txtDaniosSalida.getText() != null && !txtDaniosSalida.getText().trim().isEmpty())
-                    ? txtDaniosSalida.getText().trim()
-                    : "Ninguno";
+            String danios = (txtDaniosSalida != null && txtDaniosSalida.getText() != null
+                    && !txtDaniosSalida.getText().trim().isEmpty())
+                            ? txtDaniosSalida.getText().trim()
+                            : "Ninguno";
 
             // Constructores sin ID: MySQL genera los IDs con AUTO_INCREMENT y los DAOs los
             // asignan mediante setters
@@ -1256,7 +1260,9 @@ public class NuevoContratoController {
                     0.0, impAlq, 0.0, vehiculoSeleccionado.getId(), clienteElegidoExistente.getId());
             CheckInOut checkInOut = new CheckInOut(
                     feEnt, kmSalida, combSalida, danios,
-                    null, null, null, null, 1, null);
+                    null, null, null, null,
+                    (vehiculoSeleccionado.getCodPertenece() != null ? vehiculoSeleccionado.getCodPertenece() : 1), null,
+                    null);
 
             // Invocación única del procedimiento almacenado insertar_contrato
             // (el parámetro booleano indica si el cliente ya existe [true] o si el SP debe
