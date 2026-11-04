@@ -131,8 +131,10 @@ public class ContratoDAO {
                     (checkInOut != null && checkInOut.getDaExist() != null) ? checkInOut.getDaExist() : "Ninguno");
 
             // 20. IN nroPSal INT
-            if (checkInOut != null && checkInOut.getNroParticipa() != null) {
-                cstmt.setInt(20, checkInOut.getNroParticipa());
+            if (checkInOut != null
+                    && (checkInOut.getNroParticipaSal() != null || checkInOut.getNroParticipa() != null)) {
+                cstmt.setInt(20, (checkInOut.getNroParticipaSal() != null ? checkInOut.getNroParticipaSal()
+                        : checkInOut.getNroParticipa()));
             } else {
                 cstmt.setInt(20, 1);
             }
@@ -140,6 +142,8 @@ public class ContratoDAO {
             // 21. IN nroPEnt INT
             if (nroPEnt != null) {
                 cstmt.setInt(21, nroPEnt);
+            } else if (checkInOut != null && checkInOut.getNroParticipaEnt() != null) {
+                cstmt.setInt(21, checkInOut.getNroParticipaEnt());
             } else {
                 cstmt.setNull(21, Types.INTEGER);
             }
@@ -378,13 +382,14 @@ public class ContratoDAO {
      * ocupados en contratos activos (es decir, aquellos contratos que aún NO fueron
      * devueltos explícitamente mediante 'Registrar Devolución', sin importar si la
      * fecha pactada ya pasó o no).
-     * Una vez que un contrato pasa a estado 'Devuelto', deja de bloquear al vehículo.
+     * Una vez que un contrato pasa a estado 'Devuelto', deja de bloquear al
+     * vehículo.
      */
     public Set<Integer> obtenerIdsVehiculosOcupadosEntreFechas(String fechaInicio, String fechaFin) {
         Set<Integer> ocupados = new HashSet<>();
         String sql = "SELECT DISTINCT id_Asigna FROM Contratos "
                 + "WHERE id_Asigna IS NOT NULL "
-                + "AND (Co_est IS NULL OR LOWER(TRIM(Co_est)) NOT IN ('devuelto', 'pagado', 'finalizado', 'cancelado'))";
+                + "AND (Co_est IS NULL OR LOWER(TRIM(Co_est)) NOT IN ('devuelto', 'pagado', 'cancelado'))";
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
