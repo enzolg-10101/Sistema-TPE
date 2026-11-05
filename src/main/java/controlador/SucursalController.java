@@ -8,9 +8,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import modelo.Sucursal;
@@ -38,8 +40,8 @@ public class SucursalController {
     private static final List<Sucursal> SUCURSALES_EN_MEMORIA = new ArrayList<>();
 
     static {
-        SUCURSALES_EN_MEMORIA.add(new Sucursal(1, "Sucursal Central", "Av. Libertador 1200", 1145001234L, 5));
-        SUCURSALES_EN_MEMORIA.add(new Sucursal(2, "Sucursal Aeropuerto", "Au. Riccheri Km 33", 1148005678L, 2));
+        SUCURSALES_EN_MEMORIA.add(new Sucursal(1, "San Luis - Centro", "Av. Illia 450, San Luis", 2664500123L, 5));
+        SUCURSALES_EN_MEMORIA.add(new Sucursal(2, "Villa Mercedes - Terminal", "Av. 25 de Mayo 1200, Villa Mercedes", 2657421122L, 2));
     }
 
     @FXML private ScrollPane vistaTarjetas;
@@ -57,7 +59,8 @@ public class SucursalController {
     @FXML private Label lblDetalleDireccion;
     @FXML private Label lblDetalleTelefono;
 
-    // Campos del formulario de Nueva Sucursal (sin código manual, S_cod es AUTO_INCREMENT)
+    // Campos del formulario de Nueva Sucursal (S_cod es AUTO_INCREMENT)
+    @FXML private ComboBox<String> comboCiudad;
     @FXML private TextField txtNom;
     @FXML private TextField txtDir;
     @FXML private TextField txtTel;
@@ -84,7 +87,60 @@ public class SucursalController {
             lblDetalleFlota.setOnMouseEntered(e -> lblDetalleFlota.setStyle(estiloHover));
             lblDetalleFlota.setOnMouseExited(e -> lblDetalleFlota.setStyle(estiloNormal));
         }
+
+        // Configuración del desplegable de Ciudades
+        if (comboCiudad != null) {
+            comboCiudad.getItems().setAll(
+                    "San Luis",
+                    "Villa Mercedes",
+                    "Merlo",
+                    "La Punta",
+                    "Juana Koslay",
+                    "Otra"
+            );
+            comboCiudad.getSelectionModel().select("San Luis");
+            comboCiudad.getSelectionModel().selectedItemProperty().addListener((obs, viejo, nuevo) -> {
+                actualizarSugerenciaTelefono(nuevo);
+            });
+        }
+        actualizarSugerenciaTelefono("San Luis");
+
+        // Formateador para txtTel: solo dígitos y máximo 10 caracteres
+        if (txtTel != null) {
+            txtTel.setTextFormatter(new TextFormatter<String>(change -> {
+                String nuevoTexto = change.getControlNewText();
+                if (nuevoTexto.matches("\\d{0,10}")) {
+                    return change;
+                }
+                return null;
+            }));
+        }
+
         mostrarVistaTarjetas();
+    }
+
+    private void actualizarSugerenciaTelefono(String ciudad) {
+        if (txtTel == null) return;
+        if (ciudad == null) {
+            txtTel.setPromptText("Ej. 2664123456");
+            return;
+        }
+        switch (ciudad) {
+            case "San Luis":
+            case "La Punta":
+            case "Juana Koslay":
+                txtTel.setPromptText("Ej. 2664123456 o 2665123456");
+                break;
+            case "Villa Mercedes":
+                txtTel.setPromptText("Ej. 2657421234");
+                break;
+            case "Merlo":
+                txtTel.setPromptText("Ej. 2656471234");
+                break;
+            default:
+                txtTel.setPromptText("Ej. Código de área + número");
+                break;
+        }
     }
 
     /**
@@ -258,41 +314,99 @@ public class SucursalController {
     @FXML
     public void guardarSucursal() {
         try {
+            String ciudad = comboCiudad != null && comboCiudad.getValue() != null
+                    ? comboCiudad.getValue().trim()
+                    : "";
             String nom = txtNom.getText() != null ? txtNom.getText().trim() : "";
             String dir = txtDir.getText() != null ? txtDir.getText().trim() : "";
             String telStr = txtTel.getText() != null ? txtTel.getText().trim() : "";
 
-            if (nom.isEmpty() || dir.isEmpty() || telStr.isEmpty()) {
+            if (ciudad.isEmpty() || nom.isEmpty() || dir.isEmpty() || telStr.isEmpty()) {
                 mostrarAlerta("Campos obligatorios",
-                        "Por favor complete Nombre, Dirección y Teléfono de la sucursal.",
+                        "Por favor seleccione la Ciudad y complete Nombre, Dirección y Teléfono de la sucursal.",
                         Alert.AlertType.WARNING);
                 return;
             }
 
+            // Exige exactamente 10 dígitos (código de área + número local)
+            if (telStr.length() != 10) {
+                mostrarAlerta("Teléfono Inválido",
+                        "El teléfono debe contener exactamente 10 dígitos (código de área sin 0 + número sin 15, ej. 2664123456).",
+                        Alert.AlertType.WARNING);
+                return;
+            }
+
+            // Validación de característica según la ciudad seleccionada
+            if ("San Luis".equals(ciudad) || "La Punta".equals(ciudad) || "Juana Koslay".equals(ciudad)) {
+                if (!telStr.startsWith("266")) {
+                    mostrarAlerta("Característica Telefónica",
+                            "Para " + ciudad + ", el teléfono debe comenzar con la característica 266 (ej. 2664XXXXXX o 2665XXXXXX).",
+                            Alert.AlertType.WARNING);
+                    return;
+                }
+            } else if ("Villa Mercedes".equals(ciudad)) {
+                if (!telStr.startsWith("2657")) {
+                    mostrarAlerta("Característica Telefónica",
+                            "Para Villa Mercedes, el teléfono debe comenzar con la característica 2657 (ej. 2657XXXXXX).",
+                            Alert.AlertType.WARNING);
+                    return;
+                }
+            } else if ("Merlo".equals(ciudad)) {
+                if (!telStr.startsWith("2656")) {
+                    mostrarAlerta("Característica Telefónica",
+                            "Para Merlo, el teléfono debe comenzar con la característica 2656 (ej. 2656XXXXXX).",
+                            Alert.AlertType.WARNING);
+                    return;
+                }
+            }
+
             long tel = Long.parseLong(telStr);
 
+            // Formateo del Nombre para respetar VARCHAR(30)
+            String nombreFinal;
+            if ("Otra".equalsIgnoreCase(ciudad) || nom.toLowerCase().contains(ciudad.toLowerCase())) {
+                nombreFinal = nom;
+            } else {
+                nombreFinal = ciudad + " - " + nom;
+            }
+            if (nombreFinal.length() > 30) {
+                nombreFinal = nombreFinal.substring(0, 30);
+            }
+
+            // Formateo de la Dirección para respetar VARCHAR(50)
+            String direccionFinal;
+            if ("Otra".equalsIgnoreCase(ciudad) || dir.toLowerCase().contains(ciudad.toLowerCase())) {
+                direccionFinal = dir;
+            } else {
+                direccionFinal = dir + ", " + ciudad;
+            }
+            if (direccionFinal.length() > 50) {
+                direccionFinal = direccionFinal.substring(0, 50);
+            }
+
             // Usa el constructor sin ID: MySQL genera S_cod con AUTO_INCREMENT y el DAO lo asigna con setCod()
-            Sucursal nueva = new Sucursal(nom, dir, tel);
+            Sucursal nueva = new Sucursal(nombreFinal, direccionFinal, tel);
             nueva.setCantidadVehiculos(0);
 
             try {
                 sucursalService.altaSucursal(nueva);
-            } catch (Exception ignored) {
-                // Si la BD no está conectada en la prueba visual, se asigna un código provisorio en sesión
-                if (nueva.getCod() == null) {
-                    nueva.setCod(SUCURSALES_EN_MEMORIA.size() + 1);
-                }
+                SUCURSALES_EN_MEMORIA.add(nueva);
+
+                if (txtNom != null) txtNom.clear();
+                if (txtDir != null) txtDir.clear();
+                if (txtTel != null) txtTel.clear();
+                if (comboCiudad != null) comboCiudad.getSelectionModel().select("San Luis");
+
+                mostrarAlerta("Sucursal Registrada",
+                        "La sucursal '" + nombreFinal + "' se guardó correctamente.",
+                        Alert.AlertType.INFORMATION);
+                mostrarVistaTarjetas();
+
+            } catch (Exception e) {
+                mostrarAlerta("Error al Registrar",
+                        "No se pudo guardar la sucursal en la base de datos: " + e.getMessage(),
+                        Alert.AlertType.ERROR);
             }
-            SUCURSALES_EN_MEMORIA.add(nueva);
-
-            if (txtNom != null) txtNom.clear();
-            if (txtDir != null) txtDir.clear();
-            if (txtTel != null) txtTel.clear();
-
-            mostrarAlerta("Sucursal Registrada",
-                    "La sucursal '" + nom + "' se guardó correctamente.",
-                    Alert.AlertType.INFORMATION);
-            mostrarVistaTarjetas();
 
         } catch (NumberFormatException e) {
             mostrarAlerta("Error de Formato",
