@@ -64,12 +64,14 @@ public class PagoDAO {
 
             // Recuperar el ID autogenerado para el objeto Pago
             recuperarIdGenerado(conn, pago);
+            registrarPagoEnMemoria(pago);
+            // El registro en memoria solo se realiza si la inserción en BD fue exitosa
 
         } catch (SQLException e) {
             throw new RuntimeException("Error al registrar el pago en la base de datos: " + e.getMessage(), e);
         } finally {
             // Guardar también en la sesión en memoria
-            registrarPagoEnMemoria(pago);
+            // El registro en memoria solo se realiza si la inserción en BD fue exitosa
         }
     }
 

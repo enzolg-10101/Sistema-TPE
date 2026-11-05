@@ -115,7 +115,7 @@ public class MantenimientoService {
         if (m.getCosto() == null || m.getCosto() < 0) {
             throw new RuntimeException("Error: El costo del mantenimiento (M_costo) debe ser un valor mayor o igual a 0.");
         }
-        if (m.getCosto() > 999999.99) {
+        if (m.getCosto() > 9999999999999.99) {
             throw new RuntimeException("Error: El costo del mantenimiento supera el máximo permitido (999999.99).");
         }
 

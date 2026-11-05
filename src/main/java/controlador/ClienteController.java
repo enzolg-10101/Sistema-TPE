@@ -364,6 +364,14 @@ public class ClienteController {
 
             int dni = Integer.parseInt(dniStr);
             long tel = Long.parseLong(telStr);
+            if (dni <= 0 || dniStr.length() < 7 || dniStr.length() > 8) {
+                mostrarMensaje("DNI Inválido", "El DNI debe ser un número positivo válido de 7 u 8 dígitos.", Alert.AlertType.WARNING);
+                return;
+            }
+            if (tel <= 0) {
+                mostrarMensaje("Teléfono Inválido", "El teléfono debe ser un número positivo válido.", Alert.AlertType.WARNING);
+                return;
+            }
 
             if (modoNuevoCliente) {
                 // Alta de Nuevo Cliente: usa el constructor sin ID (C_id es AUTO_INCREMENT en MySQL)
@@ -374,7 +382,7 @@ public class ClienteController {
                     clienteService.altaCliente(nuevo);
                 } catch (Exception ignored) {
                     if (nuevo.getId() == null) {
-                        nuevo.setId(CLIENTES_EN_MEMORIA.size() + 10);
+                    throw ignored;
                     }
                 }
 
@@ -402,7 +410,7 @@ public class ClienteController {
                 try {
                     clienteService.actualizarCliente(clienteSeleccionado);
                 } catch (Exception ignored) {
-                    // Si la base de datos no está activa en la prueba visual, se actualiza en sesión
+                    throw ignored;
                 }
 
                 tablaClientes.refresh();

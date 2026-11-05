@@ -24,6 +24,15 @@ public class ClienteService {
     public Cliente altaCliente(Cliente cliente) {
         // Inicio-ts
         try {
+            if (cliente == null) {
+                throw new IllegalArgumentException("El cliente no puede ser nulo.");
+            }
+            if (cliente.getDni() != null) {
+                Cliente existente = clienteDAO.buscarPorId(cliente.getDni());
+                if (existente != null && existente.getDni() != null && existente.getDni().equals(cliente.getDni())) {
+                    throw new RuntimeException("Ya existe un cliente registrado con el DNI " + cliente.getDni() + ".");
+                }
+            }
             clienteDAO.insertar(cliente);
             return cliente;
         } catch (Exception e) {
@@ -34,6 +43,18 @@ public class ClienteService {
 
     public Cliente actualizarCliente(Cliente cliente) {
         try {
+            if (cliente == null) {
+                throw new IllegalArgumentException("El cliente no puede ser nulo.");
+            }
+            if (cliente.getDni() != null) {
+                Cliente existente = clienteDAO.buscarPorId(cliente.getDni());
+                if (existente != null && existente.getDni() != null
+                        && existente.getDni().equals(cliente.getDni())
+                        && cliente.getId() != null
+                        && !cliente.getId().equals(existente.getId())) {
+                    throw new RuntimeException("Ya existe otro cliente registrado con el DNI " + cliente.getDni() + ".");
+                }
+            }
             clienteDAO.actualizar(cliente);
             return cliente;
         } catch (Exception e) {

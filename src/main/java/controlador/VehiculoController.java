@@ -1016,6 +1016,10 @@ public class VehiculoController {
                     preAdq, fBaja, tiComb, carga, pax, tarBase, cat,
                     sucursalSeleccionada.getCod());
 
+            if (kmj < 0 || preAdq <= 0 || carga <= 0 || pax <= 0 || tarBase <= 0) {
+                mostrarMensaje("Error de Validación", "El kilometraje debe ser >= 0 y el Precio, Carga, Pasajeros y Tarifa Base deben ser mayores a 0.", Alert.AlertType.WARNING);
+                return;
+            }
             vehiculoService.modificarVehiculo(datosActualizados);
 
             vehiculoActualDetalle.setPat(pat);
@@ -1432,6 +1436,10 @@ public class VehiculoController {
             }
 
             Integer codPertenece = sucursalSeleccionada.getCod();
+            if (kmj < 0 || preAdq <= 0 || carga <= 0 || pax <= 0 || tarBase <= 0) {
+                mostrarMensaje("Error de Validación", "El kilometraje debe ser >= 0 y el Precio, Carga, Pasajeros y Tarifa Base deben ser mayores a 0.", Alert.AlertType.WARNING);
+                return;
+            }
 
             // Usa el constructor sin ID (fBaja = null en el alta; solo se edita en la ficha
             // de detalle)
@@ -1985,6 +1993,14 @@ public class VehiculoController {
                 mostrarMensaje("Valor Inválido", "El kilometraje no puede ser negativo.", Alert.AlertType.WARNING);
                 return;
             }
+            if (vehiculoActualDetalle.getKmj() != null && kmj < vehiculoActualDetalle.getKmj()) {
+                mostrarMensaje("Valor Inválido", "El kilometraje del mantenimiento (" + kmj + " km) no puede ser menor al kilometraje actual del vehículo (" + vehiculoActualDetalle.getKmj() + " km).", Alert.AlertType.WARNING);
+                return;
+            }
+            if (false) {
+                mostrarMensaje("Valor Inválido", "El kilometraje no puede ser negativo.", Alert.AlertType.WARNING);
+                return;
+            }
         } catch (NumberFormatException e) {
             mostrarMensaje("Valor Inválido", "El kilometraje debe ser un número entero válido.",
                     Alert.AlertType.WARNING);
@@ -2006,7 +2022,7 @@ public class VehiculoController {
                         Alert.AlertType.WARNING);
                 return;
             }
-            if (costo > 999999.99) {
+            if (costo > 9999999999999.99) {
                 mostrarMensaje("Valor Inválido", "El costo no puede superar $999.999,99.", Alert.AlertType.WARNING);
                 return;
             }

@@ -1268,6 +1268,15 @@ public class NuevoContratoController {
             // (el parámetro booleano indica si el cliente ya existe [true] o si el SP debe
             // crearlo [false])
             boolean clienteExiste = !clienteNuevoPendienteDeTransaccion;
+            int kmActualVehiculo = (vehiculoSeleccionado.getKmj() != null) ? vehiculoSeleccionado.getKmj() : 0;
+            if (kmSalida < kmActualVehiculo) {
+                mostrarMensaje("Kilometraje inválido", "El kilometraje de salida (" + kmSalida + " km) no puede ser menor al kilometraje actual del vehículo (" + kmActualVehiculo + " km).", Alert.AlertType.WARNING);
+                return;
+            }
+            if (combSalida < 0.0 || combSalida > 100.0) {
+                mostrarMensaje("Combustible inválido", "El nivel de combustible de salida debe estar entre 0 y 100%.", Alert.AlertType.WARNING);
+                return;
+            }
             contratoService.altaContrato(clienteExiste, contrato, clienteElegidoExistente, vehiculoSeleccionado,
                     checkInOut);
 

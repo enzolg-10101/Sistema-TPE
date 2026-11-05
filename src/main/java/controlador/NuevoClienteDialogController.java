@@ -99,6 +99,21 @@ public class NuevoClienteDialogController {
 
             int dni = Integer.parseInt(dniStr);
             long tel = Long.parseLong(telStr);
+            if (dni <= 0 || dniStr.length() < 7 || dniStr.length() > 8) {
+                mostrarAlerta("DNI Inválido", "El DNI debe ser un número positivo válido de 7 u 8 dígitos.", Alert.AlertType.WARNING);
+                return;
+            }
+            if (tel <= 0) {
+                mostrarAlerta("Teléfono Inválido", "El teléfono debe ser un número positivo válido.", Alert.AlertType.WARNING);
+                return;
+            }
+            if (!persistirInmediatamente) {
+                Cliente existente = new ClienteDAO().buscarPorId(dni);
+                if (existente != null && existente.getDni() != null && existente.getDni().equals(dni)) {
+                    mostrarAlerta("Cliente ya existente", "Ya existe un cliente registrado con el DNI " + dni + ". Selecciónelo desde el buscador.", Alert.AlertType.WARNING);
+                    return;
+                }
+            }
 
             // Usa el constructor sin ID: MySQL genera el C_id con AUTO_INCREMENT y ClienteDAO lo asigna con setId()
             Cliente nuevo = new Cliente(dni, nom, apl, dir, tel, correo, fAlta);
@@ -108,8 +123,10 @@ public class NuevoClienteDialogController {
                 try {
                     clienteService.altaCliente(nuevo);
                 } catch (Exception ignored) {
-                    if (nuevo.getId() == null) {
-                        nuevo.setId(ClienteController.getClientesEnMemoria().size() + 10);
+                    if (nuevo != null) {
+                        mostrarAlerta("Error al Registrar Cliente", "No se pudo guardar el cliente en la base de datos: " + ignored.getMessage(), Alert.AlertType.ERROR);
+                    return;
+                    // fin alerta error
                     }
                 }
                 ClienteController.registrarClienteEnMemoria(nuevo);

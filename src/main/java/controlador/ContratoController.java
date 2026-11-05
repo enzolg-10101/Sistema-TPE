@@ -709,6 +709,23 @@ public class ContratoController {
                     return;
                 }
                 int kmjVal = Integer.parseInt(kmjTexto);
+                int kmjMinimo = 0;
+                try {
+                    modelo.CheckInOut ch = new dao.CheckInOutDAO().buscarPorContrato(contratoSeleccionado.getNro());
+                    if (ch != null && ch.getKmjSal() != null) {
+                        kmjMinimo = ch.getKmjSal();
+                    } else if (contratoSeleccionado.getIdAsigna() != null) {
+                        modelo.Vehiculo vAsig = new VehiculoDAO().buscarPorId(contratoSeleccionado.getIdAsigna().intValue());
+                        if (vAsig != null && vAsig.getKmj() != null) {
+                            kmjMinimo = vAsig.getKmj();
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+                if (kmjVal < kmjMinimo) {
+                    mostrarAlerta("Kilometraje inválido", "El kilometraje de devolución (" + kmjVal + " km) no puede ser menor al kilometraje de salida (" + kmjMinimo + " km).", Alert.AlertType.WARNING);
+                    return;
+                }
                 if (kmjVal < 0) {
                     mostrarAlerta("Valor inválido", "El kilometraje no puede ser negativo.", Alert.AlertType.WARNING);
                     return;
@@ -747,6 +764,18 @@ public class ContratoController {
                         sucId);
 
                 contratoSeleccionado.setEst("Devuelto");
+                if (contratoSeleccionado.getIdAsigna() != null) {
+                    try {
+                        VehiculoDAO vDao = new VehiculoDAO();
+                        modelo.Vehiculo vDev = vDao.buscarPorId(contratoSeleccionado.getIdAsigna().intValue());
+                        if (vDev != null) {
+                            vDev.setKmj(kmjVal);
+                            vDev.setCodPertenece(sucId);
+                            vDao.actualizar(vDev);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
                 contratoSeleccionado.setCargos(cargosVal);
                 NuevoContratoController.marcarContratoDevueltoEnMemoria(contratoSeleccionado.getNro(), cargosVal);
 

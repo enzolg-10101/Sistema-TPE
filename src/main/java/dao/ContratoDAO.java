@@ -98,7 +98,7 @@ public class ContratoDAO {
 
             // 14. IN tel INT
             if (cliente != null && cliente.getTel() != null) {
-                cstmt.setInt(14, cliente.getTel().intValue());
+                cstmt.setLong(14, cliente.getTel());
             } else {
                 cstmt.setNull(14, Types.INTEGER);
             }
