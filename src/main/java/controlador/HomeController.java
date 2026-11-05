@@ -12,16 +12,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
 import modelo.Sucursal;
@@ -77,6 +81,11 @@ public class HomeController {
     private static final Color COLOR_ICONO_ACTIVO = Color.web("#D97706");
 
     @FXML private StackPane panelCentral;
+    @FXML private VBox vistaBienvenida;
+    @FXML private ImageView imgBienvenida;
+
+    // Referencia al nodo de bienvenida para poder regresar a él
+    private Node nodoBienvenida;
 
     // Componentes del Menú Lateral
     @FXML private VBox menuLateral;
@@ -134,8 +143,85 @@ public class HomeController {
         instancia = this;
         configurarEfectosHover();
         aplicarEstadoMenuLateral(false, false);
-        // El sistema inicia con el HomeScreen vacío (sin obligar a estar en una pantalla)
+
+        if (boxMarca != null) {
+            Tooltip.install(boxMarca, new Tooltip("Ir al inicio"));
+        }
+
+        if (vistaBienvenida != null) {
+            this.nodoBienvenida = vistaBienvenida;
+        }
+
+        configurarImagenBienvenida();
+
+        // El sistema inicia con la pantalla de bienvenida (sin pestaña seleccionada)
         activarBoton(null);
+    }
+
+    private void configurarImagenBienvenida() {
+        if (imgBienvenida == null) {
+            return;
+        }
+
+        // Si la imagen no cargó por FXML, cargarla programáticamente como respaldo
+        if (imgBienvenida.getImage() == null) {
+            try {
+                URL imgUrl = getClass().getResource("/bienvenida.jpg");
+                if (imgUrl == null) {
+                    imgUrl = getClass().getResource("/vista/bienvenida.jpg");
+                }
+                if (imgUrl != null) {
+                    imgBienvenida.setImage(new Image(imgUrl.toExternalForm()));
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        imgBienvenida.setPreserveRatio(true);
+        imgBienvenida.setSmooth(true);
+
+        // Bordes redondeados elegantes que coinciden con la tarjeta
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(24.0);
+        clip.setArcHeight(24.0);
+        imgBienvenida.layoutBoundsProperty().addListener((obs, oldB, newB) -> {
+            if (newB != null) {
+                clip.setWidth(newB.getWidth());
+                clip.setHeight(newB.getHeight());
+            }
+        });
+        imgBienvenida.setClip(clip);
+
+        if (panelCentral != null) {
+            panelCentral.widthProperty().addListener((obs, oldW, newW) -> ajustarTamanioImagen());
+            panelCentral.heightProperty().addListener((obs, oldH, newH) -> ajustarTamanioImagen());
+        }
+
+        ajustarTamanioImagen();
+    }
+
+    private void ajustarTamanioImagen() {
+        if (imgBienvenida == null || panelCentral == null) return;
+        double w = panelCentral.getWidth() - 64.0;
+        double h = panelCentral.getHeight() - 64.0;
+        if (w > 120.0) {
+            imgBienvenida.setFitWidth(Math.min(w, 980.0));
+        }
+        if (h > 120.0) {
+            imgBienvenida.setFitHeight(Math.min(h, 560.0));
+        }
+    }
+
+    /**
+     * Muestra la pantalla inicial de bienvenida cuando el usuario hace clic en el logo.
+     */
+    @FXML
+    public void mostrarPantallaBienvenida() {
+        activarBoton(null);
+        if (nodoBienvenida != null && panelCentral != null) {
+            panelCentral.getChildren().setAll(nodoBienvenida);
+            ajustarTamanioImagen();
+        }
     }
 
     /**

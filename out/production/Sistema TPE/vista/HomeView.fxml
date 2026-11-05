@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -43,8 +44,9 @@
                     </graphic>
                 </Button>
 
-                <!-- Identidad visual / Logo del Sistema -->
-                <HBox fx:id="boxMarca" alignment="CENTER_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
+                <!-- Identidad visual / Logo del Sistema (clic para volver al inicio) -->
+                <HBox fx:id="boxMarca" onMouseClicked="#mostrarPantallaBienvenida" alignment="CENTER_LEFT" spacing="10.0" HBox.hgrow="ALWAYS"
+                      style="-fx-cursor: hand;">
                     <VBox alignment="CENTER" maxHeight="38.0" maxWidth="38.0" minHeight="38.0" minWidth="38.0"
                           style="-fx-background-color: #F59E0B; -fx-background-radius: 10;">
                         <Label style="-fx-text-fill: #FFFFFF; -fx-font-size: 14px; -fx-font-weight: bold;" text="TPE"/>
@@ -198,9 +200,22 @@
         </VBox>
     </left>
 
-    <!-- Región CENTER: HomeScreen inicialmente vacío hasta que el usuario seleccione una opción -->
+    <!-- Región CENTER: Pantalla de Bienvenida inicial con imagen corporativa -->
     <center>
-        <StackPane fx:id="panelCentral" style="-fx-background-color: #F3F4F6;"/>
+        <StackPane fx:id="panelCentral" style="-fx-background-color: #F3F4F6;">
+            <VBox fx:id="vistaBienvenida" alignment="CENTER" style="-fx-background-color: #F3F4F6;">
+                <padding>
+                    <Insets bottom="20.0" left="24.0" right="24.0" top="20.0"/>
+                </padding>
+                <StackPane alignment="CENTER"
+                           style="-fx-background-color: #FFFFFF; -fx-background-radius: 20; -fx-border-color: #E5E7EB; -fx-border-radius: 20; -fx-border-width: 1.5; -fx-padding: 6;">
+                    <effect>
+                        <DropShadow color="#00000010" offsetY="8.0" radius="20.0"/>
+                    </effect>
+                    <ImageView fx:id="imgBienvenida" preserveRatio="true"/>
+                </StackPane>
+            </VBox>
+        </StackPane>
     </center>
 
 </BorderPane>
